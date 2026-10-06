@@ -11,7 +11,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -45,23 +48,25 @@
           };
         };
       };
+
+      outputs = core.mkFlake {
+        channels-config = {
+          allowUnfree = true;
+        };
+
+        systems.modules = {
+          nixos = with inputs; [
+            sops-nix.nixosModules.sops
+          ];
+          darwin = with inputs; [
+            sops-nix.darwinModules.sops
+          ];
+        };
+
+        homes.modules = with inputs; [
+          sops-nix.homeModules.sops
+        ];
+      };
     in
-    core.mkFlake {
-      channels-config = {
-        allowUnfree = true;
-      };
-
-      systems.modules = {
-        nixos = with inputs; [
-          sops-nix.nixosModules.sops
-        ];
-        darwin = with inputs; [
-          sops-nix.darwinModules.sops
-        ];
-      };
-
-      homes.modules = with inputs; [
-        sops-nix.homeModules.sops
-      ];
-    };
+    outputs;
 }

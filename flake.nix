@@ -11,17 +11,16 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nixos-wsl.url = "github:nix-community/NixOS-WSL/main";
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL/main";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # snowfall utilities
-    snowfall-flake = {
-      url = "github:snowfallorg/flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
     snowfall-lib = {
       url = "github:snowfallorg/lib";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -36,7 +35,9 @@
     # flake modules
     cirius-security = {
       url = "path:./flakes/cirius-security";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
     };
     cirius-nvim = {
       url = "path:./flakes/cirius-nvim";
@@ -65,11 +66,8 @@
         allowUnfree = true;
       };
 
-      systems.modules = {
-        nixos = with inputs; [ ];
-        darwin = with inputs; [ ];
-      };
-
-      homes.modules = with inputs; [ ];
+      homes.modules = with inputs; [
+        cirius-security.homeModules.default
+      ];
     };
 }
