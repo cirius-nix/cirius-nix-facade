@@ -17,7 +17,7 @@
     let
       inherit (lib.${namespace}.nvim) mkKeymap;
       inherit (config.${namespace}.git) enable;
-      inherit (config.${namespace}) nvim;
+      inherit (config.${namespace}.editor) nvim;
     in
     lib.mkMerge [
       (lib.mkIf (enable && nvim.enable) {

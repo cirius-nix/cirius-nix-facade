@@ -5,6 +5,7 @@
 {
   imports = with inputs; [
     nixvim.homeModules.nixvim
-    self.homeModules.editor.nvim
+    self.homeModules."editor/nvim"
+    self.homeModules."editor/nvim/plugins"
   ];
 }
