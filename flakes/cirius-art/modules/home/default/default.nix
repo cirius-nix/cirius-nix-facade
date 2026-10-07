@@ -29,6 +29,7 @@
         blender
         imagemagick
         krita
+        pkgs.${namespace}.comfy-desktop
       ];
     };
 }
