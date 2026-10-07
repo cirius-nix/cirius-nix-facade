@@ -26,7 +26,6 @@
           gopls
           delve
           golangci-lint
-          goimports
           goreleaser
           go-tools
         ];
