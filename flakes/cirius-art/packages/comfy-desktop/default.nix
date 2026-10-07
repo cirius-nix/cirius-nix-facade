@@ -5,6 +5,7 @@
   fetchurl,
   fetchzip,
   fetchPnpmDeps,
+  cacert,
   pnpmConfigHook,
   nodejs_22,
   pnpm_10,
@@ -155,6 +156,8 @@ stdenv.mkDerivation (finalAttrs: {
     mv $out/lib/comfy-desktop/resources/bootstrap-python/bin/python3.13 $TMPDIR/python3.13
     makeWrapper $out/lib/comfy-desktop/comfy-desktop $out/bin/comfy-desktop \
       --prefix NODE_PATH : $out/lib/comfy-desktop/resources/node_modules \
+      --set-default SSL_CERT_FILE ${cacert}/etc/ssl/certs/ca-bundle.crt \
+      --set-default NIX_SSL_CERT_FILE ${cacert}/etc/ssl/certs/ca-bundle.crt \
       --prefix LD_LIBRARY_PATH : ${
         lib.makeLibraryPath [
           libglvnd
