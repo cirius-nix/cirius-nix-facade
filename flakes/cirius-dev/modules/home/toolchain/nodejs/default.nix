@@ -75,7 +75,6 @@
               scss = [ "prettierd" ];
               html = [ "prettierd" ];
               yaml = [ "prettierd" ];
-              markdown = [ "prettierd" ];
             };
             tools.prettierd.command = "prettierd";
           };

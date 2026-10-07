@@ -32,7 +32,9 @@
         ${namespace}.editor.nvim.settings = {
           formatter = {
             fileTypes = {
-              markdown = [ "markdownlint" ];
+              markdown = [
+                "markdownlint"
+              ];
             };
             tools.markdownlint.command = "markdownlint";
           };
