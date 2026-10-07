@@ -4,7 +4,6 @@
   inputs = {
     # nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     # architecture-specific overlays
     home-manager = {
@@ -21,6 +20,12 @@
     # nixvim module
     nixvim = {
       url = "github:nix-community/nixvim";
+    };
+
+    # ai-agents
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
