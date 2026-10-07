@@ -23,7 +23,6 @@
       (lib.mkIf enable {
         home.packages = with pkgs; [
           pandoc
-          grip
           markdownlint-cli
           markdown-toc
         ];
