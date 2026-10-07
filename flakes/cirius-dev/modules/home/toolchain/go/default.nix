@@ -40,7 +40,7 @@
             };
             tools.goimports.command = "goimports";
           };
-          tests.adapters.gotest.enable = true;
+          tests.adapters.golang.enable = true;
           lsp = {
             servers.gopls = {
               enable = true;
