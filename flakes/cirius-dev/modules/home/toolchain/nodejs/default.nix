@@ -44,19 +44,19 @@
                     "--stdio"
                   ];
                 };
-                eslint = {
-                  enable = true;
-                  packageFallback = true;
-                  config = {
-                    cmd = [
-                      "vscode-eslint-language-server"
-                      "--stdio"
-                    ];
+              };
+              eslint = {
+                enable = true;
+                packageFallback = true;
+                config = {
+                  cmd = [
+                    "vscode-eslint-language-server"
+                    "--stdio"
+                  ];
 
-                    settings = {
-                      workingDirectory = {
-                        mode = "auto";
-                      };
+                  settings = {
+                    workingDirectory = {
+                      mode = "auto";
                     };
                   };
                 };
