@@ -47,9 +47,9 @@
     in
     lib.mkMerge [
       (lib.mkIf secret-mgt.enable {
-        sops = lib.mkForce {
-          age.keyFile = settings.ageKeyFile;
-          defaultSopsFormat = "yaml";
+        sops = {
+          age.keyFile = lib.mkForce settings.ageKeyFile;
+          defaultSopsFormat = lib.mkDefault "yaml";
         };
       })
     ];
