@@ -44,14 +44,20 @@
           };
         };
       };
-    in
-    core.mkFlake {
-      channels-config = {
-        allowUnfree = true;
-      };
 
-      homes.modules = with inputs; [
-        nixvim.homeModules.nixvim
-      ];
-    };
+      outputs = core.mkFlake {
+        channels-config = {
+          allowUnfree = true;
+        };
+
+        homes.modules = with inputs; [
+          nixvim.homeModules.nixvim
+        ];
+
+        modules.home.default = { ... }: {
+          imports = core.snowfall.fs.get-default-nix-files-recursive ./modules/home;
+        };
+      };
+    in
+    outputs;
 }
