@@ -3,10 +3,11 @@
   namespace,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 {
-  imports = (with inputs; [ ]) ++ attrValues (removeAttrs inputs.self.nixosModules [ "default" ]);
+  imports = builtins.attrValues (removeAttrs inputs.self.nixosModules [ "default" ]);
   options.${namespace} = {
     useRecommendedPackages = lib.mkOption {
       type = lib.types.bool;

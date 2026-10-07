@@ -39,9 +39,17 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
-    cirius-nvim = {
-      url = "path:./flakes/cirius-nvim";
-      inputs.nixpkgs.follows = "nixpkgs";
+    cirius-art = {
+      url = "path:./flakes/cirius-art";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
+    };
+    cirius-dev = {
+      url = "path:./flakes/cirius-dev";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+      };
     };
   };
 
@@ -67,7 +75,9 @@
       };
 
       homes.modules = with inputs; [
+        cirius-dev.homeModules.default
         cirius-security.homeModules.default
+        cirius-art.homeModules.default
       ];
     };
 }

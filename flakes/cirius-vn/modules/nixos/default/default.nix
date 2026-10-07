@@ -1,4 +1,15 @@
-{ namespace, lib, ... }: {
+{
+  namespace,
+  lib,
+  inputs,
+  config,
+  ...
+}:
+{
+  imports = with inputs; [
+    fcitx5-lotus.nixosModules.fcitx5-lotus
+  ];
+
   options.${namespace} = {
     enable = lib.mkOption {
       type = with lib.types; bool;

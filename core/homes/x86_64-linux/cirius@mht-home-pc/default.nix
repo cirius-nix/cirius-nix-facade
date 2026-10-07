@@ -13,4 +13,22 @@
       };
     };
   };
+  cnix-art = {
+    useRecommendedPackages = true;
+    sprite.enable = true;
+  };
+  cnix-dev = {
+    editor.nvim.enable = true;
+    git.enable = true;
+    ai = {
+      useRecommendedPackages = true;
+      useClients = [
+        "claude"
+        "opencode"
+        "commandcode"
+        "codex"
+        "multica"
+      ];
+    };
+  };
 }

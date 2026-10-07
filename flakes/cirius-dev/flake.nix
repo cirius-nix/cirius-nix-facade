@@ -27,6 +27,9 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # desktop
+    devenv.url = "github:cachix/devenv";
   };
 
   outputs =

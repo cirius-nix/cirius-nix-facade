@@ -15,10 +15,10 @@
   };
   config =
     let
-      inherit (config.${namespace}) enable;
+      inherit (config.${namespace}.container) enable;
     in
     lib.mkMerge [
-      (lib.mkIf enable.enable {
+      (lib.mkIf enable {
         virtualisation = {
           containers.enable = true;
           oci-containers.backend = "podman";
@@ -27,7 +27,7 @@
             dockerCompat = true;
             dockerSocket.enable = true;
             autoPrune = {
-              enable = opts.podman.autoPrune;
+              enable = true;
               dates = "weekly";
             };
             defaultNetwork.settings = {
