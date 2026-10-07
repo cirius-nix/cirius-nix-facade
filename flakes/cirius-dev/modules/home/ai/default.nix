@@ -36,7 +36,7 @@
 
       (lib.mkIf (ifClient "claude") {
         home.packages = with pkgs; [
-          llm-agents.claude
+          llm-agents.claude-code
           llm-agents.claude-desktop
         ];
       })
@@ -65,6 +65,32 @@
         home.packages = with pkgs; [
           llm-agents.command-code
         ];
+      })
+
+      (lib.mkIf (ifClient "copilot") {
+        programs.nixvim.plugins = {
+          copilot-lua = {
+            enable = true;
+            settings = {
+              suggestion.enabled = false;
+              panel.enabled = false;
+            };
+          };
+          blink-cmp-copilot = {
+            enable = true;
+          };
+        };
+        ${namespace}.editor.nvim.settings.completion = {
+          sources = [ "copilot" ];
+          providers = {
+            copilot = {
+              async = true;
+              module = "blink-cmp-copilot";
+              name = "copilot";
+              score_offset = 95;
+            };
+          };
+        };
       })
     ];
 }

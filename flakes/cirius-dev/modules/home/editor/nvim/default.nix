@@ -6,6 +6,24 @@
   ...
 }:
 {
+  imports = [
+    (lib.mkAliasOptionModule
+      [
+        namespace
+        "editor"
+        "nvim"
+        "settings"
+        "lsp"
+        "servers"
+      ]
+      [
+        "programs"
+        "nixvim"
+        "lsp"
+        "servers"
+      ]
+    )
+  ];
   options.${namespace}.editor.nvim = {
     enable = lib.mkOption {
       type = lib.types.bool;
