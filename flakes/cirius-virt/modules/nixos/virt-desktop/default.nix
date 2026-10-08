@@ -43,16 +43,10 @@
         pkgs.runCommand "custom-display-edids" { } ''
           mkdir -p $out/lib/firmware/edid
 
-          ${lib.concatMapStrings (
-            name:
-            let
-              settings = builtins.getAttr name edids;
-            in
-            ''
-              cp ${settings.dir + "/${name}"} \
-                 $out/lib/firmware/edid/${name}
-            ''
-          ) (builtins.attrNames edids)}
+          ${lib.concatMapStrings (name: ''
+            cp ${settings.dir + "/${name}"} \
+               $out/lib/firmware/edid/${name}
+          '') (builtins.attrNames edids)}
         '';
     in
     lib.mkMerge [

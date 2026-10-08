@@ -8,7 +8,12 @@
   ...
 }:
 {
-  imports = [ ] ++ (builtins.attrValues (removeAttrs inputs.self.homeModules [ "default" ]));
+  imports =
+    (with inputs; [
+      nix-flatpak.homeManagerModules.nix-flatpak
+    ])
+    ++ (builtins.attrValues (removeAttrs inputs.self.homeModules [ "default" ]));
+
   options.${namespace} = {
     enable = lib.mkOption {
       type = lib.types.bool;
