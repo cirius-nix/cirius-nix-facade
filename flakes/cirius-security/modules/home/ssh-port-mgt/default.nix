@@ -10,18 +10,18 @@ let
     with lib.types;
     attrsOf (
       submodule (
-        profileInputs:
+        { name, ... }@profileInputs:
         let
           profileName = lib.concatStringsSep "-" [
             namespace
             "ssh-port-mgt"
-            profileInputs.name
+            name
           ];
         in
         {
           options = {
-            enable = mkOption {
-              type = bool;
+            enable = lib.mkOption {
+              type = lib.types.bool;
               default = false;
               description = "Enable this SSH port management profile.";
             };
@@ -46,13 +46,13 @@ let
 
             build.services = {
               name = lib.mkOption {
-                readOnly = true;
                 type = lib.types.str;
                 default = profileName;
                 description = "The name of the built SSH port management profile.";
               };
               value = lib.mkOption {
-                type = with lib.types; attrsOf anything;
+                type = with lib.types; nullOr (attrsOf anything);
+                default = null;
                 description = "The built SSH port management profile.";
               };
             };
@@ -60,7 +60,7 @@ let
 
           config =
             let
-              inherit (profileInputs.settings) passwordFile autoSSHArgs;
+              inherit (profileInputs.config.settings) passwordFile autoSSHArgs;
 
               # executable commands
               sshPassCommand =
@@ -75,15 +75,17 @@ let
               autoSSHCommand = [ (lib.getExe pkgs.autossh) ] ++ autoSSHArgs;
               execStartCommand = lib.escapeShellArgs (sshPassCommand ++ autoSSHCommand);
             in
-            {
-              build.services = {
-                name = profileName;
-                value = {
-                  Unit = {
-                    description = "SSH port management profile for ${profileInputs.name}.";
-                    Wants = [ "network-online.target" ];
-                    After = [ "network-online.target" ];
-                    Services = {
+            lib.mkMerge [
+              (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+                build.services = {
+                  name = profileName;
+                  value = {
+                    Unit = {
+                      description = "SSH port management profile for ${name}.";
+                      Wants = [ "network-online.target" ];
+                      After = [ "network-online.target" ];
+                    };
+                    Service = {
                       Environment = [ "AUTOSSH_GATETIME=0" ];
                       ExecStart = execStartCommand;
                       Restart = "always";
@@ -92,8 +94,20 @@ let
                     Install.WantedBy = [ "default.target" ];
                   };
                 };
-              };
-            };
+              })
+
+              (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+                build.services = {
+                  name = profileName;
+                  value = {
+                    Label = profileName;
+                    ProgramArguments = execStartCommand;
+                    RunAtLoad = true;
+                    KeepAlive = true;
+                  };
+                };
+              })
+            ];
         }
       )
     );
@@ -116,17 +130,33 @@ in
 
   config =
     let
-      inherit (config.${namespace}) ssh-port-mgt;
+      inherit (config.${namespace}) ssh ssh-port-mgt;
       profiles = lib.filterAttrs (_: p: p.enable) ssh-port-mgt.settings.profiles;
-      profileServices = lib.mapAttrs (_: p: p.build.services) profiles;
+      profileServices = lib.mapAttrs' (_: p: p.build.services) profiles;
     in
     lib.mkMerge [
       (lib.mkIf (ssh-port-mgt.enable) {
+        assertions = [
+          {
+            assertion = ssh.enable == true;
+            message = "SSH port management requires SSH to be enabled.";
+          }
+        ];
+
         home.packages = with pkgs; [
           autossh
           sshpass
         ];
-        systemd.user.services = profileServices;
       })
+
+      # Linux specific configuration
+      (lib.mkIf (ssh-port-mgt.enable && pkgs.stdenv.hostPlatform.isLinux) ({
+        systemd.user.services = profileServices;
+      }))
+
+      # Darwin specific configuration
+      (lib.mkIf (ssh-port-mgt.enable && pkgs.stdenv.hostPlatform.isDarwin) ({
+        launchd.agents = profileServices;
+      }))
     ];
 }

@@ -5,15 +5,15 @@
     # nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
-    # architecture-specific overlays
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # snowfall utilities
     snowfall-lib = {
       url = "github:snowfallorg/lib";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Nix index database
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -29,7 +29,9 @@
     };
 
     # desktop
-    devenv.url = "github:cachix/devenv";
+    devenv = {
+      url = "github:cachix/devenv";
+    };
   };
 
   outputs =
@@ -51,10 +53,16 @@
       outputs = core.mkFlake {
         channels-config = {
           allowUnfree = true;
+          android_sdk.accept_license = true;
         };
 
         homes.modules = with inputs; [
           nixvim.homeModules.nixvim
+          nix-index-database.homeModules.default
+        ];
+
+        nixos.modules = with inputs; [
+          nix-index-database.nixosModules.default
         ];
       };
     in

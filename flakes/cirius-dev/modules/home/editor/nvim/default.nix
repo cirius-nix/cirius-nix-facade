@@ -127,6 +127,12 @@
             else
               settings.options.extends;
           keymaps = [
+            (mkKeymap "<leader>q" "<cmd>quitall<cr>" "Quit Neovim")
+            (mkKeymap "<leader>wl" "<cmd>wincmd l<cr>" "󰖟 Move to right window")
+            (mkKeymap "<leader>wh" "<cmd>wincmd h<cr>" "󰖞 Move to left window")
+            (mkKeymap "<leader>wj" "<cmd>wincmd j<cr>" "󰖝 Move to down window")
+            (mkKeymap "<leader>wk" "<cmd>wincmd k<cr>" "󰖜 Move to up window")
+            (mkKeymap "<esc>" "<cmd>noh<cr>" "󰅂 Clear search highlight")
             # Native LSP actions
             (mkKeymap "<leader>la" "<cmd>lua vim.lsp.buf.code_action()<cr>" "󰌵 Code Action")
             (mkKeymap "<leader>ln" "<cmd>lua vim.lsp.buf.rename()<cr>" "󰑕 Rename Symbol")

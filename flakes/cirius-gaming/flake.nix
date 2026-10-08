@@ -5,12 +5,6 @@
     # nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
-    # architecture-specific overlays
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     # snowfall utilities
     snowfall-lib = {
       url = "github:snowfallorg/lib";

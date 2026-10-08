@@ -4,31 +4,10 @@
   inputs = {
     # nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
-
-    # architecture-specific overlays
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    nixos-wsl = {
-      url = "github:nix-community/NixOS-WSL/main";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    darwin = {
-      url = "github:lnl7/nix-darwin/nix-darwin-25.11";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
 
     # snowfall utilities
     snowfall-lib = {
       url = "github:snowfallorg/lib";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    # nix index database
-    nix-index-database = {
-      url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -39,12 +18,14 @@
         nixpkgs.follows = "nixpkgs";
       };
     };
+
     cirius-art = {
       url = "path:./flakes/cirius-art";
       inputs = {
         nixpkgs.follows = "nixpkgs";
       };
     };
+
     cirius-dev = {
       url = "path:./flakes/cirius-dev";
       inputs = {
@@ -78,6 +59,9 @@
         cirius-dev.homeModules.default
         cirius-security.homeModules.default
         cirius-art.homeModules.default
+      ];
+
+      systems.nixos.modules = with inputs; [
       ];
     };
 }

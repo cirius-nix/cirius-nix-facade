@@ -19,6 +19,12 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
+        environment.systemPackages = with pkgs; [
+          buildah
+          skopeo
+          pods
+          podman-compose
+        ];
         virtualisation = {
           containers.enable = true;
           oci-containers.backend = "podman";

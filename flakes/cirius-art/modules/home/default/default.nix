@@ -14,7 +14,7 @@
   options.${namespace} = {
     useRecommendedPackages = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = "Whether to use recommended packages for art.";
     };
   };
@@ -24,12 +24,19 @@
       inherit (config.${namespace}) useRecommendedPackages;
     in
     lib.mkIf useRecommendedPackages {
-      home.packages = with pkgs; [
-        inkscape
-        blender
-        imagemagick
-        krita
-        pkgs.${namespace}.comfy-desktop
-      ];
+      home.packages =
+        with pkgs;
+        with pkgs.${namespace};
+        [
+          inkscape
+          blender
+          imagemagick
+          krita
+          freecad
+          # our own packages
+          comfy-desktop
+          pen-cli
+          pen-desktop
+        ];
     };
 }

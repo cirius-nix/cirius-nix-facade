@@ -34,6 +34,7 @@
       (lib.mkIf useRecommendedPackages {
         environment.systemPackages = with pkgs; [
           distrobox
+          quickemu
         ];
       })
     ];

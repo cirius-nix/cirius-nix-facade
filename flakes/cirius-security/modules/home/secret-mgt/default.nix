@@ -11,6 +11,14 @@
       [
         namespace
         "secret-mgt"
+        "placeholder"
+      ]
+      [ "sops" "placeholder" ]
+    )
+    (lib.mkAliasOptionModule
+      [
+        namespace
+        "secret-mgt"
         "secrets"
       ]
       [ "sops" "secrets" ]
@@ -37,6 +45,11 @@
         default = null;
         description = "The age key used for encrypting secrets.";
       };
+      defaultSecretFile = lib.mkOption {
+        type = lib.types.path;
+        default = null;
+        description = "The default secret file to be used for secret management.";
+      };
     };
   };
 
@@ -50,6 +63,7 @@
         sops = {
           age.keyFile = lib.mkForce settings.ageKeyFile;
           defaultSopsFormat = lib.mkDefault "yaml";
+          defaultSopsFile = lib.mkDefault settings.defaultSecretFile;
         };
       })
     ];
