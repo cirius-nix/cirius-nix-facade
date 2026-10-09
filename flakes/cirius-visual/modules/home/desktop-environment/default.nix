@@ -46,6 +46,7 @@
     in
     lib.mkMerge [
       (lib.mkIf (enable && desktop-environment.use == "kde") {
+        home.packages = with pkgs; [ plasma-audio-visualizer ];
         programs.plasma = {
           enable = true;
           workspace.wallpaper = desktop-environment.wallpaper.light;

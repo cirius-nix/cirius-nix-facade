@@ -11,6 +11,7 @@
   imports =
     (with inputs; [
       nix-flatpak.homeManagerModules.nix-flatpak
+      plasma-manager.homeModules.plasma-manager
     ])
     ++ (builtins.attrValues (removeAttrs inputs.self.homeModules [ "default" ]));
 
@@ -30,6 +31,15 @@
         type = lib.types.bool;
         default = false;
         description = "Enable boot log capture.";
+      };
+      managedDesktopEnvironment = lib.mkOption {
+        type = lib.types.enum [
+          "unset"
+          "kde"
+          "gnome"
+        ];
+        default = "unset";
+        description = "The desktop environment to manage. If unset, will not manage any desktop environment.";
       };
     };
   };
@@ -66,6 +76,37 @@
         '';
         programs.fish.shellAbbrs = {
           make-boot-log = "sudo journalctl -b -o short-precise --no-pager > ${config.xdg.stateHome}/boot-logs/$(date +%Y%m%d-%H%M%S).log";
+        };
+      })
+
+      (lib.mkIf (enable && settings.managedDesktopEnvironment == "kde") {
+        programs.plasma = {
+          windows = {
+            allowWindowsToRememberPositions = true;
+          };
+          workspace = {
+            clickItemTo = "select"; # open | select
+            enableMiddleClickPaste = true;
+          };
+          session = {
+            general.askForConfirmationOnLogout = true;
+            sessionRestore.restoreOpenApplicationsOnLogin = "startWithEmptySession";
+          };
+        };
+      })
+
+      (lib.mkIf (enable && settings.managedDesktopEnvironment == "gnome") {
+        dconf = {
+          settings = {
+            "org/gnome/desktop/peripherals/keyboard" = {
+              # prevent repeating keys to be too fast
+              repeat = true;
+              repeat-interval = 30;
+
+              # Key repeat delay when keeping a key pressed (in milliseconds). The default is 500ms.
+              delay = 500;
+            };
+          };
         };
       })
     ];

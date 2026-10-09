@@ -28,6 +28,11 @@
       url = "github:nix-community/stylix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    kde-audio-vis = {
+      url = "github:Muddyblack/audio-wave-visualizer";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

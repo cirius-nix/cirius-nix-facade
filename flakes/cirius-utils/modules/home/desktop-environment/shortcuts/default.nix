@@ -5,7 +5,7 @@
   ...
 }:
 {
-  options.${namespace}.shortcuts = {
+  options.${namespace}.desktop-environment.shortcuts = {
     enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -13,30 +13,17 @@
         Whether to enable recommended shortcuts for the system for KDE or GNOME.
       '';
     };
+    useRecommendedShortcuts = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Whether to use recommended shortcuts for the system for KDE or GNOME.
+        This will apply a consistent set of shortcuts across applications and the desktop
+        environment itself.
+      '';
+    };
 
     settings = {
-      useRecommendedShortcuts = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = ''
-          Whether to use recommended shortcuts for the system for KDE or GNOME.
-          This will apply a consistent set of shortcuts across applications and the desktop
-          environment itself.
-        '';
-      };
-
-      applyTo = lib.mkOption {
-        type = lib.types.enum [
-          "unset"
-          "kde"
-          "gnome"
-        ];
-        default = "unset";
-        description = ''
-          The desktop environment to which the recommended shortcuts should be applied.
-        '';
-      };
-
       bindings = lib.mkOption {
         type = with lib.types; attrsOf (listOf (listOf str));
         default = { };
@@ -45,6 +32,7 @@
           "desktop.overview" = [ "SUPER" ];
         };
       };
+
       extendedActions = {
         kde = lib.mkOption {
           type = with lib.types; attrsOf str;
@@ -62,13 +50,12 @@
 
   config =
     let
-      inherit (config.${namespace}.shortcuts)
+      inherit (config.${namespace}.settings) managedDesktopEnvironment;
+      inherit (config.${namespace}.desktop-environment) shortcuts;
+      inherit (shortcuts)
         enable
-        settings
-        ;
-      inherit (settings)
-        applyTo
         useRecommendedShortcuts
+        settings
         ;
 
       actions = {
@@ -133,7 +120,7 @@
         builtins.map combine keys;
     in
     lib.mkMerge [
-      (lib.mkIf (enable && applyTo == "kde") (
+      (lib.mkIf (enable && managedDesktopEnvironment == "kde") (
         let
           recursiveUpdateFn =
             bindings: translated: canonical:
@@ -163,7 +150,7 @@
         }
       ))
 
-      (lib.mkIf (enable && applyTo == "gnome") (
+      (lib.mkIf (enable && managedDesktopEnvironment == "gnome") (
         let
           translateGNOMEBindings =
             bindings:
@@ -203,12 +190,12 @@
       (lib.mkIf (enable && useRecommendedShortcuts) ({
         assertions = [
           {
-            assertion = applyTo == "kde" || applyTo == "gnome";
-            message = "The 'applyTo' option must be set to either 'kde' or 'gnome' when 'useRecommendedShortcuts' is enabled.";
+            assertion = managedDesktopEnvironment == "kde" || managedDesktopEnvironment == "gnome";
+            message = "The 'managedDesktopEnvironment' option must be set to either 'kde' or 'gnome' when 'useRecommendedShortcuts' is enabled.";
           }
         ];
 
-        ${namespace}.shortcuts.settings.bindings = import ./_default.bindings.nix;
+        ${namespace}.desktop-environment.shortcuts.settings.bindings = import ./_default.bindings.nix;
       }))
     ];
 }

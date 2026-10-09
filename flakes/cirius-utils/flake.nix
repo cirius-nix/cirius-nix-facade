@@ -19,6 +19,14 @@
 
     # flatpak apps
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+
+    plasma-manager = {
+      url = "github:nix-community/plasma-manager";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        home-manager.follows = "home-manager";
+      };
+    };
   };
 
   outputs =
@@ -44,6 +52,7 @@
 
         home.modules = with inputs; [
           nix-flatpak.homeManagerModules.nix-flatpak
+          plasma-manager.homeModules.plasma-manager
         ];
       };
     in
