@@ -52,7 +52,7 @@
             ${settings.dotFileDir}
           '';
           nix-sw = "${lib.getExe pkgs.nh} os switch ${settings.dotFileDir}#${host}";
-          nix-rb = "${lib.getExe pkgs.nh} os rebuild ${settings.dotFileDir}#${host}";
+          nix-rb = "${lib.getExe pkgs.nh} os build ${settings.dotFileDir}#${host}";
           nix-b = "${lib.getExe pkgs.nh} os boot ${settings.dotFileDir}#${host}";
           nix-ls-gen = "sudo nix-env --profile /nix/var/nix/profiles/system --list-generations";
           nix-del-gens = "sudo nix-env --profile /nix/var/nix/profiles/system --delete-generations old";

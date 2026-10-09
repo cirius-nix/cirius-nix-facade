@@ -35,15 +35,27 @@
   config =
     let
       inherit (config.${namespace}) enable useRecommendedFonts;
+      disableAll =
+        listNames:
+        lib.listToAttrs (
+          map (name: {
+            name = name;
+            value = {
+              enable = false;
+            };
+          }) listNames
+        );
     in
     lib.mkMerge [
       (lib.mkIf enable {
         home.packages = with pkgs; [
           base16-schemes
+          qt6Packages.qtstyleplugin-kvantum
         ];
+        stylix.targets = disableAll [ "xresources" ];
         stylix = {
           enable = true;
-          autoEnable = true;
+          autoEnable = false;
           base16Scheme = {
             system = "base16";
             name = "Adwaita Inspired Dark";
