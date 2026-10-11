@@ -28,6 +28,11 @@
         default = [ ];
         description = "List of users to add to the uinput and input groups.";
       };
+      origins = lib.mkOption {
+        type = with lib.types; listOf str;
+        default = [ ];
+        description = "List of origins to allow for the stream service.";
+      };
     };
   };
   config =
@@ -59,6 +64,7 @@
             fec_percentage = 20;
             qp = 28;
             output_name = settings.displayID;
+            csrf_allowed_origins = lib.concatStringsSep "," settings.origins;
           };
         };
         users.users = builtins.listToAttrs (
