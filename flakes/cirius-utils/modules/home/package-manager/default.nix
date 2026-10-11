@@ -22,12 +22,12 @@
           options.location = cnix-lib.mkStrOpt {
             description = "The URL of the remote repository.";
           };
-          packages = cnix-lib.mkListOpt {
+          options.packages = cnix-lib.mkListOpt {
             ofType = lib.types.str;
             default = [ ];
             description = "A list of package IDs to be installed from the remote repository.";
           };
-          builtPackages = cnix-lib.mkListOpt {
+          options.builtPackages = cnix-lib.mkListOpt {
             ofType = with lib.types; attrsOf str;
             readOnly = true;
             description = "A list of package IDs to be built from the remote repository.";
