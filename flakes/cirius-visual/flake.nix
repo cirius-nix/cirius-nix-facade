@@ -29,8 +29,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    kwin-effects-glass = {
+      url = "github:4v3ngR/kwin-effects-glass";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     kde-audio-vis = {
       url = "github:Muddyblack/audio-wave-visualizer";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    cnix-lib = {
+      url = "github:cirius-nix/cirius-nix-facade/tree/main/flakes/cirius-lib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

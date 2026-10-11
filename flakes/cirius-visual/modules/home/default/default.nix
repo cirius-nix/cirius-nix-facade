@@ -19,18 +19,24 @@
     )
     ++ (with builtins; attrValues (removeAttrs inputs.self.homeModules [ "default" ]));
 
-  options.${namespace} = {
-    enable = lib.mkOption {
-      type = lib.types.bool;
-      default = true;
-      description = "Whether to enable the visual module.";
+  options.${namespace} =
+    let
+      inherit (lib) cnix-lib;
+    in
+    {
+      enable = cnix-lib.mkBoolOpt {
+        default = false;
+        description = "Enable the visual module.";
+      };
+      useRecommendedFonts = cnix-lib.mkBoolOpt {
+        default = false;
+        description = "Whether to use the recommended fonts for system and apps.";
+      };
+      useRecommendedTheme = cnix-lib.mkBoolOpt {
+        default = false;
+        description = "Whether to use the recommended theme for system and apps.";
+      };
     };
-    useRecommendedFonts = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Whether to use recommended fonts for stylix.";
-    };
-  };
 
   config =
     let
@@ -48,17 +54,20 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
-        home.packages = with pkgs; [
-          base16-schemes
-          qt6Packages.qtstyleplugin-kvantum
-        ];
+        home.packages =
+          with pkgs;
+          with pkgs.qt6Packages;
+          [
+            base16-schemes
+            qtstyleplugin-kvantum
+          ];
         stylix.targets = disableAll [ "xresources" ];
         stylix = {
           enable = true;
           autoEnable = false;
           base16Scheme = {
             system = "base16";
-            name = "Adwaita Inspired Dark";
+            name = "Dark Sun Pro";
             author = "Minh Hieu Tran";
             variant = "dark";
             palette = {
@@ -98,7 +107,7 @@
 
         stylix.fonts = {
           monospace = {
-            name = "MonaspiceNe Nerd Font Mono";
+            name = "MonaspiceKr Nerd Font Mono";
             package = pkgs.nerd-fonts.monaspace;
           };
           emoji = {

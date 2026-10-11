@@ -7,6 +7,74 @@
 }:
 {
   options.${namespace}.desktop-environment.kde = {
+    themeSwitcher = {
+      enable = lib.mkOption {
+        type = with lib.types; bool;
+        default = false;
+        description = "Whether to enable the KDE theme switcher script.";
+      };
+      settings =
+        let
+          themeConfigModule = lib.types.submodule {
+            options.color = lib.mkOption {
+              type = with lib.types; str;
+              default = "KlassyLight";
+              description = "The color scheme to be used in KDE Plasma configuration.";
+            };
+            options.plasma = lib.mkOption {
+              type = with lib.types; str;
+              default = "cirius-visual-light";
+              description = "The plasma theme to be used in KDE Plasma configuration.";
+            };
+            options.icon = lib.mkOption {
+              type = with lib.types; str;
+              default = "candy-icons";
+              description = "The icon theme to be used in KDE Plasma configuration.";
+            };
+            options.wallpaper = lib.mkOption {
+              type = with lib.types; nullOr str;
+              default = null;
+              description = "The wallpaper to be used in KDE Plasma configuration.";
+            };
+          };
+        in
+        {
+          mode = lib.mkOption {
+            type = lib.types.enum [
+              "interval"
+              "scheduled"
+            ];
+            default = "scheduled";
+          };
+          intervalDuration = lib.mkOption {
+            type = with lib.types; int;
+            default = 15;
+            description = "The duration in minutes for the interval mode of the theme switcher.";
+          };
+          sunrise = lib.mkOption {
+            type = with lib.types; int;
+            default = 7;
+            description = "The hour of the day (0-23) when the light theme should be applied.";
+          };
+          sunset = lib.mkOption {
+            type = with lib.types; int;
+            default = 16;
+            description = "The hour of the day (0-23) when the dark theme should be applied.";
+          };
+          themes = {
+            light = lib.mkOption {
+              type = themeConfigModule;
+              default = { };
+              description = "The configuration for the light theme in KDE Plasma.";
+            };
+            dark = lib.mkOption {
+              type = themeConfigModule;
+              default = { };
+              description = "The configuration for the dark theme in KDE Plasma.";
+            };
+          };
+        };
+    };
     panelOnMonitors = lib.mkOption {
       type = with lib.types; listOf int;
       default = [ 0 ];
@@ -20,253 +88,188 @@
   };
   config =
     let
-      inherit (config.${namespace}) enable desktop-environment;
-      inherit (desktop-environment) use kde useRecommendedTheme;
-
-      # remove duplicate monitor
-      panelOnMonitors = lib.unique (kde.panelOnMonitors);
+      inherit (config.${namespace})
+        enable
+        desktop-environment
+        useRecommendedFonts
+        useRecommendedTheme
+        ;
+      inherit (desktop-environment) use kde;
+      inherit (kde) themeSwitcher;
     in
     lib.mkMerge [
-      (lib.mkIf (enable && use == "kde" && useRecommendedTheme) (
-        let
-          mkTopPanels = screen: [
-            # left
-            {
-              location = "top"; # top | bottom | left | right | floating
-              alignment = "center"; # left | center | right
-              height = 32;
-              floating = true;
-              hiding = "none"; # none | autohide | windowscover | windowsbelow | dodgewindows | normalpanel | windowsgobelow
-              inherit screen;
-              lengthMode = "fill"; # fit | fill | custom
-              offset = 0;
-              opacity = "opaque"; # adaptive | opaque | translucent
-              widgets = [
-                "org.kde.plasma.pager"
-                "org.kde.plasma.marginsseparator"
-                {
-                  name = "com.github.antroids.application-title-bar";
-                  config = {
-                    Appearance = {
-                      overrideElementsMaximized = true;
-                      widgetButtonsIconsTheme = "Breeze";
-                      widgetElements = "windowIcon,windowTitle";
-                      widgetFillWidth = true;
-                      widgetToolTipMode = "MaximizedWindow";
-                      windowTitleUndefined = "Cirius Nix v4";
-                      windowTitleMaximumWidth = 300;
-                      windowTitleFontBold = false;
-                      widgetElementsMaximized = "windowCloseButton,windowMinimizeButton,windowMaximizeButton,windowIcon,windowTitle";
-                    };
-                    Behavior = {
-                      widgetMouseAreaMiddleClickAction = "";
-                      widgetMouseAreaWheelDownAction = "";
-                      widgetMouseAreaWheelUpAction = "";
-                    };
-                  };
-                }
-                "org.kde.plasma.marginsseparator"
-                "org.kde.plasma.panelspacer"
-                "org.kde.plasma.appmenu"
-                "org.kde.plasma.panelspacer"
-                {
-                  name = "org.kde.plasma.systemmonitor.cpucore";
-                  config = {
-                    CurrentPreset = "org.kde.plasma.systemmonitor";
-                    Appearance = {
-                      chartFace = "org.kde.ksysguard.barchart";
-                      title = "Individual Core Usage";
-                    };
-                    SensorColors = {
-                      "cpu/cpu.*/usage" = "61,174,233";
-                      "cpu/cpu0/usage" = "61,174,233";
-                      "cpu/cpu1/usage" = "61,110,233";
-                      "cpu/cpu10/usage" = "217,233,61";
-                      "cpu/cpu11/usage" = "153,233,61";
-                      "cpu/cpu12/usage" = "88,233,61";
-                      "cpu/cpu13/usage" = "61,233,98";
-                      "cpu/cpu14/usage" = "61,233,163";
-                      "cpu/cpu15/usage" = "61,233,227";
-                      "cpu/cpu2/usage" = "77,61,233";
-                      "cpu/cpu3/usage" = "141,61,233";
-                      "cpu/cpu4/usage" = "206,61,233";
-                      "cpu/cpu5/usage" = "233,61,196";
-                      "cpu/cpu6/usage" = "233,61,131";
-                      "cpu/cpu7/usage" = "233,61,67";
-                      "cpu/cpu8/usage" = "233,120,61";
-                      "cpu/cpu9/usage" = "233,184,61";
-                    };
-                    Sensors = {
-                      highPrioritySensorIds = ''["cpu/cpu.*/usage"]'';
-                      totalSensors = ''["cpu/all/usage"]'';
-                    };
-                  };
-                }
-                {
-                  name = "org.kde.plasma.systemmonitor.memory";
-                  config = {
-                    CurrentPreset = "org.kde.plasma.systemmonitor";
-                    Appearance = {
-                      chartFace = "org.kde.ksysguard.linechart";
-                      title = "Memory Usage";
-                    };
-                    Sensors = {
-                      highPrioritySensorIds = ''["memory/swap/used","memory/physical/application"]'';
-                      lowPrioritySensorIds = ''["memory/physical/total"]'';
-                      totalSensors = ''["memory/physical/usedPercent"]'';
-                    };
-                    SensorColors = {
-                      "memory/physical/application" = "233,208,61";
-                      "memory/physical/used" = "61,174,233";
-                      "memory/swap/used" = "170,255,255";
-                    };
-                  };
-                }
-                {
-                  name = "org.kde.plasma.systemmonitor.net";
-                  config = {
-                    CurrentPreset = "org.kde.plasma.systemmonitor";
-                    Appearance = {
-                      chartFace = "org.kde.ksysguard.linechart";
-                      title = "Network Speed";
-                    };
-                    SensorColors = {
-                      "network/all/download" = "61,174,233";
-                      "network/all/upload" = "233,120,61";
-                    };
-                    Sensors = {
-                      highPrioritySensorIds = ''["network/all/download","network/all/upload"]'';
-                    };
-                  };
-                }
-                "org.kde.plasma.marginsseparator"
-                {
-                  name = "org.kde.plasma.notes";
-                  config = {
-                    General = {
-                      color = "translucent";
-                      cursorPosition = 0;
-                      fontSize = 10;
-                    };
-                  };
-                }
-                "org.kde.plasma.showdesktop"
-                "org.kde.plasma.marginsseparator"
-                "org.kde.plasma.digitalclock"
-              ];
-            }
-          ];
+      (lib.mkIf (enable && use == "kde" && useRecommendedTheme) ({
+        home.packages =
+          with pkgs;
+          with pkgs.${namespace};
+          [
+            plasmusic-toolbar
+            plasma-audio-visualizer
+            fairy-wren
+            cirius-visual-desktop-themes
+            candy-icons
+            tela-icon-theme
+            inter
+          ]
+          ++ [ pkgs.${namespace}.klassy ];
 
-          mkBottomPanel = screen: [
-            {
-              location = "bottom"; # top | bottom | left | right | floating
-              alignment = "center"; # left | center | right
-              height = 40;
-              floating = true;
-              hiding = "none"; # none | autohide | windowscover | windowsbelow | dodgewindows | normalpanel | windowsgobelow
-              inherit screen;
-              lengthMode = "custom"; # fit | fill | custom
-              maxLength = 1200;
-              minLength = 1200;
-              offset = 0;
-              opacity = "opaque"; # adaptive | opaque | translucent
-              widgets = [
-                "org.kde.plasma.kickoff"
-                {
-                  name = "plasmusic-toolbar";
-                  config = {
-                    General = {
-                      fallbackToIconWhenArtNotAvailable = true;
-                      mediaProgressInPanel = true;
-                      panelControlsSizeRatio = 0.6;
-                      useAlbumCoverAsPanelIcon = true;
-                    };
-                  };
-                }
-                "org.kde.plasma.panelspacer"
-                {
-                  name = "org.kde.plasma.icontasks";
-                  config = {
-                    General = {
-                      launchers = map (app: "applications:${app}") kde.favoriteApps;
-                    };
-                  };
-                }
-                "org.kde.plasma.panelspacer"
-                {
-                  name = "org.kde.plasma.systemtray";
-                  config = {
-                    General = {
-                      extraItems = [
-                        "org.kde.plasma.devicenotifier"
-                        "org.kde.plasma.cameraindicator"
-                        "org.kde.plasma.keyboardlayout"
-                        "org.kde.plasma.keyboardindicator"
-                        "org.kde.plasma.battery"
-                        "org.kde.plasma.manage-inputmethod"
-                        "org.kde.plasma.diskquota"
-                        "org.kde.plasma.clipboard"
-                        "org.kde.plasma.mediacontroller"
-                        "org.kde.plasma.notifications"
-                        "org.kde.plasma.trash"
-                        "org.kde.plasma.weather"
-                        "org.kde.plasma.addons.katesessions"
-                        "org.kde.plasma.volume"
-                        "org.kde.plasma.networkmanagement"
-                      ];
-                      hiddenItems = [
-                        "org.kde.plasma.devicenotifier"
-                        "org.kde.plasma.cameraindicator"
-                        "org.kde.plasma.keyboardlayout"
-                        "org.kde.plasma.keyboardindicator"
-                        "org.kde.plasma.battery"
-                        "org.kde.plasma.manage-inputmethod"
-                        "org.kde.plasma.diskquota"
-                        "org.kde.plasma.clipboard"
-                        "Fcitx"
-                        "org.kde.plasma.mediacontroller"
-                        "org.kde.plasma.notifications"
-                        "org.kde.plasma.trash"
-                        "org.kde.plasma.weather"
-                        "zero-trust-client"
-                        "org.kde.plasma.addons.katesessions"
-                        "opensnitch-ui"
-                        "trayid30671"
-                      ];
-                      knownItems = [
-                        "org.kde.plasma.cameraindicator"
-                        "org.kde.plasma.clipboard"
-                        "org.kde.plasma.devicenotifier"
-                        "org.kde.plasma.manage-inputmethod"
-                        "org.kde.plasma.mediacontroller"
-                        "org.kde.plasma.notifications"
-                        "org.kde.kscreen"
-                        "org.kde.plasma.battery"
-                        "org.kde.plasma.brightness"
-                        "org.kde.plasma.keyboardindicator"
-                        "org.kde.plasma.keyboardlayout"
-                        "org.kde.plasma.networkmanagement"
-                        "org.kde.plasma.volume"
-                        "org.kde.plasma.weather"
-                      ];
-                      shownItems = [
-                        "org.kde.plasma.volume"
-                        "org.kde.plasma.networkmanagement"
-                        "org.kde.plasma.bluetooth"
-                      ];
-                    };
-                  };
-                }
-              ];
-            }
-          ];
+        programs.plasma = {
+          workspace = {
+            widgetStyle = "Klassy";
+            windowDecorations = {
+              library = "org.kde.klassy";
+              theme = "Klassy";
+            };
+          };
+          configFile."klassy/klassyrc" = with builtins; fromTOML (readFile ./assets/klassyrc.toml);
+        };
+      }))
+
+      (lib.mkIf (enable && use == "kde" && useRecommendedFonts) {
+        home.packages = with pkgs; [
+          inter
+        ];
+        programs.plasma.fonts = {
+          general = {
+            family = "Inter";
+            pointSize = 10;
+          };
+          menu = {
+            family = "Inter";
+            pointSize = 10;
+          };
+          toolbar = {
+            family = "Inter";
+            pointSize = 10;
+          };
+          small = {
+            family = "Inter";
+            pointSize = 9;
+          };
+          windowTitle = {
+            family = "Inter";
+            pointSize = 10;
+          };
+          fixedWidth = {
+            family = "MonaspiceKr Nerd Font Mono";
+            pointSize = 10;
+          };
+        };
+      })
+      (lib.mkIf (enable && use == "kde" && useRecommendedTheme && themeSwitcher.enable) (
+        let
+          inherit (themeSwitcher.settings) themes;
+          workspacePkg = pkgs.kdePackages.plasma-workspace;
+          wallpaperPkg = pkgs.kdePackages.plasma-workspace-wallpapers;
+
+          themeSwitcherPkg = pkgs.writeShellApplication {
+            name = "kde-theme-switcher";
+            text = ''
+              case "''${1:-}" in
+                light)
+                  color="${themes.light.color}"
+                  plasma="${themes.light.plasma}"
+                  icon="${themes.light.icon}"
+                  wallpaper="${themes.light.wallpaper}"
+                  ;;
+                dark)
+                  color="${themes.dark.color}"
+                  plasma="${themes.dark.plasma}"
+                  icon="${themes.dark.icon}"
+                  wallpaper="${themes.dark.wallpaper}"
+                  ;;
+                *)
+                  echo "Usage: kde-theme-switch {light|dark}" >&2
+                  exit 1
+                  ;;
+              esac
+
+              ${workspacePkg}/bin/plasma-apply-colorscheme "$color"
+              ${workspacePkg}/bin/plasma-apply-desktoptheme "$plasma"
+              ${workspacePkg}/libexec/plasma-changeicons "$icon"
+              ${workspacePkg}/bin/plasma-apply-wallpaperimage "$wallpaper"
+            '';
+          };
+
+          themeWatch = pkgs.writeShellScript "kde-theme-watch" ''
+            hour=$(${pkgs.coreutils}/bin/date +%H)
+
+            if (( 10#$hour >= ${toString themeSwitcher.settings.sunrise} && 10#$hour < ${toString themeSwitcher.settings.sunset})); then
+              mode=light
+            else
+              mode=dark
+            fi
+
+            ${themeSwitcherPkg}/bin/kde-theme-switcher "$mode"
+          '';
         in
         {
-          home.packages = with pkgs; [ plasmusic-toolbar ];
-          # remove duplicate panels on all monitors, only show on the first monitor
-          programs.plasma.panels = lib.concatMap (
-            screen: (mkTopPanels screen) ++ (mkBottomPanel screen)
-          ) panelOnMonitors;
+          ${namespace}.desktop-environment.kde.themeSwitcher.settings.themes = {
+            light = lib.mkDefault {
+              color = "KlassyLight";
+              plasma = "cirius-visual-light";
+              icon = "Tela";
+              wallpaper =
+                if desktop-environment.wallpaper.light != null then
+                  desktop-environment.wallpaper.light
+                else
+                  "${wallpaperPkg}/share/wallpapers/Sub-Arctic/contents/images/5120x2880.png";
+            };
+            dark = lib.mkDefault {
+              color = "KlassyDark";
+              plasma = "cirius-visual-dark";
+              icon = "Tela";
+              wallpaper =
+                if desktop-environment.wallpaper.dark != null then
+                  desktop-environment.wallpaper.dark
+                else
+                  "${wallpaperPkg}/share/wallpapers/Sub-Arctic/contents/images_dark/5120x2880.png";
+            };
+          };
+          home.packages = with pkgs; [
+            themeSwitcherPkg
+          ];
+          systemd.user.services."kde-theme-watch" = {
+            Unit = {
+              Description = "KDE Theme Watcher Service";
+              After = [ "graphical-session.target" ];
+            };
+            Service = {
+              Type = "oneshot";
+              ExecStart = themeWatch;
+            };
+          };
+
+          systemd.user.timers."kde-theme-watch" = {
+            Unit.Description = "KDE Theme Watcher Timer";
+            Timer = {
+              OnCalendar =
+                if themeSwitcher.settings.mode == "interval" then
+                  "*:0/${toString themeSwitcher.settings.intervalDuration}"
+                else
+                  [
+                    "*-*-* ${toString themeSwitcher.settings.sunrise}:00"
+                    "*-*-* ${toString themeSwitcher.settings.sunset}:00"
+                  ];
+              Persistent = true;
+              Unit = "kde-theme-watch.service";
+            };
+            Install = {
+              WantedBy = [ "timers.target" ];
+            };
+          };
+
+          xdg.configFile."autostart/kde-theme-watch.desktop" = {
+            text = ''
+              [Desktop Entry]
+              Type=Application
+              Name=KDE Theme Watcher
+              Exec=${pkgs.systemd}/bin/systemctl --user start kde-theme-watch.service
+              OnlyShowIn=KDE;
+              Terminal=false
+              X-KDE-autostart-phase=2
+            '';
+          };
         }
       ))
     ];

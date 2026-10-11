@@ -1,0 +1,17 @@
+{
+  "KPlugin": {
+    "Authors": [
+      {
+        "Email": "hieu.tran21198@gmail.com",
+        "Name": "Minh Hieu Tran"
+      }
+    ],
+    "Category": "",
+    "Description": "",
+    "EnabledByDefault": true,
+    "Id": "cirius-visual-light",
+    "License": "MIT",
+    "Name": "Light Pro",
+    "Version": "1.0.0"
+  }
+}

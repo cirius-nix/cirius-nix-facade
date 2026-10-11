@@ -30,8 +30,8 @@
 
   config =
     let
-      inherit (config.${namespace}) enable desktop-environment;
-      inherit (desktop-environment) use gnome useRecommendedTheme;
+      inherit (config.${namespace}) enable desktop-environment useRecommendedTheme;
+      inherit (desktop-environment) use gnome;
 
       extensionSettings = lib.foldl' lib.recursiveUpdate { } (
         map (
