@@ -12,7 +12,7 @@
 
   options.${namespace} =
     let
-      inherit (lib) cnix-lib;
+      cnix-lib = inputs.cirius-lib.lib;
     in
     {
       enable = cnix-lib.mkBoolOpt {

@@ -29,7 +29,7 @@
     };
 
     cirius-lib = {
-      url = "github:cirius-nix/cirius-nix-facade/main?dir=flakes/cirius-lib";
+      url = "path:../cirius-lib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };

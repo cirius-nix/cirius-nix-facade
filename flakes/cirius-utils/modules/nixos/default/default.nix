@@ -9,9 +9,10 @@
 {
   imports =
     (with inputs; [ ]) ++ (builtins.attrValues (removeAttrs inputs.self.nixosModules [ "default" ]));
+
   options.${namespace} =
     let
-      inherit (lib) cnix-lib;
+      cnix-lib = inputs.cirius-lib.lib;
     in
     {
       unlockKDEWalletByLUKS = cnix-lib.mkBoolOpt {

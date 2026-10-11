@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   namespace,
   lib,
@@ -14,7 +15,7 @@
   ];
   options.${namespace}.package-manager =
     let
-      inherit (lib) cnix-lib;
+      cnix-lib = inputs.cirius-lib.lib;
       remotePackageType = lib.types.submodule (
         { name, ... }@args:
         {

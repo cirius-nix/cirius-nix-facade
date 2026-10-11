@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   namespace,
   lib,
@@ -8,7 +9,7 @@
 {
   options.${namespace}.desktop-environment =
     let
-      inherit (lib) cnix-lib;
+      cnix-lib = inputs.cirius-lib.lib;
     in
     {
       use = cnix-lib.mkEnumOpt {

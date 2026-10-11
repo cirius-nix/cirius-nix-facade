@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   namespace,
   lib,
@@ -8,7 +9,7 @@
 {
   options.${namespace}.virt-desktop =
     let
-      inherit (lib) cnix-lib;
+      cnix-lib = inputs.cirius-lib.lib;
     in
     {
       enable = cnix-lib.mkBoolOpt {

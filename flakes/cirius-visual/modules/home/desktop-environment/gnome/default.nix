@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   namespace,
   pkgs,
@@ -8,7 +9,7 @@
 {
   options.${namespace}.desktop-environment.gnome =
     let
-      inherit (lib) cnix-lib;
+      cnix-lib = inputs.cirius-lib.lib;
     in
     {
       extensions = cnix-lib.mkListOpt {

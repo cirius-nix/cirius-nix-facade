@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   namespace,
   lib,
@@ -7,7 +8,7 @@
 {
   options.${namespace} =
     let
-      inherit (lib) cnix-lib;
+      cnix-lib = inputs.cirius-lib.lib;
     in
     {
       containerRegistry = cnix-lib.mkStrOpt {

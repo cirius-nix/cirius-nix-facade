@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   namespace,
   lib,
@@ -8,7 +9,7 @@
 {
   options.${namespace}.container =
     let
-      inherit (lib) cnix-lib;
+      cnix-lib = inputs.cirius-lib.lib;
       containerSubmoduleType = lib.types.submodule {
         options.enable = cnix-lib.mkBoolOpt {
           default = false;
