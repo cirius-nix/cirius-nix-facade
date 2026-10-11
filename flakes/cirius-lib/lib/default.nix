@@ -33,10 +33,10 @@ in
   mkPathOpt = inputs: mkPrimOpt lib.types.path inputs;
   mkEnumOpt =
     {
-      enum ? [ ],
+      values ? [ ],
       ...
     }@inputs:
-    mkPrimOpt (lib.types.enum acceptedList) inputs;
+    mkPrimOpt (lib.types.enum values) inputs;
   mkListOpt =
     {
       ofType ? lib.types.anything,
