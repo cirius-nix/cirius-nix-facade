@@ -35,13 +35,13 @@
           config.builtPackages = map (appId: {
             inherit appId;
             origin = name;
-          }) args.packages;
+          }) args.config.packages;
         }
       );
     in
     {
       flatpak = {
-        packages = cnix-lib.mkAttrsOpt {
+        remotePackages = cnix-lib.mkAttrsOpt {
           ofType = remotePackageType;
           default = { };
           description = "A set of remote repositories and their packages to be installed.";
@@ -55,9 +55,9 @@
       remotes = lib.mapAttrsToList (name: value: {
         inherit name;
         inherit (value) location;
-      }) flatpak.packages;
+      }) flatpak.remotePackages;
 
-      packages = lib.concatMap (remote: remote.builtPackages) (lib.attrValues flatpak.packages);
+      packages = lib.concatMap (remote: remote.builtPackages) (lib.attrValues flatpak.remotePackages);
     in
     lib.mkMerge [
       (lib.mkIf flatpak.enable {
@@ -83,7 +83,7 @@
 
       # register default options
       (lib.mkIf flatpak.enable {
-        ${namespace}.package-manager.flatpak.packages.flathub-beta = {
+        ${namespace}.package-manager.flatpak.remotePackages.flathub = {
           location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";
           packages = [ ];
         };
