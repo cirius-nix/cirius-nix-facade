@@ -66,6 +66,7 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
+        home.sessionVariables."EDITOR" = "nvim";
         programs.nixvim.extraPackages = with pkgs; [
           fd
           ripgrep
