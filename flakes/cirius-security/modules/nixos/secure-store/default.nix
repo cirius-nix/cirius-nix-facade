@@ -50,6 +50,10 @@
             assertion = settings.luksDevicePath != null;
             message = "The LUKS device path must be specified when secure store is enabled.";
           }
+          {
+            assertion = settings.mountPoint.fsType != null;
+            message = "The filesystem type for the secure store must be specified.";
+          }
         ];
         # Register the LUKS device with the initrd
         boot.initrd.luks.devices.${settings.name} = {
