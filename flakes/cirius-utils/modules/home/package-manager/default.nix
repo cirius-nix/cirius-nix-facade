@@ -61,7 +61,7 @@
     in
     lib.mkMerge [
       (lib.mkIf flatpak.enable {
-        home.packages = with pkgs; [ flatpak ];
+        home.packages = [ pkgs.flatpak ];
         services.flatpak = {
           inherit remotes packages;
           update.auto = {
