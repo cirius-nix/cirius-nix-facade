@@ -38,50 +38,23 @@
       };
       hasLevel = level: lib.hasAttr level levels && (levels.${level} <= levels.${variant});
 
-      withflatpakOrigin =
-        list: origin:
-        lib.map (appId: {
-          inherit origin appId;
-        }) list;
-
-      withflathubOrigin = list: withflatpakOrigin list "flathub";
     in
     lib.mkMerge [
+      (
+        if config.cnix-utils.package-manager.flatpak.enable then
+          {
+            cnix-utils.package-manager.flatpak.packages.flathub.packages = [ "eu.betterbird.Betterbird" ];
+          }
+        else
+          { home.packages = with pkgs; [ thunderbird ]; }
+      )
       (lib.mkIf enable {
-        services.flatpak = {
-          enable = true;
-          update.auto = {
-            enable = true;
-            onCalendar = "weekly";
-          };
-          overrides.settings = {
-            global = {
-              Context.sockets = [
-                "wayland"
-                "!x11"
-                "!fallback-x11"
-              ];
-              Environment = {
-                XCURSOR_PATH = "/run/host/user-share/icons:/run/host/share/icons";
-              };
-            };
-          };
-          remotes = [
-            {
-              name = "flathub-beta";
-              location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";
-            }
-          ];
-          packages = withflathubOrigin [ "eu.betterbird.Betterbird" ];
-        };
-
         home.packages = with pkgs; [
           onlyoffice-desktopeditors
           pdfarranger
           poppler-utils
           calibre-no-speech
           teams-for-linux
-          flatpak
         ];
         programs.obsidian = {
           enable = true;

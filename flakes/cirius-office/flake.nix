@@ -11,7 +11,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    nix-flatpak.url = "github:gmodena/nix-flatpak";
+    cirius-utils = {
+      url = "github:cirius-nix/cirius-nix-facade/main?dir=flakes/cirius-utils";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -37,6 +40,7 @@
 
         home.modules = with inputs; [
           nix-flatpak.homeManagerModules.nix-flatpak
+          cirius-utils.homeModules.default
         ];
       };
     in
