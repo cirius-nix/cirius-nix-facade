@@ -10,7 +10,7 @@
   imports = [
     (lib.mkAliasOptionModule
       [ namespace "package-manager" "flatpak" "enable" ]
-      [ "service" "flatpak" "enable" ]
+      [ "services" "flatpak" "enable" ]
     )
   ];
   options.${namespace}.package-manager =
