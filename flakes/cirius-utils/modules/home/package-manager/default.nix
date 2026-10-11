@@ -8,58 +8,83 @@
 {
   imports = [
     (lib.mkAliasOptionModule
-      [
-        namespace
-        "package-manager"
-        "flatpak"
-        "packages"
-      ]
-      [
-        "services"
-        "flatpak"
-        "packages"
-      ]
-    )
-    (lib.mkAliasOptionModule
-      [
-        namespace
-        "package-manager"
-        "flatpak"
-        "settings"
-        "remotes"
-      ]
-      [
-        "services"
-        "flatpak"
-        "remotes"
-      ]
+      [ namespace "package-manager" "flatpak" "enable" ]
+      [ "service" "flatpak" "enable" ]
     )
   ];
-  options.${namespace}.package-manager = {
-    flatpak = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Enable Flatpak support.";
+  options.${namespace}.package-manager =
+    let
+      inherit (lib) cnix-lib;
+      remotePackageType = lib.types.submodule (
+        { name, ... }@args:
+        {
+          options.location = cnix-lib.mkStrOpt {
+            description = "The URL of the remote repository.";
+          };
+          packages = cnix-lib.mkListOpt {
+            ofType = lib.types.str;
+            default = [ ];
+            description = "A list of package IDs to be installed from the remote repository.";
+          };
+          builtPackages = cnix-lib.mkListOpt {
+            ofType = with lib.types; attrsOf str;
+            readOnly = true;
+            description = "A list of package IDs to be built from the remote repository.";
+          };
+          config.builtPackages = map (appId: {
+            inherit appId;
+            origin = name;
+          }) args.packages;
+        }
+      );
+    in
+    {
+      flatpak = {
+        packages = cnix-lib.mkAttrsOpt {
+          ofType = remotePackageType;
+          default = { };
+          description = "A set of remote repositories and their packages to be installed.";
+        };
       };
-      settings = { };
     };
-  };
 
   config =
     let
       inherit (config.${namespace}.package-manager) flatpak;
+      remotes = lib.mapAttrsToList (name: value: {
+        inherit name;
+        inherit (value) location;
+      }) flatpak.packages;
+
+      packages = lib.concatMap (remote: remote.builtPackages) (lib.attrValues flatpak.packages);
     in
     lib.mkMerge [
       (lib.mkIf flatpak.enable {
+        home.packages = with pkgs; [ flatpak ];
         services.flatpak = {
-          enable = true;
-          remotes = [
-            {
-              name = "flathub-beta";
-              location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";
-            }
-          ];
+          inherit remotes packages;
+          update.auto = {
+            enable = true;
+            onCalendar = "weekly";
+          };
+          overrides.settings = {
+            global = {
+              Context.sockets = [
+                "wayland"
+                "!x11"
+                "!fallback-x11"
+              ];
+              Environment.XCURSOR_PATH = "/run/host/user-share/icons:/run/host/share/icons";
+            };
+          };
+        };
+      })
+
+      # register default options
+      (lib.mkIf flatpak.enable {
+        ${namespace}.package-manager.flatpak.packages.flathub-beta = {
+          location = "https://flathub.org/beta-repo/flathub-beta.flatpakrepo";
+          packages = [ ];
         };
       })
     ];

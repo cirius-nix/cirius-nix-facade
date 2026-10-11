@@ -9,13 +9,16 @@
 {
   imports =
     (with inputs; [ ]) ++ (builtins.attrValues (removeAttrs inputs.self.nixosModules [ "default" ]));
-  options.${namespace} = {
-    unlockKDEWalletByLUKS = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Whether to unlock the wallet by LUKS.";
+  options.${namespace} =
+    let
+      inherit (lib) cnix-lib;
+    in
+    {
+      unlockKDEWalletByLUKS = cnix-lib.mkBoolOpt {
+        default = false;
+        description = "Whether to unlock the KDE Wallet by LUKS.";
+      };
     };
-  };
 
   config =
     let

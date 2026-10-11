@@ -27,6 +27,11 @@
         home-manager.follows = "home-manager";
       };
     };
+
+    cirius-lib = {
+      url = "github:cirius-nix/cirius-nix-facade/main?dir=flakes/cirius-lib";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
