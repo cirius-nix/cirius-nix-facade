@@ -33,6 +33,10 @@
                 default = [ ];
                 description = "Extra config for the host.";
               };
+              options.proxyExtraConfig = cnix-lib.mkPrimOpt lib.types.lines {
+                default = [ ];
+                description = "Extra config for the reverse proxy.";
+              };
             });
           default = { };
           description = "Hostnames for the system.";
@@ -70,8 +74,11 @@
               site:
               lib.nameValuePair site.localDomain {
                 extraConfig = ''
-                  reverse_proxy ${site.upstream}
                   ${site.extraConfig}
+
+                  reverse_proxy ${site.upstream} {
+                    ${site.proxyExtraConfig}
+                  }
                 '';
               };
 

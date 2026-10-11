@@ -13,6 +13,11 @@
       description = "Enable streaming services.";
     };
     settings = {
+      port = lib.mkOption {
+        type = lib.types.int;
+        default = 47989;
+        description = "Port for the stream service.";
+      };
       displayID = lib.mkOption {
         type = lib.types.str;
         default = "stream";
@@ -39,6 +44,7 @@
           openFirewall = true;
           capSysAdmin = true;
           settings = {
+            port = settings.port;
             capture = "kms";
             encoder = "nvenc";
             hevc_mode = 0;
