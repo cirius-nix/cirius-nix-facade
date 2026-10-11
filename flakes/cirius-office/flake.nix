@@ -10,6 +10,8 @@
       url = "github:snowfallorg/lib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
   outputs =
@@ -32,6 +34,10 @@
         channels-config = {
           allowUnfree = true;
         };
+
+        home.modules = with inputs; [
+          nix-flatpak.homeManagerModules.nix-flatpak
+        ];
       };
     in
     outputs;
