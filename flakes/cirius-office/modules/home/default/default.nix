@@ -7,10 +7,6 @@
   ...
 }:
 {
-  imports = with inputs; [
-    nix-flatpak.homeManagerModules.nix-flatpak
-  ];
-
   options.${namespace} = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -40,14 +36,21 @@
 
     in
     lib.mkMerge [
-      (
-        if config.cnix-utils.package-manager.flatpak.enable then
+      (lib.mkIf config.services.flatpak.enable {
+        services.flatpak.packages = [
           {
-            cnix-utils.package-manager.flatpak.packages.flathub.packages = [ "eu.betterbird.Betterbird" ];
+            origin = "flathub";
+            appId = "eu.betterbird.Betterbird";
           }
-        else
-          { home.packages = with pkgs; [ thunderbird ]; }
-      )
+        ];
+      })
+
+      (lib.mkIf (config.services.flatpak.enable == false) {
+        home.packages = with pkgs; [
+          thunderbird
+        ];
+      })
+
       (lib.mkIf enable {
         home.packages = with pkgs; [
           onlyoffice-desktopeditors
