@@ -15,6 +15,11 @@
     fcitx5-lotus = {
       url = "github:LotusInputMethod/fcitx5-lotus";
     };
+
+    cirius-lib = {
+      url = "github:cirius-nix/cirius-nix-facade/main?dir=flakes/cirius-lib";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =

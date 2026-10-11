@@ -5,13 +5,16 @@
   ...
 }:
 {
-  options.${namespace} = {
-    containerRegistry = lib.mkOption {
-      type = lib.types.str;
-      default = "docker.io";
-      description = "The default container registry to be used for unqualified image names.";
+  options.${namespace} =
+    let
+      inherit (lib) cnix-lib;
+    in
+    {
+      containerRegistry = cnix-lib.mkStrOpt {
+        default = "docker.io";
+        description = "The container registry to be used for unqualified image names.";
+      };
     };
-  };
   config =
     let
       inherit (config.${namespace}) containerRegistry;

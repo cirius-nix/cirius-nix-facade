@@ -6,30 +6,33 @@
   ...
 }:
 {
-  options.${namespace}.desktop-environment = {
-    use = lib.mkOption {
-      type = lib.types.enum [
-        "unset"
-        "kde"
-        "gnome"
-      ];
-      default = "unset";
-      description = "The desktop environment to be managed.";
-    };
-
-    wallpaper = {
-      light = lib.mkOption {
-        type = with lib.types; nullOr path;
-        default = null;
-        description = "The wallpaper to be used in light mode.";
+  options.${namespace}.desktop-environment =
+    let
+      inherit (lib) cnix-lib;
+    in
+    {
+      use = cnix-lib.mkEnumOpt {
+        values = [
+          "unset"
+          "kde"
+          "gnome"
+        ];
+        default = "unset";
+        description = "The desktop environment to be managed.";
       };
-      dark = lib.mkOption {
-        type = with lib.types; nullOr path;
-        default = null;
-        description = "The wallpaper to be used in dark mode.";
+      wallpaper = {
+        light = cnix-lib.mkPathOpt {
+          default = null;
+          nullable = true;
+          description = "The wallpaper to be used in light mode.";
+        };
+        dark = cnix-lib.mkPathOpt {
+          default = null;
+          nullable = true;
+          description = "The wallpaper to be used in dark mode.";
+        };
       };
     };
-  };
 
   config =
     let

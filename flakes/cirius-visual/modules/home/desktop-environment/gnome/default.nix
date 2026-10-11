@@ -6,27 +6,28 @@
   ...
 }:
 {
-  options.${namespace}.desktop-environment.gnome = {
-    extensions = lib.mkOption {
-      type =
-        with lib.types;
-        listOf (submodule {
+  options.${namespace}.desktop-environment.gnome =
+    let
+      inherit (lib) cnix-lib;
+    in
+    {
+      extensions = cnix-lib.mkListOpt {
+        ofType = lib.types.submodule {
           options = {
-            package = lib.mkOption {
-              type = lib.types.package;
+            package = cnix-lib.mkPackageOpt {
               description = "The package name of the GNOME extension to be installed.";
             };
-            settings = lib.mkOption {
-              type = with lib.types; attrsOf anything;
+            settings = cnix-lib.mkAttrsOpt {
+              ofType = lib.types.anything;
               default = { };
               description = "A set of settings to be applied to the GNOME extension.";
             };
           };
-        });
-      default = [ ];
-      description = "A list of GNOME extensions to be installed and configured.";
+        };
+        default = [ ];
+        description = "A list of GNOME extensions to be installed and configured.";
+      };
     };
-  };
 
   config =
     let

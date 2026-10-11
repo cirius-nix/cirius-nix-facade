@@ -6,86 +6,79 @@
   ...
 }:
 {
-  options.${namespace}.desktop-environment.kde = {
-    themeSwitcher = {
-      enable = lib.mkOption {
-        type = with lib.types; bool;
-        default = false;
-        description = "Whether to enable the KDE theme switcher script.";
+  options.${namespace}.desktop-environment.kde =
+    let
+      inherit (lib) cnix-lib;
+    in
+    {
+      themeSwitcher = {
+        enable = cnix-lib.mkBoolOpt { description = "Enable the KDE theme switcher."; };
+        settings =
+          let
+            themeConfigModule = lib.types.submodule {
+              options.color = cnix-lib.mkStrOpt {
+                default = "KlassyLight";
+                description = "The color scheme to be used in KDE Plasma configuration.";
+              };
+              options.plasma = cnix-lib.mkStrOpt {
+                default = "cirius-visual-light";
+                description = "The plasma theme to be used in KDE Plasma configuration.";
+              };
+              options.icon = cnix-lib.mkStrOpt {
+                default = "Tela";
+                description = "The icon theme to be used in KDE Plasma configuration.";
+              };
+              options.wallpaper = cnix-lib.mkPathOpt {
+                default = null;
+                nullable = true;
+                description = "The wallpaper to be used in KDE Plasma configuration.";
+              };
+            };
+          in
+          {
+            mode = cnix-lib.mkEnumOpt {
+              values = [
+                "interval"
+                "scheduled"
+              ];
+              default = "scheduled";
+              description = "The mode of the theme switcher, either 'interval' or 'scheduled'.";
+            };
+            intervalDuration = cnix-lib.mkIntOpt {
+              default = 15;
+              description = "The duration in minutes for the interval mode of the theme switcher.";
+            };
+            sunrise = cnix-lib.mkIntOpt {
+              default = 7;
+              description = "The hour of the day (0-23) when the light theme should be applied.";
+            };
+            sunset = cnix-lib.mkIntOpt {
+              default = 16;
+              description = "The hour of the day (0-23) when the dark theme should be applied.";
+            };
+            themes = {
+              light = cnix-lib.mkPrimOpt themeConfigModule {
+                default = { };
+                description = "The configuration for the light theme in KDE Plasma.";
+              };
+              dark = cnix-lib.mkPrimOpt themeConfigModule {
+                default = { };
+                description = "The configuration for the dark theme in KDE Plasma.";
+              };
+            };
+          };
       };
-      settings =
-        let
-          themeConfigModule = lib.types.submodule {
-            options.color = lib.mkOption {
-              type = with lib.types; str;
-              default = "KlassyLight";
-              description = "The color scheme to be used in KDE Plasma configuration.";
-            };
-            options.plasma = lib.mkOption {
-              type = with lib.types; str;
-              default = "cirius-visual-light";
-              description = "The plasma theme to be used in KDE Plasma configuration.";
-            };
-            options.icon = lib.mkOption {
-              type = with lib.types; str;
-              default = "candy-icons";
-              description = "The icon theme to be used in KDE Plasma configuration.";
-            };
-            options.wallpaper = lib.mkOption {
-              type = with lib.types; nullOr str;
-              default = null;
-              description = "The wallpaper to be used in KDE Plasma configuration.";
-            };
-          };
-        in
-        {
-          mode = lib.mkOption {
-            type = lib.types.enum [
-              "interval"
-              "scheduled"
-            ];
-            default = "scheduled";
-          };
-          intervalDuration = lib.mkOption {
-            type = with lib.types; int;
-            default = 15;
-            description = "The duration in minutes for the interval mode of the theme switcher.";
-          };
-          sunrise = lib.mkOption {
-            type = with lib.types; int;
-            default = 7;
-            description = "The hour of the day (0-23) when the light theme should be applied.";
-          };
-          sunset = lib.mkOption {
-            type = with lib.types; int;
-            default = 16;
-            description = "The hour of the day (0-23) when the dark theme should be applied.";
-          };
-          themes = {
-            light = lib.mkOption {
-              type = themeConfigModule;
-              default = { };
-              description = "The configuration for the light theme in KDE Plasma.";
-            };
-            dark = lib.mkOption {
-              type = themeConfigModule;
-              default = { };
-              description = "The configuration for the dark theme in KDE Plasma.";
-            };
-          };
-        };
+      panelOnMonitors = cnix-lib.mkListOpt {
+        ofType = lib.types.int;
+        default = [ 0 ];
+        description = "List of monitor indices to be used in KDE Plasma configuration.";
+      };
+      favoriteApps = cnix-lib.mkListOpt {
+        ofType = lib.types.str;
+        default = [ ];
+        description = "List of favorite applications to be shown in the KDE Plasma task manager.";
+      };
     };
-    panelOnMonitors = lib.mkOption {
-      type = with lib.types; listOf int;
-      default = [ 0 ];
-      description = "List of monitor names to be used in KDE Plasma configuration.";
-    };
-    favoriteApps = lib.mkOption {
-      type = with lib.types; listOf str;
-      default = [ ];
-      description = "List of favorite applications to be shown in the KDE Plasma task manager.";
-    };
-  };
   config =
     let
       inherit (config.${namespace})

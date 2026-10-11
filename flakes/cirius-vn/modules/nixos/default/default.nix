@@ -10,20 +10,23 @@
     fcitx5-lotus.nixosModules.fcitx5-lotus
   ];
 
-  options.${namespace} = {
-    enable = lib.mkOption {
-      type = with lib.types; bool;
-      default = false;
-      description = "Enable Cirius Nix Vietnam supports";
-    };
-    inputMethod = {
-      users = lib.mkOption {
-        type = with lib.types; listOf str;
-        default = [ ];
-        description = "List of users to enable fcitx5-lotus input method";
+  options.${namespace} =
+    let
+      inherit (lib) cnix-lib;
+    in
+    {
+      enable = cnix-lib.mkBoolOpt {
+        default = false;
+        description = "Enable Cirius Nix Vietnam supports";
+      };
+      inputMethod = {
+        users = cnix-lib.mkListOpt {
+          ofType = lib.types.str;
+          default = [ ];
+          description = "List of users to enable fcitx5-lotus input method";
+        };
       };
     };
-  };
 
   config =
     let

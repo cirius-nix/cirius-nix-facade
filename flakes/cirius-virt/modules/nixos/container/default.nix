@@ -8,49 +8,47 @@
 {
   options.${namespace}.container =
     let
+      inherit (lib) cnix-lib;
       containerSubmoduleType = lib.types.submodule {
-        options.enable = lib.mkOption {
-          type = with lib.types; bool;
+        options.enable = cnix-lib.mkBoolOpt {
           default = false;
-          description = "Whether to enable the container submodule";
+          description = "Whether to enable the container";
         };
-        options.image = lib.mkOption {
-          type = with lib.types; str;
-          description = "Docker image to use for the container";
+        options.image = cnix-lib.mkStrOpt {
+          nullable = true;
+          description = "Container image to use";
         };
-        options.address = lib.mkOption {
-          type = with lib.types; str;
+        options.address = cnix-lib.mkStrOpt {
           description = "Address to bind the container to";
         };
-        options.environmentFiles = lib.mkOption {
-          type = with lib.types; listOf str;
+        options.environmentFiles = cnix-lib.mkListOpt {
+          ofType = with lib.types; str;
+          default = [ ];
           description = "List of environment files to pass to the container";
         };
-        options.dependsOn = lib.mkOption {
-          type = with lib.types; listOf str;
-          description = "List of containers that the container depends on";
+        options.dependsOn = cnix-lib.mkListOpt {
+          ofType = with lib.types; str;
+          default = [ ];
+          description = "List of containers to depend on";
         };
-        options.dataDir = lib.mkOption {
-          type = with lib.types; nullOr str;
-          default = null;
-          description = "Directory to store container data";
+        options.dataDir = cnix-lib.mkStrOpt {
+          nullable = true;
+          description = "Data directory for the container";
         };
-        options.networks = lib.mkOption {
-          type = with lib.types; listOf anything;
+        options.networks = cnix-lib.mkListOpt {
+          ofType = with lib.types; str;
           default = [ ];
           description = "List of networks to connect the container to";
         };
       };
     in
     {
-      enable = lib.mkOption {
-        type = with lib.types; bool;
+      enable = cnix-lib.mkBoolOpt {
         default = false;
-        description = "Enable container supports";
+        description = "Whether to enable the container module";
       };
       containers = {
-        dockhand = lib.mkOption {
-          type = containerSubmoduleType;
+        dockhand = cnix-lib.mkPrimOpt containerSubmoduleType {
           default = {
             enable = false;
             image = "fnsys/dockhand:8d7ce9eb-baseline";
@@ -58,16 +56,15 @@
             environmentFiles = [ ];
             dataDir = "/var/lib/dockhand";
           };
-          description = "Dockhand container configuration";
+          description = "Configuration for the Dockhand container";
         };
         postgres = {
-          enable = lib.mkOption {
-            type = with lib.types; bool;
+          enable = cnix-lib.mkBoolOpt {
             default = false;
-            description = "Enable a PostgreSQL container";
+            description = "Whether to enable the PostgreSQL container module";
           };
-          instances = lib.mkOption {
-            type = with lib.types; attrsOf (containerSubmoduleType);
+          instances = cnix-lib.mkAttrsOpt {
+            ofType = containerSubmoduleType;
             default = { };
             description = "Instances of PostgreSQL containers";
           };

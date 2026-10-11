@@ -8,13 +8,16 @@
 }:
 {
   imports = builtins.attrValues (removeAttrs inputs.self.nixosModules [ "default" ]);
-  options.${namespace} = {
-    useRecommendedPackages = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Whether to use recommended packages for virt-manager and libvirt.";
+  options.${namespace} =
+    let
+      inherit (lib) cnix-lib;
+    in
+    {
+      useRecommendedPackages = cnix-lib.mkBoolOpt {
+        default = false;
+        description = "Whether to use the recommended packages for virtualisation.";
+      };
     };
-  };
   config =
     let
       inherit (config.${namespace}) useRecommendedPackages;

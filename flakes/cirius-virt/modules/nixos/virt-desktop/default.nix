@@ -6,35 +6,35 @@
   ...
 }:
 {
-  options.${namespace}.virt-desktop = {
-    enable = lib.mkOption {
-      type = lib.types.bool;
-      default = false;
-      description = "Enable virtual desktop configuration.";
-    };
-    settings = {
-      dir = lib.mkOption {
-        type = with lib.types; path;
-        description = "Directory for virtual desktop configuration files.";
+  options.${namespace}.virt-desktop =
+    let
+      inherit (lib) cnix-lib;
+    in
+    {
+      enable = cnix-lib.mkBoolOpt {
+        default = false;
+        description = "Whether to enable virtual desktop support.";
       };
-      edids = lib.mkOption {
-        type =
-          with lib.types;
-          attrsOf (submodule {
+      settings = {
+        dir = cnix-lib.mkPathOpt {
+          description = "Directory containing custom EDID files.";
+        };
+        edids = cnix-lib.mkAttrsOpt {
+          ofType = submodule {
             options = {
-              name = lib.mkOption {
-                type = str;
-                description = "Name of the display output.";
+              name = cnix-lib.mkStrOpt {
+                description = "Name of the EDID file.";
               };
-              mode = lib.mkOption {
-                type = str;
-                description = "Display mode for the output.";
+              mode = cnix-lib.mkStrOpt {
+                description = "Display mode for the EDID.";
               };
             };
-          });
+          };
+          default = { };
+          description = "Attributes of EDID files to be used for virtual displays.";
+        };
       };
     };
-  };
   config =
     let
       inherit (config.${namespace}.virt-desktop) enable settings;
