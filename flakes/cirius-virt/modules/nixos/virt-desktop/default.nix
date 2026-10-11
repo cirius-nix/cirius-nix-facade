@@ -20,7 +20,7 @@
           description = "Directory containing custom EDID files.";
         };
         edids = cnix-lib.mkAttrsOpt {
-          ofType = submodule {
+          ofType = lib.types.submodule {
             options = {
               name = cnix-lib.mkStrOpt {
                 description = "Name of the EDID file.";
