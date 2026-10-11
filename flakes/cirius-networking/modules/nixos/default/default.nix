@@ -30,11 +30,11 @@
                 description = "Upstream for the host.";
               };
               options.extraConfig = cnix-lib.mkPrimOpt lib.types.lines {
-                default = [ ];
+                default = "";
                 description = "Extra config for the host.";
               };
               options.proxyExtraConfig = cnix-lib.mkPrimOpt lib.types.lines {
-                default = [ ];
+                default = "";
                 description = "Extra config for the reverse proxy.";
               };
             });
