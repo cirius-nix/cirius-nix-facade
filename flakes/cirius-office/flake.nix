@@ -33,9 +33,7 @@
           allowUnfree = true;
         };
 
-        home.modules = with inputs; [
-          nix-flatpak.homeManagerModules.nix-flatpak
-        ];
+        home.modules = with inputs; [ ];
       };
     in
     outputs;

@@ -36,21 +36,6 @@
 
     in
     lib.mkMerge [
-      (lib.mkIf config.services.flatpak.enable {
-        services.flatpak.packages = [
-          {
-            origin = "flathub";
-            appId = "eu.betterbird.Betterbird";
-          }
-        ];
-      })
-
-      (lib.mkIf (config.services.flatpak.enable == false) {
-        home.packages = with pkgs; [
-          thunderbird
-        ];
-      })
-
       (lib.mkIf enable {
         home.packages = with pkgs; [
           onlyoffice-desktopeditors
@@ -58,6 +43,7 @@
           poppler-utils
           calibre-no-speech
           teams-for-linux
+          thunderbird
         ];
         programs.obsidian = {
           enable = true;
