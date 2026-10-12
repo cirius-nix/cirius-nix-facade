@@ -35,6 +35,7 @@ in
           bruno
           btop
           comma
+          python3
         ];
         programs.fastfetch = {
           enable = true;
