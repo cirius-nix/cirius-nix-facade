@@ -14,6 +14,7 @@ in
     (with inputs; [
       nixvim.homeModules.default
       nix-index-database.homeModules.default
+      codex-desktop-linux.homeManagerModules.default
     ])
     ++ attrValues (removeAttrs inputs.self.homeModules [ "default" ]);
 
