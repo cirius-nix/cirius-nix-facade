@@ -1,4 +1,5 @@
 {
+  inputs,
   config,
   pkgs,
   namespace,
@@ -45,6 +46,13 @@
         home.packages = with pkgs; [
           llm-agents.codex
         ];
+
+        programs.codexDesktopLinux = {
+          enable = true;
+          linuxFeatures = [
+            # "shallow-repository-watches"
+          ];
+        };
       })
 
       (lib.mkIf (ifClient "opencode") {

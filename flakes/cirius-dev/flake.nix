@@ -27,6 +27,10 @@
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    codex-desktop-linux = {
+      url = "github:ilysenko/codex-desktop-linux";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # desktop
     devenv = {
@@ -58,6 +62,7 @@
 
         homes.modules = with inputs; [
           nixvim.homeModules.nixvim
+          codex-desktop-linux.homeManagerModules.default
           nix-index-database.homeModules.default
         ];
 
