@@ -40,15 +40,12 @@
 
         systems.modules = {
           nixos = with inputs; [
-            sops-nix.nixosModules.sops
           ];
           darwin = with inputs; [
-            sops-nix.darwinModules.sops
           ];
         };
 
         homes.modules = with inputs; [
-          sops-nix.homeModules.sops
         ];
       };
     in
