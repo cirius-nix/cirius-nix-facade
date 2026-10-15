@@ -15,6 +15,7 @@ in
       nixvim.homeModules.default
       nix-index-database.homeModules.default
       codex-desktop-linux.homeManagerModules.default
+      deepseek-harness.homeModules.default
     ])
     ++ attrValues (removeAttrs inputs.self.homeModules [ "default" ]);
 

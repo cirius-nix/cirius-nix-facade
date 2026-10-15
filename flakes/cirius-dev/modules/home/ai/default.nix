@@ -62,6 +62,22 @@
         ];
       })
 
+      # https://moraxyc.github.io/deepseek-harness.nix
+      (lib.mkIf (ifClient "deepseek") {
+        programs.dsh = {
+          enable = true;
+          profiles = {
+            tui.bundles = [ pkgs.dsh.bundles.tui ];
+            desktop.bundles = [ pkgs.dsh.bundles.notification ];
+          };
+          desktop = {
+            enable = true;
+            profile = config.programs.dsh.profiles.desktop.materializedName;
+          };
+          defaultProfile = config.programs.dsh.profiles.tui.materializedName;
+        };
+      })
+
       (lib.mkIf (ifClient "multica") {
         home.packages = with pkgs; [
           llm-agents.multica

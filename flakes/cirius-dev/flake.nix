@@ -31,6 +31,10 @@
       url = "github:ilysenko/codex-desktop-linux";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    deepseek-harness = {
+      url = "github:moraxyc/deepseek-harness.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # desktop
     devenv = {
@@ -64,6 +68,7 @@
           nixvim.homeModules.nixvim
           codex-desktop-linux.homeManagerModules.default
           nix-index-database.homeModules.default
+          deepseek-harness.homeModules.default
         ];
 
         nixos.modules = with inputs; [
