@@ -77,7 +77,7 @@
             };
             desktop = {
               enable = true;
-              package = lib.mkPackageOption pkg "dsh-desktop-official" { };
+              package = inputs.deepseek-harness.packages.${pkgs.stdenv.hostPlatform.system}.dsh-desktop;
               profile = config.programs.dsh.profiles.desktop.materializedName;
             };
             defaultProfile = config.programs.dsh.profiles.tui.materializedName;
