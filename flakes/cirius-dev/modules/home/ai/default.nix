@@ -64,18 +64,23 @@
 
       # https://moraxyc.github.io/deepseek-harness.nix
       (lib.mkIf (ifClient "deepseek") {
-        programs.dsh = {
-          enable = true;
-          profiles = {
-            tui.bundles = [ pkgs.dsh.bundles.tui ];
-            desktop.bundles = [ pkgs.dsh.bundles.notification ];
-          };
-          desktop = {
+        programs.dsh =
+          let
+            pkg = inputs.deepseek-harness.packages.${pkgs.system}.dsh;
+          in
+          {
             enable = true;
-            profile = config.programs.dsh.profiles.desktop.materializedName;
+            package = pkg;
+            profiles = {
+              tui.bundles = [ pkg.bundles.tui ];
+              desktop.bundles = [ pkg.bundles.notification ];
+            };
+            desktop = {
+              enable = true;
+              profile = config.programs.dsh.profiles.desktop.materializedName;
+            };
+            defaultProfile = config.programs.dsh.profiles.tui.materializedName;
           };
-          defaultProfile = config.programs.dsh.profiles.tui.materializedName;
-        };
       })
 
       (lib.mkIf (ifClient "multica") {
