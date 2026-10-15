@@ -66,7 +66,7 @@
       (lib.mkIf (ifClient "deepseek") {
         programs.dsh =
           let
-            pkg = inputs.deepseek-harness.packages.${pkgs.system}.dsh;
+            pkg = inputs.deepseek-harness.packages.${pkgs.stdenv.hostPlatform.system}.dsh;
           in
           {
             enable = true;
@@ -77,6 +77,7 @@
             };
             desktop = {
               enable = true;
+              package = lib.mkPackageOption pkg "dsh-desktop-official" { };
               profile = config.programs.dsh.profiles.desktop.materializedName;
             };
             defaultProfile = config.programs.dsh.profiles.tui.materializedName;
