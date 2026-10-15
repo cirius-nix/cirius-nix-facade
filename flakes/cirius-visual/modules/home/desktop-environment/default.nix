@@ -90,6 +90,8 @@
             opts.termguicolors = true;
           };
           ghostty.settings = {
+            font = config.stylix.fonts.monospace.name;
+            font-size = config.stylix.fonts.sizes.terminal;
             theme = "light:Atom One Light,dark:Atom One Dark";
             minimum-contrast = 1;
             window-theme = "system";
