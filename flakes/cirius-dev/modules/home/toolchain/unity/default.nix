@@ -34,7 +34,7 @@
       })
 
       (lib.mkIf (enable && code.enable) {
-        programs.vscode.extensions = with pkgs.vscode-extensions; [
+        programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
           ms-dotnettools.csharp
           ms-dotnettools.csdevkit
           visualstudiotoolsforunity.vstuc
