@@ -31,7 +31,7 @@ buildNpmPackage {
     ];
   };
 
-  npmDepsHash = "sha256-Ba7cusdLTR/YLqPoUhALq/WxPYOeBVZSj8QmjED3oH4=";
+  npmDepsHash = "sha256-iKEkU6E1NdO9FdiKmmzaTkUUmWlQkixw+eJiVCK1vn4=";
 
   # The v1 fetcher's cacache emulation cannot serve every entry back to
   # `npm ci` here: it fetches all 347 tarballs, but npm still reports
