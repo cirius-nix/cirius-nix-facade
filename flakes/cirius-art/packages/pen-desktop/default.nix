@@ -7,7 +7,7 @@
 }:
 let
   pname = "pen-desktop";
-  version = "1.2.15";
+  version = "1.2.18";
 
   # www.pen.dev/download only serves a rolling "latest" behind a short-lived
   # signed redirect. electron-builder's app-update.yml names the real release
@@ -22,7 +22,7 @@ let
     url =
       "https://github.com/highagency/pen-desktop-releases/releases/download/"
       + "v${version}/Pen-${version}-linux-x86_64.AppImage";
-    hash = "sha256-JyifelWrg0Uxr+Gbe/bMTcIiwfDmrEn3KoURR+8PPqk=";
+    hash = "sha256-sm+TRIodw6dPcFauZQ6VoEps5wtDAz3tNjzsPeiNrJM=";
   };
 
   contents = appimageTools.extract { inherit pname version src; };
