@@ -1,0 +1,16 @@
+version: "3"
+
+tasks:
+  default:
+    desc: "List all tasks"
+    cmds:
+      - task -l
+  update-flakes:
+    desc: "Update all flakes"
+    cmds:
+      - |
+        for dir in flakes/*/; do
+          [ -f "${dir}flake.nix" ] || continue
+          echo "Updating ${dir}"
+          nix flake update --flake "./$dir" || exit 1
+        done
