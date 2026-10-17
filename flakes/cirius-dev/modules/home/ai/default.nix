@@ -55,6 +55,17 @@
         };
       })
 
+      (lib.mkIf (ifClient "gemini") {
+        programs.antigravity = {
+          enable = true;
+          package = pkgs.antigravity-fhs;
+        };
+        programs.antigravity-cli = {
+          enable = true;
+          package = pkgs.llm-agents.antigravity-cli;
+        };
+      })
+
       (lib.mkIf (ifClient "opencode") {
         home.packages = with pkgs; [
           llm-agents.opencode2
