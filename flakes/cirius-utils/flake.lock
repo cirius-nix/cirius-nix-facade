@@ -8,14 +8,20 @@
         "snowfall-lib": "snowfall-lib"
       },
       "locked": {
-        "lastModified": 1,
-        "narHash": "sha256-ORmQHfyYsEMk2GvYILpgo+DbR48puPNVAr+SLFCvuT4=",
-        "path": "../cirius-lib",
-        "type": "path"
+        "dir": "flakes/cirius-lib",
+        "lastModified": 1792247690,
+        "narHash": "sha256-P8/qa4aOfuB5LPeN7k0XW4mf/d2WGoIqK7XtsaWIRbQ=",
+        "owner": "cirius-nix",
+        "repo": "cirius-nix-facade",
+        "rev": "22179682ce056eb0d32a2578b5bab83e32077ccc",
+        "type": "github"
       },
       "original": {
-        "path": "../cirius-lib",
-        "type": "path"
+        "dir": "flakes/cirius-lib",
+        "owner": "cirius-nix",
+        "ref": "main",
+        "repo": "cirius-nix-facade",
+        "type": "github"
       }
     },
     "flake-compat": {
