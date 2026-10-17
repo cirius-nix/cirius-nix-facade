@@ -12,11 +12,6 @@
     };
 
     cirius-lib = {
-      url = "github:hieutran";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    cirius-lib = {
       url = "github:cirius-nix/cirius-nix-facade/main?dir=flakes/cirius-lib";
       inputs.nixpkgs.follows = "nixpkgs";
     };
