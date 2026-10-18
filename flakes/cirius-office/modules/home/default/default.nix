@@ -54,7 +54,6 @@
       (lib.mkIf (enable && (hasLevel "technical")) {
         home.packages = with pkgs; [
           pandoc
-          texliveMedium
           mermaid-cli
           typst
           drawio

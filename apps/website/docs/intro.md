@@ -1,47 +1,57 @@
 ---
 title: Introduction
 sidebar_position: 1
-description: What the Cirius Nix Facade is and why it has no root flake.nix.
+description: A small, opinionated NixOS facade that replaces piles of infra-as-code with the settings that actually matter.
 ---
 
 # Introduction
 
-The **Cirius Nix Facade** is a personal [Nix](https://nixos.org/) configuration
-split into small, composable subflakes — one per concern. There is no root
-`flake.nix`: this repository is a *facade* whose subflakes are consumed
-individually by the actual host configurations (NixOS, nix-darwin, and
-home-manager).
+Configuring Linux as infrastructure-as-code usually starts simple and ends up
+complicated: a few machines, a handful of concerns, and a growing pile of
+hand-written modules to hold it together. **Cirius Nix Facade** is the opposite
+approach — it manages the core, valuable settings that keep Linux running well,
+and leaves the rest to NixOS and home-manager defaults.
 
-## Why a facade?
+It is a personal [Nix](https://nixos.org/) configuration split into small,
+composable subflakes — one per concern — that a host configuration picks up. The
+goal is not to configure everything. The goal is to configure the right things,
+once.
 
-A single monolithic flake couples unrelated concerns: a change to your gaming
-overlay re-evaluates your security modules, and every host pulls in every input.
-Splitting the configuration into subflakes keeps each concern:
+## What it gives you
 
-- **Independently consumable** — a host pulls in only the flakes it needs, using
-  the `?dir=` query parameter to point at a subdirectory.
-- **Independently lockable** — each subflake has its own `flake.lock`, so
-  updating dev tooling cannot move your desktop stack.
-- **Independently buildable** — a broken concern fails its own evaluation rather
-  than every host that consumes the facade.
+- **Less setup per machine.** A new host enables a handful of `cnix-*` options
+  instead of re-deriving the same shell, git, editor, and security setup from
+  scratch.
+- **Less infra-as-code to own.** Roughly a hundred namespaced options across
+  eleven subflakes — a surface small enough to read in one sitting, and to
+  actually keep working.
+- **NixOS defaults underneath.** Modules configure the upstream home-manager and
+  NixOS options you would otherwise have written by hand, so anything not covered
+  is still normal NixOS you can add yourself.
+- **A foundation, not a framework.** Each subflake is a plain flake built on
+  [snowfall-lib](https://github.com/snowfallorg/lib) conventions, with no custom
+  evaluator and no hidden layer between you and nixpkgs.
 
-The cost is one extra layer of indirection, and sharing code between flakes needs
-an explicit dependency — which is what `cirius-lib` exists for.
+## Simple by default, powerful when needed
 
-## How subflakes are built
+Every module is off until you turn it on, and every option has a working default.
+Enabling a concern is one line:
 
-Every subflake is built with
-[snowfall-lib](https://github.com/snowfallorg/lib) `mkLib` / `mkFlake`. That means
-packages, modules, overlays, and library functions are discovered from a
-conventional directory layout and exposed under a per-flake namespace — `cnix-dev`
-for the `cirius-dev` flake, for example.
+```nix
+cnix-dev.git.enable = true;
+```
 
-Because discovery is convention-based, adding a module is usually a matter of
-dropping a file in the right place. See
-[Adding a flake or module](./adding-a-flake-or-module.md).
+When the default is not what you want, the module gets out of the way. Options
+are ordinary NixOS options, so they compose with everything else you already
+write: override a value with `lib.mkForce`, add extra packages, or drop to plain
+`programs.*` configuration alongside the module. See
+[Design](./design.md) for how that layering works.
 
-## Next steps
+## Where to start
 
-- [Getting started](./getting-started.md) — pull a subflake into your own config.
-- [Layout](./layout.md) — the directory conventions every subflake follows.
+- [Getting started](./getting-started.md) — consume a subflake and enable your
+  first module.
+- [Design](./design.md) — the principles behind the facade and its conventions.
+- [Flakes](./flakes/index.md) — every subflake, its modules, and a full option
+  reference for each.
 - [Development](./development.md) — the dev shell for working on this repository.

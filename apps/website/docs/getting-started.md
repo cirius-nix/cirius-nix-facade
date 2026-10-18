@@ -1,13 +1,15 @@
 ---
 title: Getting started
 sidebar_position: 2
-description: Consume a Cirius Nix subflake from your own NixOS, nix-darwin, or home-manager configuration.
+description: Consume a subflake, enable a module, and override anything it sets.
 ---
 
 # Getting started
 
-Subflakes are referenced directly by their directory with the `?dir=` query
-parameter. To pull in the dev flake, add it as an input:
+## 1. Add the subflake as an input
+
+Subflakes are referenced directly by directory with the `?dir=` query parameter.
+To pull in the dev flake, add it as an input:
 
 ```nix
 {
@@ -21,11 +23,24 @@ parameter. To pull in the dev flake, add it as an input:
 Always set `inputs.nixpkgs.follows = "nixpkgs"` so the subflake shares your
 host's nixpkgs instead of pinning a second copy.
 
-## Enabling modules
+## 2. Import the aggregate module
 
-Modules namespace their options under the flake's namespace and guard them behind
-an `enable` flag, so they never collide with upstream options. Enabling one is a
-single line:
+Each subflake's `modules/<class>/default` aggregate imports every module in that
+class, which is what makes the whole option surface available with a single
+import:
+
+```nix
+{ inputs, ... }:
+{
+  imports = [ inputs.cirius-dev.homeModules.default ];
+}
+```
+
+At this point nothing has changed about your system: every module is still off.
+
+## 3. Enable what you need
+
+Each concern is one line. Nothing else in the module applies until you set it:
 
 ```nix
 { inputs, ... }:
@@ -33,14 +48,37 @@ single line:
   imports = [ inputs.cirius-dev.homeModules.default ];
 
   cnix-dev.git.enable = true;
+  cnix-dev.shell.enable = true;
+  cnix-dev.term.enable = true;
 }
 ```
 
-## Sharing code between flakes
+For NixOS-level modules, the same pattern applies to the `nixosModules`
+aggregate — see the per-flake pages under [Flakes](./flakes/index.md) for which
+class a module belongs to and what its `enable` option is called.
 
-The flakes share helpers through `cirius-lib`, which exposes option builders such
-as `mkStrOpt`, `mkBoolOpt`, and `mkPackageOpt`, plus `failWhen` assertion helpers.
-Consume it the same way as any other subflake:
+## Overriding what a module sets
+
+Modules configure ordinary upstream options, so you are never locked in. To
+change a value a module picks, override it at your own level:
+
+```nix
+{
+  cnix-dev.git.enable = true;
+
+  # the module's own value, replaced
+  programs.git.userEmail = lib.mkForce "me@example.com";
+}
+```
+
+Anything the facade does not cover is still plain home-manager and NixOS
+configuration — add it next to the module rather than working around it. That is
+the intended shape: modules handle the setup, you keep writing normal Nix.
+
+## Sharing helpers between your config and the flakes
+
+`cirius-lib` exposes the same option builders the subflakes use, if you write
+modules of your own:
 
 ```nix
 { inputs, ... }:
@@ -53,4 +91,5 @@ Consume it the same way as any other subflake:
 }
 ```
 
-Library functions are then available as `inputs.cirius-lib.lib`.
+Library functions are then available as `inputs.cirius-lib.lib`. See
+[cirius-lib](./flakes/cirius-lib.md).
