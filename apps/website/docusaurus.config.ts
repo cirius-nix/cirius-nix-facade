@@ -6,7 +6,8 @@ const githubUrl = 'https://github.com/cirius-nix/cirius-nix-facade';
 
 const config: Config = {
   title: 'Cirius Nix Facade',
-  tagline: 'Small, composable Nix flakes — one per concern',
+  tagline:
+    'Simple by default, powerful when needed — the core settings that keep Linux running well',
   favicon: 'img/favicon.svg',
 
   future: {
@@ -83,8 +84,8 @@ const config: Config = {
               to: '/docs/getting-started',
             },
             {
-              label: 'Layout',
-              to: '/docs/layout',
+              label: 'Design',
+              to: '/docs/design',
             },
             {
               label: 'Development',
@@ -96,20 +97,24 @@ const config: Config = {
           title: 'Flakes',
           items: [
             {
-              label: 'cirius-dev',
-              href: `${githubUrl}/tree/main/flakes/cirius-dev`,
+              label: 'All flakes',
+              to: '/docs/flakes',
             },
             {
-              label: 'cirius-lib',
-              href: `${githubUrl}/tree/main/flakes/cirius-lib`,
+              label: 'cirius-utils',
+              to: '/docs/flakes/cirius-utils',
+            },
+            {
+              label: 'cirius-dev',
+              to: '/docs/flakes/cirius-dev',
             },
             {
               label: 'cirius-security',
-              href: `${githubUrl}/tree/main/flakes/cirius-security`,
+              to: '/docs/flakes/cirius-security',
             },
             {
               label: 'cirius-visual',
-              href: `${githubUrl}/tree/main/flakes/cirius-visual`,
+              to: '/docs/flakes/cirius-visual',
             },
           ],
         },
@@ -121,8 +126,12 @@ const config: Config = {
               href: githubUrl,
             },
             {
-              label: 'Adding a flake or module',
-              to: '/docs/adding-a-flake-or-module',
+              label: 'Extending',
+              to: '/docs/extending',
+            },
+            {
+              label: 'cirius-lib',
+              to: '/docs/flakes/cirius-lib',
             },
           ],
         },

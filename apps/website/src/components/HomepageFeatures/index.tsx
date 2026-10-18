@@ -13,36 +13,37 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'One flake per concern',
-    to: '/docs/intro',
-    linkLabel: 'Why a facade',
+    title: 'Less setup per machine',
+    to: '/docs/getting-started',
+    linkLabel: 'Getting started',
     description: (
       <>
-        Eleven subflakes under <code>flakes/</code> cover dev tooling, security,
-        desktop, networking, gaming, art, and more.
+        A new host enables a handful of <code>cnix-*</code> options instead of
+        re-deriving the same shell, git, editor, and security setup from scratch.
       </>
     ),
   },
   {
-    title: 'Convention over configuration',
-    to: '/docs/layout',
-    linkLabel: 'Directory layout',
+    title: 'Less infra-as-code to own',
+    to: '/docs/design',
+    linkLabel: 'Design',
     description: (
       <>
-        snowfall-lib <code>mkFlake</code> discovers modules, packages, and
-        overlays from a predictable layout, so extending the facade is usually a
-        matter of dropping a file in the right place.
+        Eleven subflakes, around 160 namespaced option paths, and no root{' '}
+        <code>flake.nix</code> — small enough to read in one sitting and keep
+        working.
       </>
     ),
   },
   {
-    title: 'Locked per concern',
-    to: '/docs/development',
-    linkLabel: 'Development',
+    title: 'Simple by default, powerful when needed',
+    to: '/docs/flakes',
+    linkLabel: 'Flake reference',
     description: (
       <>
-        Every subflake owns its <code>flake.lock</code>, so updating your dev
-        toolchain never moves your desktop stack.
+        Every module is off until you enable it, and every option has a default.
+        Underneath, they set ordinary NixOS options you can override, extend, or
+        bypass.
       </>
     ),
   },

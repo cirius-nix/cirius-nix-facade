@@ -51,13 +51,15 @@ function UsageSection() {
       <div className="container">
         <div className="row">
           <div className="col col--5">
-            <Heading as="h2">Consume only what you need</Heading>
+            <Heading as="h2">Capture the settings that matter</Heading>
             <p>
               Every subflake is referenced directly by directory with the{' '}
-              <code>?dir=</code> query parameter, so a host pulls in just the
-              concerns it cares about — and locks each one on its own schedule.
+              <code>?dir=</code> query parameter, so a host pulls in only the
+              concerns it needs — and locks each one on its own schedule. What it
+              covers is the core configuration worth keeping; everything else
+              stays plain NixOS and home-manager.
             </p>
-            <Link to="/docs/getting-started">Getting started →</Link>
+            <Link to="/docs/flakes">Browse the flakes →</Link>
           </div>
           <div className="col col--7">
             <CodeBlock language="nix" title="flake.nix">

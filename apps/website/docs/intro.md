@@ -22,9 +22,9 @@ once.
 - **Less setup per machine.** A new host enables a handful of `cnix-*` options
   instead of re-deriving the same shell, git, editor, and security setup from
   scratch.
-- **Less infra-as-code to own.** Roughly a hundred namespaced options across
-  eleven subflakes — a surface small enough to read in one sitting, and to
-  actually keep working.
+- **Less infra-as-code to own.** Around 160 namespaced option paths across eleven
+  subflakes — a surface small enough to read in one sitting, and to actually keep
+  working.
 - **NixOS defaults underneath.** Modules configure the upstream home-manager and
   NixOS options you would otherwise have written by hand, so anything not covered
   is still normal NixOS you can add yourself.
