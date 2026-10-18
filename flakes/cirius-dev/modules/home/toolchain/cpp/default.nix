@@ -89,15 +89,15 @@
             llvm-vs-code-extensions.lldb-dap
           ];
           userSettings = {
-            "clangd.path" = "clangd";
+            "clangd.path" = lib.getExe' pkgs.clang-tools "clangd";
             "clangd.arguments" = [
               "--background-index"
               "--clang-tidy"
               "--completion-style=detailed"
               "--header-insertion=iwyu"
             ];
-            "cmake.cmakePath" = "cmake";
-            "lldb-dap.executable-path" = "lldb-dap";
+            "cmake.cmakePath" = lib.getExe pkgs.cmake;
+            "lldb-dap.executable-path" = lib.getExe' pkgs.lldb "lldb-dap";
           }
           // lib.genAttrs [ "[c]" "[cpp]" "[objective-c]" "[objective-cpp]" "[cuda-cpp]" ] (_: {
             "editor.defaultFormatter" = "llvm-vs-code-extensions.vscode-clangd";

@@ -60,8 +60,8 @@
             hashicorp.hcl
           ];
           userSettings = {
-            "terraform.languageServer.path" = "terraform-ls";
-            "terraform.languageServer.terraform.path" = "terraform";
+            "terraform.languageServer.path" = lib.getExe pkgs.terraform-ls;
+            "terraform.languageServer.terraform.path" = lib.getExe pkgs.terraform;
           }
           // lib.genAttrs [ "[terraform]" "[terraform-vars]" ] (_: {
             "editor.defaultFormatter" = "hashicorp.terraform";

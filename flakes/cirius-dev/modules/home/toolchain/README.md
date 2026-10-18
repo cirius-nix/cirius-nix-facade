@@ -21,11 +21,13 @@ The modules install VS Code extensions in the default profile. Formatting on
 save applies to the configured languages. Workspace settings can override these
 user settings. Neovim uses Conform for formatting and Nixvim for language servers.
 
-Tool commands use executable names from the editor's `PATH`. Start the editor
+Neovim tool commands use executable names from the editor's `PATH`. Start Neovim
 inside the project's `devenv shell` to use project tools. Neovim appends its
-packaged language servers to `PATH` as fallbacks. Oxc uses its extension's project
-and tool discovery; the configuration clears the absolute paths supplied by
-Nixpkgs. Java uses the extension's JDK discovery instead of a fixed Nix store path.
+packaged language servers and helper tools to `PATH` as fallbacks.
+
+VS Code tool settings use absolute paths to the configured Nix packages. Java
+settings use the configured JDK directory. To use a different tool from devenv,
+override the corresponding setting with its absolute path in workspace settings.
 
 An editor that is already running can retain its previous environment. Restart
 the editor from the development shell, or use an editor integration that loads
@@ -37,7 +39,7 @@ change an existing language server's environment.
 | Android | Java and Kotlin language servers; google-java-format and ktlint | Java language support, debugging and tests; Gradle tools; Kotlin syntax |
 | AWS | Terraform language server; Terraform and HCL formatting | HashiCorp Terraform language support and formatting; HCL syntax |
 | C/C++ | clangd; clang-format; CTest adapter | clangd and formatting; CMake tools; LLDB debug adapter |
-| Go | gopls; goimports; Go test adapter | Go extension; gopls, goimports and Delve from the development environment |
+| Go | gopls; goimports; Go test adapter | Go extension; gopls, goimports and Delve from Nix |
 | LaTeX | texlab; latexindent; VimTeX with Zathura | LaTeX Workshop; latexindent; build on save and PDF preview |
 | Markdown | Marksman; markdownlint | Built-in Markdown support; markdownlint and formatting |
 | Nix | nixd; Statix; nixfmt | Nix IDE with nixd and nixfmt |

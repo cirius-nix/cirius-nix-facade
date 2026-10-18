@@ -69,6 +69,8 @@
             mathiasfrohlich.kotlin
           ];
           userSettings = {
+            "java.jdt.ls.java.home" = "${pkgs.jdk21}";
+            "java.import.gradle.java.home" = "${pkgs.jdk21}";
             "[java]" = {
               "editor.defaultFormatter" = "redhat.java";
               "editor.formatOnSave" = true;

@@ -70,6 +70,12 @@
           extensions = [ pkgs.vscode-extensions.golang.go ];
           userSettings = {
             "go.toolsManagement.autoUpdate" = false;
+            "go.alternateTools" = {
+              go = lib.getExe pkgs.go;
+              gopls = lib.getExe pkgs.gopls;
+              dlv = lib.getExe pkgs.delve;
+              goimports = lib.getExe' pkgs.gotools "goimports";
+            };
             "go.formatTool" = "goimports";
             "[go]" = {
               "editor.defaultFormatter" = "golang.go";

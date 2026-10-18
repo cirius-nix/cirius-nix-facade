@@ -95,7 +95,7 @@
             "latex-workshop.latex.autoBuild.run" = "onSave";
             "latex-workshop.latex.outDir" = "%DIR%";
             "latex-workshop.formatting.latex" = "latexindent";
-            "latex-workshop.formatting.latexindent.path" = "latexindent";
+            "latex-workshop.formatting.latexindent.path" = lib.getExe' tex "latexindent";
             "latex-workshop.view.pdf.viewer" = "tab";
           }
           // lib.genAttrs [ "[latex]" "[tex]" "[bibtex]" ] (_: {
