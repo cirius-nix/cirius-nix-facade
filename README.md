@@ -27,6 +27,8 @@ conventional directory layout and exposed under a per-flake namespace (e.g.
 │   ├── cirius-office/
 │   ├── cirius-virt/
 │   └── cirius-vn/
+├── apps/
+│   └── website/               # landing site + docs (Docusaurus)
 ├── devenv.nix                 # dev shell for working on this repo
 ├── devenv.yaml
 └── Taskfile.yml
@@ -109,6 +111,10 @@ task update-flakes
 ```
 
 This walks each `flakes/*/` directory and runs `nix flake update` inside it.
+
+The landing page and documentation live in `apps/website` (Docusaurus, pnpm) and
+are published to GitHub Pages by the `deploy-website` workflow on every push to
+`main` that touches them. See `apps/website/README.md` to run it locally.
 
 ## Adding a flake or module
 

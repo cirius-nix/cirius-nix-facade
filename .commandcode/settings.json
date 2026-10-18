@@ -3,7 +3,12 @@
     "allow": [
       "Shell(nix:*)",
       "Shell(cd /home/cirius/Workspaces/personal/dotfiles/cirius-nix-facade && nix repl --extra-experimental-features 'nix-command flakes' 2>&1 <<'EOF' :lf ./flakes/cirius-security builtins.attrNames outputs EOF)",
-      "Shell(ls -d /home/cirius/.config/ComfyUI* /home/cirius/.local/share/ComfyUI* /home/cirius/ComfyUI* 2>/dev/null; echo \"---\"; find /home/cirius/.config /home/cirius/.local/share -maxdepth 3 -iname \"*comfy*\" 2>/dev/null | head -30)"
+      "Shell(ls -d /home/cirius/.config/ComfyUI* /home/cirius/.local/share/ComfyUI* /home/cirius/ComfyUI* 2>/dev/null; echo \"---\"; find /home/cirius/.config /home/cirius/.local/share -maxdepth 3 -iname \"*comfy*\" 2>/dev/null | head -30)",
+      "Shell(node -v 2>/dev/null; pnpm -v 2>/dev/null; npm -v 2>/dev/null; bun -v 2>/dev/null; echo \"--- latest docusaurus\"; npm view @docusaurus/core version 2>&1 | tail -3)",
+      "Shell(mkdir:*)",
+      "Shell(pnpm:*)",
+      "Shell(npm:*)",
+      "Shell(curl -sL https://raw.githubusercontent.com/facebook/docusaurus/main/packages/create-docusaurus/templates/classic-typescript/package.json 2 >& 1)"
     ],
     "deny": [],
     "defaultMode": "default"
