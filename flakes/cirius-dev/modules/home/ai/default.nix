@@ -40,6 +40,19 @@
           llm-agents.claude-code
           llm-agents.claude-desktop
         ];
+
+        programs.claude-code = {
+          enable = true;
+          package = pkgs.llm-agents.claude-code;
+          mutableSettings = true;
+          settings = {
+            attribution = {
+              commit = "";
+              pr = "";
+              sessionUrl = false;
+            };
+          };
+        };
       })
 
       (lib.mkIf (ifClient "codex") {
