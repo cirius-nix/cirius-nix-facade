@@ -17,19 +17,26 @@
   config =
     let
       inherit (config.${namespace}.toolchain.latex) enable;
-      inherit (config.${namespace}.editor) nvim;
+      inherit (config.${namespace}.editor) code nvim;
+      tex = pkgs.texliveMedium.withPackages (ps: [ ps.latexindent ]);
     in
     lib.mkMerge [
       (lib.mkIf enable {
         home.packages = with pkgs; [
           zathura
-          texliveMedium
+          tex
+          texlab
         ];
       })
 
       (lib.mkIf (enable && nvim.enable) {
         programs.nixvim.plugins.vimtex = {
           enable = true;
+          # Use the development environment before the packaged fallback tools.
+          texlivePackage = null;
+          zathuraPackage = null;
+          xdotoolPackage = null;
+          pstreePackage = null;
           settings = {
             view_method = "zathura";
             compiler_method = "latexmk";
@@ -43,6 +50,12 @@
             };
           };
         };
+        programs.nixvim.extraPackagesAfter = [
+          tex
+          pkgs.zathura
+          pkgs.pstree
+        ]
+        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.xdotool ];
 
         ${namespace}.editor.nvim.settings = {
           formatter = {
@@ -72,6 +85,23 @@
             };
           };
 
+        };
+      })
+
+      (lib.mkIf (enable && code.enable) {
+        programs.vscode.profiles.default = {
+          extensions = [ pkgs.vscode-extensions.james-yu.latex-workshop ];
+          userSettings = {
+            "latex-workshop.latex.autoBuild.run" = "onSave";
+            "latex-workshop.latex.outDir" = "%DIR%";
+            "latex-workshop.formatting.latex" = "latexindent";
+            "latex-workshop.formatting.latexindent.path" = "latexindent";
+            "latex-workshop.view.pdf.viewer" = "tab";
+          }
+          // lib.genAttrs [ "[latex]" "[tex]" "[bibtex]" ] (_: {
+            "editor.defaultFormatter" = "James-Yu.latex-workshop";
+            "editor.formatOnSave" = true;
+          });
         };
       })
     ];

@@ -67,7 +67,7 @@
     lib.mkMerge [
       (lib.mkIf enable {
         home.sessionVariables."EDITOR" = "nvim";
-        programs.nixvim.extraPackages = with pkgs; [
+        programs.nixvim.extraPackagesAfter = with pkgs; [
           fd
           ripgrep
           git
@@ -300,14 +300,10 @@
             autoInstall.enable = false;
             settings = {
               formatters_by_ft = {
-                nix = [ "nixfmt" ];
                 "_" = [
                   "trim_whitespace"
                   "trim_newlines"
                 ];
-              };
-              formatters = {
-                nixfmt.command = "nixfmt";
               };
               default_format_opts = {
                 lsp_format = "never";

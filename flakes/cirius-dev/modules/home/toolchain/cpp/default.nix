@@ -17,7 +17,7 @@
   config =
     let
       inherit (config.${namespace}.toolchain.cpp) enable;
-      inherit (config.${namespace}.editor) nvim;
+      inherit (config.${namespace}.editor) code nvim;
     in
     lib.mkMerge [
       (lib.mkIf enable {
@@ -53,7 +53,7 @@
               packageFallback = true;
               config = {
                 cmd = [
-                  (lib.getExe' pkgs.clang-tools "clangd")
+                  "clangd"
                   "--background-index"
                   "--clang-tidy"
                   "--completion-style=detailed"
@@ -78,6 +78,31 @@
               };
             };
           };
+        };
+      })
+
+      (lib.mkIf (enable && code.enable) {
+        programs.vscode.profiles.default = {
+          extensions = with pkgs.vscode-extensions; [
+            llvm-vs-code-extensions.vscode-clangd
+            ms-vscode.cmake-tools
+            llvm-vs-code-extensions.lldb-dap
+          ];
+          userSettings = {
+            "clangd.path" = "clangd";
+            "clangd.arguments" = [
+              "--background-index"
+              "--clang-tidy"
+              "--completion-style=detailed"
+              "--header-insertion=iwyu"
+            ];
+            "cmake.cmakePath" = "cmake";
+            "lldb-dap.executable-path" = "lldb-dap";
+          }
+          // lib.genAttrs [ "[c]" "[cpp]" "[objective-c]" "[objective-cpp]" "[cuda-cpp]" ] (_: {
+            "editor.defaultFormatter" = "llvm-vs-code-extensions.vscode-clangd";
+            "editor.formatOnSave" = true;
+          });
         };
       })
     ];

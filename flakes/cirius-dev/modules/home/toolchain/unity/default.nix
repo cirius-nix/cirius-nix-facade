@@ -17,7 +17,7 @@
   config =
     let
       inherit (config.${namespace}.toolchain.unity) enable;
-      inherit (config.${namespace}.editor) code;
+      inherit (config.${namespace}.editor) code nvim;
     in
     lib.mkMerge [
       (lib.mkIf enable {
@@ -30,7 +30,21 @@
           }))
           git-lfs
           vulkan-tools
+          dotnet-sdk
+          omnisharp-roslyn
+          csharpier
         ];
+      })
+
+      (lib.mkIf (enable && nvim.enable) {
+        ${namespace}.editor.nvim.settings = {
+          lsp.servers.omnisharp = {
+            enable = true;
+            package = pkgs.omnisharp-roslyn;
+            packageFallback = true;
+          };
+          formatter.fileTypes.cs = [ "csharpier" ];
+        };
       })
 
       (lib.mkIf (enable && code.enable) {
@@ -39,6 +53,10 @@
           ms-dotnettools.csdevkit
           visualstudiotoolsforunity.vstuc
         ];
+        programs.vscode.profiles.default.userSettings."[csharp]" = {
+          "editor.defaultFormatter" = "ms-dotnettools.csharp";
+          "editor.formatOnSave" = true;
+        };
       })
     ];
 }

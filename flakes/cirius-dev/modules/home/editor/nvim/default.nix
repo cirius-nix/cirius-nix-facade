@@ -2,7 +2,6 @@
   config,
   lib,
   namespace,
-  pkgs,
   ...
 }:
 {
@@ -109,7 +108,6 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
-        home.packages = with pkgs; [ nixd ];
         programs.nixvim = {
           enable = true;
           nixpkgs.config = {
@@ -138,15 +136,12 @@
             (mkKeymap "<leader>ln" "<cmd>lua vim.lsp.buf.rename()<cr>" "󰑕 Rename Symbol")
             (mkKeymap "<leader>lh" "<cmd>lua vim.lsp.buf.signature_help()<cr>" "󰘥 Signature Help")
           ];
-          dependencies.ripgrep.enable = true;
-          lsp = {
-            servers = {
-              nixd = {
-                enable = true;
-                package = pkgs.nixd;
-              };
-              statix.enable = true;
+          dependencies = {
+            ripgrep = {
+              enable = true;
+              packageFallback = true;
             };
+            git.packageFallback = true;
           };
           extraConfigLuaPost = ''
             -- nixd raises noisy "textDocument/documentHighlight failed: cannot

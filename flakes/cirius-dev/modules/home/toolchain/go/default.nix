@@ -17,7 +17,7 @@
   config =
     let
       inherit (config.${namespace}.toolchain.go) enable;
-      inherit (config.${namespace}.editor) nvim;
+      inherit (config.${namespace}.editor) code nvim;
     in
     lib.mkMerge [
       (lib.mkIf enable {
@@ -28,6 +28,7 @@
           golangci-lint
           goreleaser
           go-tools
+          gotools
         ];
       })
 
@@ -59,6 +60,21 @@
                   };
                 };
               };
+            };
+          };
+        };
+      })
+
+      (lib.mkIf (enable && code.enable) {
+        programs.vscode.profiles.default = {
+          extensions = [ pkgs.vscode-extensions.golang.go ];
+          userSettings = {
+            "go.toolsManagement.autoUpdate" = false;
+            "go.formatTool" = "goimports";
+            "[go]" = {
+              "editor.defaultFormatter" = "golang.go";
+              "editor.formatOnSave" = true;
+              "editor.codeActionsOnSave"."source.organizeImports" = "explicit";
             };
           };
         };

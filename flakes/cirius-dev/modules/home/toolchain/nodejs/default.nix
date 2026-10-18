@@ -86,6 +86,9 @@
           userSettings = {
             "oxc.enable.oxlint" = true;
             "oxc.enable.oxfmt" = true;
+            # Clear nixpkgs' absolute defaults to allow project and PATH discovery.
+            "oxc.path.oxlint" = "";
+            "oxc.path.oxfmt" = "";
             "editor.codeActionsOnSave"."source.fixAll.oxc" = "explicit";
           }
           //

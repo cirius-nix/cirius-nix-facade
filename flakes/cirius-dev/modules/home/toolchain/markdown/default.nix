@@ -17,7 +17,7 @@
   config =
     let
       inherit (config.${namespace}.toolchain.markdown) enable;
-      inherit (config.${namespace}.editor) nvim;
+      inherit (config.${namespace}.editor) code nvim;
     in
     lib.mkMerge [
       (lib.mkIf enable {
@@ -25,6 +25,7 @@
           pandoc
           markdownlint-cli
           markdown-toc
+          marksman
         ];
       })
 
@@ -55,6 +56,17 @@
                 ".git"
               ];
             };
+          };
+        };
+      })
+
+      (lib.mkIf (enable && code.enable) {
+        programs.vscode.profiles.default = {
+          extensions = [ pkgs.vscode-extensions.davidanson.vscode-markdownlint ];
+          userSettings."[markdown]" = {
+            "editor.defaultFormatter" = "DavidAnson.vscode-markdownlint";
+            "editor.formatOnSave" = true;
+            "editor.codeActionsOnSave"."source.fixAll.markdownlint" = "explicit";
           };
         };
       })
