@@ -10,14 +10,14 @@
     enable = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Enable Node.js toolchain.";
+      description = "Enable Node.js toolchain with Oxc linting and formatting.";
     };
   };
 
   config =
     let
       inherit (config.${namespace}.toolchain.nodejs) enable;
-      inherit (config.${namespace}.editor) nvim;
+      inherit (config.${namespace}.editor) code nvim;
     in
     lib.mkMerge [
       (lib.mkIf enable {
@@ -26,8 +26,8 @@
           (lib.hiPrio pkgs.corepack)
           typescript
           typescript-language-server
-          vscode-langservers-extracted
-          prettierd
+          oxlint
+          oxfmt
         ];
       })
 
@@ -45,43 +45,67 @@
                   ];
                 };
               };
-              eslint = {
+              oxlint = {
                 enable = true;
+                package = pkgs.oxlint;
                 packageFallback = true;
                 config = {
                   cmd = [
-                    "vscode-eslint-language-server"
-                    "--stdio"
+                    "oxlint"
+                    "--lsp"
                   ];
-
-                  settings = {
-                    workingDirectory = {
-                      mode = "auto";
-                    };
-                  };
                 };
               };
             };
           };
           formatter = {
             fileTypes = {
-              javascript = [ "prettierd" ];
-              javascriptreact = [ "prettierd" ];
-              typescript = [ "prettierd" ];
-              typescriptreact = [ "prettierd" ];
-              json = [ "prettierd" ];
-              jsonc = [ "prettierd" ];
-              css = [ "prettierd" ];
-              scss = [ "prettierd" ];
-              html = [ "prettierd" ];
-              yaml = [ "prettierd" ];
+              javascript = [ "oxfmt" ];
+              javascriptreact = [ "oxfmt" ];
+              typescript = [ "oxfmt" ];
+              typescriptreact = [ "oxfmt" ];
+              json = [ "oxfmt" ];
+              jsonc = [ "oxfmt" ];
+              css = [ "oxfmt" ];
+              scss = [ "oxfmt" ];
+              html = [ "oxfmt" ];
+              yaml = [ "oxfmt" ];
             };
-            tools.prettierd.command = "prettierd";
+            tools.oxfmt.command = "oxfmt";
           };
           tests.adapters = {
             jest.enable = true;
             vitest.enable = true;
           };
+        };
+      })
+
+      (lib.mkIf (enable && code.enable) {
+        programs.vscode.profiles.default = {
+          extensions = [ pkgs.vscode-extensions.oxc.oxc-vscode ];
+          userSettings = {
+            "oxc.enable.oxlint" = true;
+            "oxc.enable.oxfmt" = true;
+            "editor.codeActionsOnSave"."source.fixAll.oxc" = "explicit";
+          }
+          //
+            lib.genAttrs
+              [
+                "[javascript]"
+                "[javascriptreact]"
+                "[typescript]"
+                "[typescriptreact]"
+                "[json]"
+                "[jsonc]"
+                "[css]"
+                "[scss]"
+                "[html]"
+                "[yaml]"
+              ]
+              (_: {
+                "editor.defaultFormatter" = "oxc.oxc-vscode";
+                "editor.formatOnSave" = true;
+              });
         };
       })
     ];
