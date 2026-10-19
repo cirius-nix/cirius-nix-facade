@@ -84,6 +84,15 @@
           llm-agents.opencode2
           llm-agents.opencode2-desktop
         ];
+
+        programs.opencode = {
+          enable = true;
+          package = pkgs.llm-agents.opencode2;
+        };
+      })
+
+      (lib.mkIf ((ifClient "opencode") && (ifClient "gemini")) {
+        programs.opencode.settings.plugin = [ "opencode-antigravity-auth@latest" ];
       })
 
       # https://moraxyc.github.io/deepseek-harness.nix
