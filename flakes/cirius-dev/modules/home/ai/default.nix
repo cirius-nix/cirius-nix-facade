@@ -91,10 +91,6 @@
         };
       })
 
-      (lib.mkIf ((ifClient "opencode") && (ifClient "gemini")) {
-        programs.opencode.settings.plugin = [ "opencode-antigravity-auth@latest" ];
-      })
-
       # https://moraxyc.github.io/deepseek-harness.nix
       (lib.mkIf (ifClient "deepseek") {
         programs.dsh =
