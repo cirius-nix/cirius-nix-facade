@@ -72,7 +72,8 @@
       (lib.mkIf (ifClient "gemini") {
         programs.antigravity = {
           enable = true;
-          package = pkgs.antigravity-ide-fhs;
+          package =
+            inputs.antigravity-nix.packages.${pkgs.stdenv.hostPlatform.system}.google-antigravity-no-fhs;
         };
         programs.antigravity-cli = {
           enable = true;

@@ -35,6 +35,10 @@
       url = "github:moraxyc/deepseek-harness.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    antigravity-nix = {
+      url = "github:jacopone/antigravity-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # software-engineering principal
     software-engineering = {
