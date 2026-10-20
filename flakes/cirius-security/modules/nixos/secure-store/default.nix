@@ -19,7 +19,7 @@
         description = "The name of the secure store device.";
       };
       luksDevicePath = lib.mkOption {
-        type = lib.types.str;
+        type = lib.types.nullOr lib.types.str;
         default = null;
         description = "The path to the LUKS device, e.g. /dev/disk/by-uuid/...";
       };

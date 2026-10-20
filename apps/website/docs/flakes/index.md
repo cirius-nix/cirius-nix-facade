@@ -17,7 +17,7 @@ do, and which knobs exist.
 | Flake | Namespace | Classes | Modules | Options | Covers |
 | --- | --- | --- | --- | --- | --- |
 | [cirius-utils](./cirius-utils.md) | `cnix-utils` | home, nixos | 7 | 37 | Base layer: flatpak, desktop behaviour, shortcuts, power, web apps, KDE Connect/Syncthing |
-| [cirius-security](./cirius-security.md) | `cnix-sec` | home, nixos | 6 | 21 | SOPS secrets, SSH agent, autossh tunnels, LUKS secure store |
+| [cirius-security](./cirius-security.md) | `cnix-sec` | home, nixos | 12 | See reference | SOPS, SSH, tunnels, LUKS, firewall, Fail2ban, AppArmor, U2F, USBGuard |
 | [cirius-dev](./cirius-dev.md) | `cnix-dev` | home | 17 | 28 | Editors, shell, terminal, git, AI clients, nine language toolchains |
 | [cirius-visual](./cirius-visual.md) | `cnix-visual` | home, nixos | 9 | 27 | Stylix theming, fonts, KDE Plasma, GNOME, panels, theme switcher |
 | [cirius-networking](./cirius-networking.md) | `cnix-net` | nixos | 1 | 8 | SSH, Caddy, host table, reverse proxies, Tailscale |

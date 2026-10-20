@@ -55,7 +55,7 @@ flakes/<name>/
 | --- | --- | --- |
 | `cirius-lib` | `cnix-lib` | Shared option builders (`mkStrOpt`, `mkBoolOpt`, `mkPackageOpt`, …) and `failWhen` assertion helpers. Consumed by other flakes as `inputs.cirius-lib.lib`. |
 | `cirius-utils` | `cnix-utils` | Base home/nixos modules: package manager (flatpak), desktop shortcuts, power controls, chrome webapps, connectivity. |
-| `cirius-security` | `cnix-sec` | Secret management via [sops-nix](https://github.com/Mic92/sops-nix): home + nixos secret/secure-store modules and SSH port management. |
+| `cirius-security` | `cnix-sec` | SOPS secrets, SSH clients/servers and tunnels, LUKS storage, firewall rules, Fail2ban, AppArmor, U2F, and USBGuard. |
 | `cirius-dev` | `cnix-dev` | Dev tooling: nixvim, shell/term, git (gh, lazygit), AI agents (`llm-agents`, codex, deepseek), and toolchains (nix, go, nodejs, cpp, aws, android, unity, latex, markdown). |
 | `cirius-visual` | `cnix-visual` | Desktop look & feel: stylix, plasma-manager, KDE/GNOME modules, custom KDE themes/packages, and kwin/audio-vis overlays. |
 | `cirius-networking` | `cnix-net` | Networking modules and helpers. |
@@ -80,7 +80,7 @@ For example, to pull in the dev flake:
 ```
 
 A consuming config can then enable the namespaced options the modules expose, e.g.
-`cnix-dev.git.enable = true;` or `cnix-security.secret-mgt.enable = true;`.
+`cnix-dev.git.enable = true;` or `cnix-sec.secret-mgt.enable = true;`.
 
 The flakes also share code through `cirius-lib`:
 

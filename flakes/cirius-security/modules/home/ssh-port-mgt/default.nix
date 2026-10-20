@@ -6,6 +6,32 @@
   ...
 }:
 let
+  forwardType = lib.types.submodule {
+    options = {
+      bindAddress = lib.mkOption {
+        type = lib.types.str;
+        default = "127.0.0.1";
+        description = "Address on which the forwarding listener binds.";
+      };
+      port = lib.mkOption {
+        type = lib.types.port;
+        description = "Port on which the forwarding listener binds.";
+      };
+      destinationHost = lib.mkOption {
+        type = lib.types.str;
+        default = "127.0.0.1";
+        description = "Destination host as seen from the other end of the SSH connection.";
+      };
+      destinationPort = lib.mkOption {
+        type = lib.types.port;
+        description = "Destination TCP port.";
+      };
+    };
+  };
+  address = host: if lib.hasInfix ":" host && !(lib.hasPrefix "[" host) then "[${host}]" else host;
+  forward =
+    f:
+    "${address f.bindAddress}:${toString f.port}:${address f.destinationHost}:${toString f.destinationPort}";
   profileModuleTypes =
     with lib.types;
     attrsOf (
@@ -32,15 +58,80 @@ let
                 description = "Path to the password file for this profile.";
               };
 
+              host = lib.mkOption {
+                type = with lib.types; nullOr (strMatching "[^-[:space:]][^[:space:]]*");
+                default = null;
+                description = "SSH host alias for typed tunnel arguments. Null preserves the legacy command arguments.";
+              };
+              identityFile = lib.mkOption {
+                type = with lib.types; nullOr str;
+                default = null;
+                description = "Runtime path to the private key. Keep private keys outside the Nix store.";
+              };
+              localForwards = lib.mkOption {
+                type = lib.types.listOf forwardType;
+                default = [ ];
+                description = "Forward listeners on this machine to destinations reached by the SSH server.";
+              };
+              remoteForwards = lib.mkOption {
+                type = lib.types.listOf forwardType;
+                default = [ ];
+                description = "Forward listeners on the SSH server to destinations reached by this machine.";
+              };
+              serverAliveInterval = lib.mkOption {
+                type = lib.types.ints.unsigned;
+                default = 30;
+                description = "Seconds between SSH keepalive messages in typed mode.";
+              };
+              serverAliveCountMax = lib.mkOption {
+                type = lib.types.ints.positive;
+                default = 3;
+                description = "Number of unanswered keepalives before disconnecting in typed mode.";
+              };
+              exitOnForwardFailure = lib.mkOption {
+                type = lib.types.bool;
+                default = true;
+                description = "Exit if a forwarding listener cannot be established in typed mode.";
+              };
               autoSSHArgs = lib.mkOption {
                 type = with lib.types; listOf str;
-                default = [
-                  "-M"
-                  "0"
-                  "-N"
-                  profileName
-                ];
-                description = "Additional arguments to pass to the SSH command for this profile.";
+                default =
+                  let
+                    s = profileInputs.config.settings;
+                  in
+                  [
+                    "-M"
+                    "0"
+                    "-N"
+                  ]
+                  ++ lib.optionals (s.host != null) (
+                    [
+                      "-o"
+                      "BatchMode=yes"
+                      "-o"
+                      "ServerAliveInterval=${toString s.serverAliveInterval}"
+                      "-o"
+                      "ServerAliveCountMax=${toString s.serverAliveCountMax}"
+                      "-o"
+                      "ExitOnForwardFailure=${if s.exitOnForwardFailure then "yes" else "no"}"
+                    ]
+                    ++ lib.optionals (s.identityFile != null) [
+                      "-i"
+                      s.identityFile
+                      "-o"
+                      "IdentitiesOnly=yes"
+                    ]
+                    ++ lib.concatMap (f: [
+                      "-L"
+                      (forward f)
+                    ]) s.localForwards
+                    ++ lib.concatMap (f: [
+                      "-R"
+                      (forward f)
+                    ]) s.remoteForwards
+                  )
+                  ++ [ (if s.host == null then profileName else s.host) ];
+                description = "Complete autossh argument list. An explicit value replaces generated typed arguments and preserves the legacy API. Typed mode uses noninteractive key authentication; provision known host keys first.";
               };
             };
 
@@ -81,7 +172,7 @@ let
                   name = profileName;
                   value = {
                     Unit = {
-                      description = "SSH port management profile for ${name}.";
+                      Description = "SSH port management profile for ${name}.";
                       Wants = [ "network-online.target" ];
                       After = [ "network-online.target" ];
                     };
@@ -100,10 +191,14 @@ let
                 build.services = {
                   name = profileName;
                   value = {
-                    Label = profileName;
-                    ProgramArguments = execStartCommand;
-                    RunAtLoad = true;
-                    KeepAlive = true;
+                    enable = true;
+                    config = {
+                      Label = profileName;
+                      ProgramArguments = sshPassCommand ++ autoSSHCommand;
+                      EnvironmentVariables.AUTOSSH_GATETIME = "0";
+                      RunAtLoad = true;
+                      KeepAlive = true;
+                    };
                   };
                 };
               })
@@ -136,12 +231,23 @@ in
     in
     lib.mkMerge [
       (lib.mkIf (ssh-port-mgt.enable) {
-        assertions = [
-          {
-            assertion = ssh.enable == true;
-            message = "SSH port management requires SSH to be enabled.";
-          }
-        ];
+        assertions =
+          (lib.mapAttrsToList (name: p: {
+            assertion =
+              p.settings.host != null
+              || (
+                p.settings.identityFile == null
+                && p.settings.localForwards == [ ]
+                && p.settings.remoteForwards == [ ]
+              );
+            message = "cnix-sec: tunnel ${name} requires settings.host when using typed identity or forwarding options.";
+          }) profiles)
+          ++ [
+            {
+              assertion = ssh.enable == true;
+              message = "SSH port management requires SSH to be enabled.";
+            }
+          ];
 
         home.packages = with pkgs; [
           autossh
