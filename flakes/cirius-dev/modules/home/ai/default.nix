@@ -24,6 +24,7 @@
   config =
     let
       inherit (config.${namespace}.ai) useClients useRecommendedPackages;
+      inherit (config.${namespace}.editor) code;
 
       # util to check if x is in useClients
       ifClient = client: lib.elem client useClients;
@@ -71,12 +72,23 @@
       (lib.mkIf (ifClient "gemini") {
         programs.antigravity = {
           enable = true;
-          package = pkgs.antigravity-fhs;
+          package = pkgs.antigravity-ide-fhs;
         };
         programs.antigravity-cli = {
           enable = true;
           package = pkgs.llm-agents.antigravity-cli;
         };
+      })
+
+      (lib.mkIf ((ifClient "gemini") && code.enable) {
+        programs.vscode.profiles.default.extensions = pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+          {
+            name = "google-antigravity";
+            publisher = "Google";
+            version = "1.8.0";
+            hash = "sha256-h2GTvOkESX96Ce/ja3+vbV8qH+WA/4VLhj00JR4EOOY=";
+          }
+        ];
       })
 
       (lib.mkIf (ifClient "opencode") {
