@@ -16,6 +16,7 @@ in
       nix-index-database.homeModules.default
       codex-desktop-linux.homeManagerModules.default
       deepseek-harness.homeModules.default
+      inputs.software-engineering.homeModules.default
     ])
     ++ attrValues (removeAttrs inputs.self.homeModules [ "default" ]);
 
@@ -38,6 +39,8 @@ in
           btop
           comma
           python3
+          se-adopt
+          artifact-plane
         ];
         programs.fastfetch = {
           enable = true;
