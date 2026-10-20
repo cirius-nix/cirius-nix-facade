@@ -705,11 +705,11 @@
         "snowfall-lib": "snowfall-lib_2"
       },
       "locked": {
-        "lastModified": 1792465502,
-        "narHash": "sha256-wny/qI0xI6DgXrIZuzD0x5Jt0DOrPB1UzCvdHKOknws=",
+        "lastModified": 1792466030,
+        "narHash": "sha256-gKzX72+k17x0ngA2dk274WNQBtNcJHqELDcxhUZ5mLo=",
         "owner": "hieutran21198",
         "repo": "software-engineering",
-        "rev": "86013351e04dcff3649129c0f3fbba2ae22767c8",
+        "rev": "0eecce1b201b9fb64c4d4fedeb9a42c43c53c051",
         "type": "github"
       },
       "original": {
