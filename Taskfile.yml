@@ -5,6 +5,11 @@ tasks:
     desc: "List all tasks"
     cmds:
       - task -l
+  apps:website:start:
+    desc: "Start website for development"
+    dir: ./apps/website
+    cmds:
+      - pnpm run start
   update-flakes:
     desc: "Update all flakes"
     cmds:

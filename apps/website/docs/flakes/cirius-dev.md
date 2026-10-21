@@ -45,7 +45,7 @@ enabled too. Editors and language tooling are kept independent rather than fused
 | `default` | home | *(always applies)* | Recommended packages, fastfetch/eza/fzf/direnv/starship |
 | `shell` | home | `cnix-dev.shell` | Which shell is enabled |
 | `term` | home | `cnix-dev.term.useTerms` | Ghostty |
-| `git` | home | `cnix-dev.git.enable` | git, gh, lazygit, fish aliases |
+| `git` | home | `cnix-dev.git.enable` | git, github-desktop, gh, lazygit, fish aliases |
 | `ai` | home | `cnix-dev.ai.useClients` | AI client packages and programs |
 | `editor/code` | home | `cnix-dev.editor.code.enable` | VS Code |
 | `editor/nvim` | home | `cnix-dev.editor.nvim.enable` | nixvim, leader key, options, keymaps |
