@@ -96,6 +96,10 @@
             minimum-contrast = 1;
             window-theme = "system";
           };
+          vscode.profiles.default.userSettings = {
+            "editor.fontFamily" = config.stylix.fonts.monospace.name;
+            "editor.fontSize" = config.stylix.fonts.sizes.terminal;
+          };
         };
       })
     ];
