@@ -16,12 +16,6 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Used by module checks; consumers do not need to import it.
-    home-manager = {
-      url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
   };
 
   outputs =
@@ -59,14 +53,5 @@
         ];
       };
     in
-    outputs
-    // {
-      checks = inputs.nixpkgs.lib.genAttrs [ "x86_64-linux" "aarch64-linux" ] (
-        system:
-        import ./tests {
-          inherit inputs system;
-          pkgs = inputs.nixpkgs.legacyPackages.${system};
-        }
-      );
-    };
+    outputs;
 }

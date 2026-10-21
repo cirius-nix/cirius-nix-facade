@@ -3,10 +3,11 @@
   namespace,
   lib,
   pkgs,
+  inputs,
   ...
 }:
 {
-  imports = [
+  imports = builtins.attrValues (removeAttrs inputs.self.nixosModules [ "default" ]) ++ [
     (lib.mkAliasOptionModule [ namespace "settings" "hostName" ] [ "networking" "hostName" ])
   ];
   options.${namespace} =
@@ -15,6 +16,7 @@
     in
     {
       enable = cnix-lib.mkBoolOpt {
+        default = false;
         description = "Enable networking tools.";
       };
 
@@ -43,6 +45,7 @@
         };
         vpn = {
           enable = cnix-lib.mkBoolOpt {
+            default = false;
             description = "Enable VPN support.";
           };
         };

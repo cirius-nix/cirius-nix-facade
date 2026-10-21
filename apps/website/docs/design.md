@@ -27,6 +27,11 @@ option carries a working default. You can turn on a concern and get a sensible
 system without reading a single option table — the tables exist for when you
 want to change something, not before.
 
+Start with one `enable` flag. Set routine defaults internally and use upstream
+options for advanced configuration. Add a facade option only when it expresses
+an integration or concern that upstream does not already provide. Check that
+each new enable flag works on its own and that native overrides still work.
+
 ### Powerful when needed
 
 Nothing is wrapped or re-exported. Modules set ordinary upstream options
