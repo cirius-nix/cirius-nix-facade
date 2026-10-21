@@ -32,7 +32,7 @@
     lib.mkMerge [
       (lib.mkIf useRecommendedPackages {
         home.packages = with pkgs; [
-          llm-agents.skills-installer
+          # TODO: add more recommended packages here
         ];
       })
 

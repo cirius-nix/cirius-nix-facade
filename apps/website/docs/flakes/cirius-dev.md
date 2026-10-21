@@ -123,7 +123,7 @@ enabled), `opencode`, `deepseek` (the `dsh` harness with tui and desktop profile
 
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
-| `cnix-dev.ai.useRecommendedPackages` | `bool` | `true` | Whether to use recommended packages for AI. | Installs `llm-agents.skills-installer`. |
+| `cnix-dev.ai.useRecommendedPackages` | `bool` | `true` | Whether to use recommended packages for AI. | TODO: |
 | `cnix-dev.ai.useClients` | `listOf str` | `[ ]` | List of AI clients to use. Options: claude, codex | Each listed client installs its packages and enables its program module. |
 
 ### `home/editor/code` — VS Code
