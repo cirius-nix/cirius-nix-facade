@@ -745,16 +745,16 @@
         "snowfall-lib": "snowfall-lib_2"
       },
       "locked": {
-        "lastModified": 1792549368,
-        "narHash": "sha256-3eRqHmrauaeSAtaGRztvJXoCVV4HPK7mW1TGnbhT2bI=",
+        "lastModified": 1792557390,
+        "narHash": "sha256-AUmN2C15+bHU4inBndrYeQm2JasnHJWXGb2EINjhQxw=",
         "owner": "hieutran21198",
         "repo": "software-engineering",
-        "rev": "03b2984723b8097db6d3a8815efe6f056bc247b1",
+        "rev": "f5062c560ef15d51bfeb0109bcb56a50ff86e292",
         "type": "github"
       },
       "original": {
         "owner": "hieutran21198",
-        "ref": "plane-v1.26.0",
+        "ref": "v3.3.0",
         "repo": "software-engineering",
         "type": "github"
       }
