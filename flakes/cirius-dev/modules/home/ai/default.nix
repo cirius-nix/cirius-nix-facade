@@ -59,6 +59,7 @@
       (lib.mkIf (ifClient "codex") {
         home.packages = with pkgs; [
           llm-agents.codex
+          bubblewrap
         ];
 
         programs.codexDesktopLinux = {
