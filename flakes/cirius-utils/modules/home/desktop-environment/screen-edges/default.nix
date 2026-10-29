@@ -2,6 +2,7 @@
   config,
   namespace,
   lib,
+  pkgs,
   ...
 }:
 {

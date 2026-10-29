@@ -21,12 +21,12 @@
   config =
     let
       inherit (config.${namespace}.desktop-environment.virtual-desktops) rows number;
-      inherit (config.${namespace}) managedDesktopEnvironment;
+      inherit (config.${namespace}.settings) managedDesktopEnvironment;
     in
     lib.mkMerge [
       (lib.mkIf (managedDesktopEnvironment == "kde") {
         programs.plasma = {
-          virtualDesktops = {
+          kwin.virtualDesktops = {
             inherit rows number;
           };
         };
