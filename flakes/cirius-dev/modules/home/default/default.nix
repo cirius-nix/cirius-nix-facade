@@ -40,6 +40,8 @@ in
           python3
           se-adopt
           artifact-plane
+          llm-agents.herdr
+          ttyd
         ];
         programs.fastfetch = {
           enable = true;

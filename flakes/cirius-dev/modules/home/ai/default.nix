@@ -40,6 +40,7 @@
         home.packages = with pkgs; [
           llm-agents.claude-code
           llm-agents.claude-desktop
+          llm-agents.claude-agent-acp
         ];
 
         programs.claude-code = {
@@ -59,6 +60,7 @@
       (lib.mkIf (ifClient "codex") {
         home.packages = with pkgs; [
           llm-agents.codex
+          llm-agents.codex-acp
           bubblewrap
         ];
 
