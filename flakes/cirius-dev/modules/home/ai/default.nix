@@ -127,14 +127,7 @@
           };
       })
 
-      (lib.mkIf (ifClient "multica") {
-        home.packages = with pkgs; [
-          llm-agents.multica
-          llm-agents.multica-desktop
-        ];
-      })
-
-      (lib.mkIf (ifClient "multica") {
+      (lib.mkIf (ifClient "commandcode") {
         home.packages = with pkgs; [
           llm-agents.command-code
         ];

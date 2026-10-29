@@ -118,7 +118,6 @@ program module: `claude` (Claude Code with attribution disabled, plus Claude
 Desktop), `codex` (Codex and the desktop app), `gemini` (Antigravity, its CLI,
 and the `Google.google-antigravity` VS Code extension when `editor.code` is
 enabled), `opencode`, `deepseek` (the `dsh` harness with tui and desktop profiles),
-`multica` (which also brings Command Code), and `copilot` (which wires
 `copilot-lua` and `blink-cmp-copilot` into the nixvim completion sources).
 
 | Option | Type | Default | Description | Effect |
