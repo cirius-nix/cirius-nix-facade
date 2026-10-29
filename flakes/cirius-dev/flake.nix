@@ -42,7 +42,7 @@
 
     # software-engineering principal
     software-engineering = {
-      url = "github:hieutran21198/software-engineering?ref=plane-v1.28.0";
+      url = "github:hieutran21198/software-engineering?ref=plane-v1.30.0";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
