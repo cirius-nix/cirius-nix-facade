@@ -172,6 +172,17 @@
                   config = {
                     General = {
                       launchers = map (app: "applications:${app}") kde.favoriteApps;
+                      groupingStrategy = 0;
+                      sortingStrategy = 3;
+                      minimizeActiveTaskOnClick = true;
+                      middleClickAction = 0;
+                      wheelEnabled = false;
+                      showOnlyCurrentDesktop = false;
+                      showOnlyCurrentActivity = true;
+                      showOnlyCurrentScreen = false;
+                      showOnlyMinimized = false;
+                      unhideOnAttention = true;
+                      reverseMode = false;
                     };
                   };
                 }
