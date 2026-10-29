@@ -12,16 +12,6 @@
       cnix-lib = inputs.cirius-lib.lib;
     in
     {
-      virtualDesktops = {
-        rows = cnix-lib.mkIntOpt {
-          default = 1;
-          description = "The number of rows in the KDE Plasma virtual desktops.";
-        };
-        number = cnix-lib.mkIntOpt {
-          default = 1;
-          description = "The number of virtual desktops in KDE Plasma.";
-        };
-      };
       themeSwitcher = {
         enable = cnix-lib.mkBoolOpt { description = "Enable the KDE theme switcher."; };
         settings =
@@ -102,11 +92,6 @@
       inherit (kde) themeSwitcher;
     in
     lib.mkMerge [
-      (lib.mkIf (enable && use == "kde") ({
-        programs.plasma.kwin.virtualDesktops = {
-          inherit (kde.virtualDesktops) rows number;
-        };
-      }))
       (lib.mkIf (enable && use == "kde" && useRecommendedTheme) ({
         home.packages =
           with pkgs;

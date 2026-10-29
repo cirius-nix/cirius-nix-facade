@@ -80,6 +80,7 @@
       })
 
       (lib.mkIf (enable && settings.managedDesktopEnvironment == "kde") {
+        home.packages = with pkgs.kdePackages; [ kjournald ];
         programs.plasma = {
           windows = {
             allowWindowsToRememberPositions = true;
