@@ -59,15 +59,16 @@ recolouring every application the moment the module is imported. It installs
 `xresources` target, which otherwise produces stale-looking colours in X11-era
 apps.
 
-`useRecommendedFonts` installs Monaspace (Nerd Font) and Noto Color Emoji,
-enables fontconfig, and sets the Stylix monospace and emoji fonts plus the
-terminal font size. `cnix-visual.infra.fonts` is an alias of `stylix.fonts`, so
-font configuration can be written under the facade's namespace.
+`useRecommendedFonts` installs Monaspace (Nerd Font), IBM Plex Sans/Mono, Be
+Vietnam Pro, and Noto Color Emoji, enables fontconfig, and sets the Stylix
+monospace and emoji fonts plus the terminal font size.
+`cnix-visual.infra.fonts` is an alias of `stylix.fonts`, so font configuration
+can be written under the facade's namespace.
 
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
 | `cnix-visual.enable` | `bool` | `false` | Enable the visual module. | Enables Stylix with the bundled base16 scheme and installs the theming packages. |
-| `cnix-visual.useRecommendedFonts` | `bool` | `false` | Whether to use the recommended fonts for system and apps. | Installs Monaspace/Noto Color Emoji, enables fontconfig, and sets the Stylix fonts and sizes. |
+| `cnix-visual.useRecommendedFonts` | `bool` | `false` | Whether to use the recommended fonts for system and apps. | Installs Monaspace, IBM Plex, Be Vietnam Pro, and Noto Color Emoji, enables fontconfig, and sets the Stylix fonts and sizes. |
 | `cnix-visual.useRecommendedTheme` | `bool` | `false` | Whether to use the recommended theme for system and apps. | Consumed by the desktop-environment modules to gate the recommended app theming. |
 | `cnix-visual.infra.fonts` | *(alias of `stylix.fonts`)* | — | — | Writes through to `stylix.fonts`. |
 
@@ -177,6 +178,7 @@ session is a system concern rather than a styling preference.
 | `pkgs.cnix-visual.cirius-visual-desktop-themes` | Light/dark Plasma desktop themes. |
 | `pkgs.cnix-visual.klassy` | Klassy window decoration/application style plugin. |
 | `pkgs.cnix-visual.fairy-wren` | FairyWren app-menu plasmoid. |
+| `pkgs.cnix-visual.be-vietnam-pro` | Be Vietnam Pro font family (Google Fonts). |
 | `kwin-effect-glass` overlay | Glass effect for KWin. |
 | `kde-audio-vis` overlay | Plasma audio visualiser widget. |
 | `lib.mkDconfTree` | Maps a nested attribute set to dconf keys under a base path. |

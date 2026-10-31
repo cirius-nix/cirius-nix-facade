@@ -99,7 +99,9 @@
           [
             monaspace
             noto-fonts-color-emoji
-          ];
+            ibm-plex
+          ]
+          ++ [ pkgs.${namespace}.be-vietnam-pro ];
 
         fonts.fontconfig = {
           enable = true;
