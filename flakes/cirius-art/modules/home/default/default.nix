@@ -35,8 +35,8 @@
           freecad
           # our own packages
           comfy-desktop
-          pen-cli
-          pen-desktop
+          openpencil-cli
+          openpencil-desktop
         ];
     };
 }

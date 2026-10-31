@@ -1,12 +1,12 @@
 ---
 title: cirius-art
 sidebar_position: 8
-description: Drawing, 3D, and generative art tooling, including the flake's own pen.dev and ComfyUI packages.
+description: Drawing, 3D, and generative art tooling, including the flake's own OpenPencil and ComfyUI packages.
 ---
 
 # cirius-art
 
-Creative tooling, including the flake's own packaged builds of pen.dev and
+Creative tooling, including the flake's own packaged builds of OpenPencil and
 ComfyUI desktop. Nothing here is subtle: it is a curated package set for drawing,
 3D, and generative image work, plus a separate flag for pixel-art tooling.
 
@@ -40,8 +40,8 @@ ComfyUI desktop. Nothing here is subtle: it is a curated package set for drawing
 
 Imports the `sprite` module, so both concerns are available from a single import.
 With `useRecommendedPackages` it installs Inkscape, Blender, ImageMagick, Krita,
-and FreeCAD alongside the flake's own `comfy-desktop`, `pen-cli`, and
-`pen-desktop` packages.
+and FreeCAD alongside the flake's own `comfy-desktop`, `openpencil-cli`, and
+`openpencil-desktop` packages.
 
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
@@ -64,7 +64,7 @@ Besides the modules, the flake exports packages under `pkgs.cnix-art`:
 | Package | What it is |
 | --- | --- |
 | `comfy-desktop` | Packaged ComfyUI desktop app (Electron). |
-| `pen-cli` | Wrapper around the prebuilt `@pen.dev/cli` npm tarball, providing `pen` and `pencil`. |
-| `pen-desktop` | AppImage-wrapped pen.dev desktop app with the bundled MCP server. |
+| `openpencil-cli` | Wrapper around the prebuilt `@open-pencil/cli` npm tarball, providing `openpencil` plus the `openpencil-mcp` servers. |
+| `openpencil-desktop` | AppImage-wrapped OpenPencil desktop app. |
 
 There are no overlays or library helpers in this flake.

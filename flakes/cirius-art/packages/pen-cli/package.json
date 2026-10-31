@@ -1,8 +1,0 @@
-{
-  "name": "pen-cli-nix",
-  "version": "0.3.10",
-  "private": true,
-  "dependencies": {
-    "@pen.dev/cli": "0.3.10"
-  }
-}
