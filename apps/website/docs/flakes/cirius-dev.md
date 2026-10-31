@@ -27,7 +27,7 @@ enabled too. Editors and language tooling are kept independent rather than fused
   imports = [ inputs.cirius-dev.homeModules.default ];
 
   cnix-dev.shell = "fish";
-  cnix-dev.term.useTerms = [ "ghostty" ];
+  cnix-dev.term.useTerms = [ "ghostty" "herdr" ];
 
   cnix-dev.editor.nvim.enable = true;
   cnix-dev.editor.code.enable = true;
@@ -44,7 +44,7 @@ enabled too. Editors and language tooling are kept independent rather than fused
 | --- | --- | --- | --- |
 | `default` | home | *(always applies)* | Recommended packages, fastfetch/eza/fzf/direnv/starship |
 | `shell` | home | `cnix-dev.shell` | Which shell is enabled |
-| `term` | home | `cnix-dev.term.useTerms` | Ghostty |
+| `term` | home | `cnix-dev.term.useTerms` | Ghostty, herdr |
 | `git` | home | `cnix-dev.git.enable` | git, github-desktop, gh, lazygit, fish aliases |
 | `ai` | home | `cnix-dev.ai.useClients` | AI client packages and programs |
 | `editor/code` | home | `cnix-dev.editor.code.enable` | VS Code |
@@ -81,13 +81,22 @@ Selects terminals by list. `"ghostty"` enables Ghostty with a tuned config:
 (`tab_mgt` and `resize`) for tab and pane management. Fish integration follows
 `programs.fish.enable`.
 
+`"herdr"` installs the herdr terminal workspace manager and writes its
+`~/.config/herdr/config.toml`: the Atom One light/dark theme following the host
+appearance (the same palette as Ghostty's theme), a `ctrl+b` prefix (herdr's
+default, so it collides with neither Ghostty's `ctrl+a` keybindings nor fcitx's
+`ctrl+space` input toggle), Ghostty-style `v`/`s` splits, `h/j/k/l` focus,
+`z` zoom, `r` resize mode, `tab`/`shift+tab` tab switching, `c`/`t` new tab,
+clipboard-on-select, in-app agent notifications, and no onboarding or tab-name
+prompt. New panes use `cnix-dev.shell`.
+
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
-| `cnix-dev.term.useTerms` | `listOf str` | `true` | Whether to use recommended terminal packages. | `"ghostty"` enables and configures Ghostty. |
+| `cnix-dev.term.useTerms` | `listOf str` | `true` | Whether to use recommended terminal packages. | `"ghostty"` enables and configures Ghostty; `"herdr"` installs and configures herdr. |
 
 The default here is a boolean while the declared type is `listOf str` — a
 mismatch in the source. Set the option to an explicit list, for example
-`cnix-dev.term.useTerms = [ "ghostty" ];`.
+`cnix-dev.term.useTerms = [ "ghostty" "herdr" ];`.
 
 ### `home/git` — git, gh, lazygit
 

@@ -76,5 +76,59 @@
           };
         };
       })
+
+      (lib.mkIf (ifTerm "herdr") {
+        home.packages = [ pkgs.llm-agents.herdr ];
+
+        xdg.configFile."herdr/config.toml".source = (pkgs.formats.toml { }).generate "herdr-config" {
+          onboarding = false;
+
+          theme = {
+            name = "one-dark";
+            auto_switch = true;
+            light_name = "one-light";
+            dark_name = "one-dark";
+          };
+
+          terminal.default_shell = config.${namespace}.shell or "fish";
+
+          update.version_check = false;
+
+          keys = {
+            prefix = "ctrl+b";
+
+            split_vertical = "prefix+v";
+            split_horizontal = "prefix+s";
+
+            focus_pane_left = "prefix+h";
+            focus_pane_down = "prefix+j";
+            focus_pane_up = "prefix+k";
+            focus_pane_right = "prefix+l";
+
+            zoom = "prefix+z";
+            resize_mode = "prefix+r";
+
+            new_tab = [
+              "prefix+c"
+              "prefix+t"
+            ];
+            next_tab = "prefix+tab";
+            previous_tab = "prefix+shift+tab";
+
+            cycle_pane_next = "";
+            cycle_pane_previous = "";
+          };
+
+          ui = {
+            copy_on_select = true;
+            prompt_new_tab_name = false;
+
+            toast = {
+              delivery = "herdr";
+              herdr.position = "bottom-right";
+            };
+          };
+        };
+      })
     ];
 }
