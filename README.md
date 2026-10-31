@@ -56,7 +56,7 @@ flakes/<name>/
 | `cirius-lib` | `cnix-lib` | Shared option builders (`mkStrOpt`, `mkBoolOpt`, `mkPackageOpt`, …) and `failWhen` assertion helpers. Consumed by other flakes as `inputs.cirius-lib.lib`. |
 | `cirius-utils` | `cnix-utils` | Base home/nixos modules: package manager (flatpak), desktop shortcuts, power controls, chrome webapps, connectivity. |
 | `cirius-security` | `cnix-sec` | Simple defaults for SOPS secrets, SSH clients/servers and tunnels, LUKS storage, firewall, and Fail2ban. Advanced settings use upstream options. |
-| `cirius-dev` | `cnix-dev` | Dev tooling: nixvim, shell/term, git (gh, lazygit), AI agents (`llm-agents`, codex, deepseek), and toolchains (nix, go, nodejs, cpp, aws, android, unity, latex, markdown). |
+| `cirius-dev` | `cnix-dev` | Dev tooling: nixvim, shell/term, git (gh, lazygit), AI agents (`llm-agents`, codex, deepseek), a self-hosted GitHub Actions runner, and toolchains (nix, go, nodejs, cpp, aws, android, unity, latex, markdown). |
 | `cirius-visual` | `cnix-visual` | Desktop look & feel: stylix, plasma-manager, KDE/GNOME modules, custom KDE themes/packages, and kwin/audio-vis overlays. |
 | `cirius-networking` | `cnix-net` | Local AdGuard Home DNS filtering, SSH/Caddy host routing, and optional Tailscale. |
 | `cirius-gaming` | `cnix-gaming` | Emulation/streaming via [eden](https://github.com/Daaboulex/eden-nix) and an eden overlay. |

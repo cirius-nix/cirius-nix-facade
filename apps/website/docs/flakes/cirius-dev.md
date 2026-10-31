@@ -1,7 +1,7 @@
 ---
 title: cirius-dev
 sidebar_position: 3
-description: Editors, shell, terminal, git, AI clients, and nine language toolchains — the developer surface, wired so each toolchain drives whichever editor you enabled.
+description: Editors, shell, terminal, git, AI clients, nine language toolchains, and a self-hosted GitHub Actions runner — the developer surface, wired so each toolchain drives whichever editor you enabled.
 ---
 
 # cirius-dev
@@ -15,9 +15,9 @@ enabled too. Editors and language tooling are kept independent rather than fused
 | | |
 | --- | --- |
 | Namespace | `cnix-dev` |
-| Module classes | `home` |
+| Module classes | `home`, `nixos` |
 | External inputs | `nixvim`, `nix-index-database`, `llm-agents`, `codex-desktop-linux`, `deepseek-harness`, `devenv` |
-| Options | 28 |
+| Options | 40 |
 
 ## Usage
 
@@ -51,6 +51,8 @@ enabled too. Editors and language tooling are kept independent rather than fused
 | `editor/nvim` | home | `cnix-dev.editor.nvim.enable` | nixvim, leader key, options, keymaps |
 | `editor/nvim/plugins` | home | *(requires `editor.nvim.enable`)* | Plugin set, formatter/completion/LSP wiring |
 | `toolchain/*` | home | `cnix-dev.toolchain.<name>.enable` | Nine language toolchains |
+| `default` | nixos | *(always applies)* | Imports every NixOS module |
+| `github-runner` | nixos | `cnix-dev.github-runner.enable` | Self-hosted GitHub Actions runner |
 
 ### `home/default` — the always-on base
 
@@ -202,6 +204,78 @@ the facade's names onto nixvim plugin settings:
 Because they are aliases, the upstream nixvim documentation applies directly —
 there is no facade-specific layer to learn.
 
+### `nixos/github-runner` — self-hosted CI runner
+
+**Enable:** `cnix-dev.github-runner.enable`
+
+Registers one runner per entry in `runners`, keyed by registration name. Each
+entry becomes its own systemd service `github-runner-<name>`, with its own
+state, logs, and work directories, and can use a different URL, credential,
+labels, and package set. Runners execute as dynamic users and have Nix on their
+PATH; they do not inherit the host user's packages, so add whatever workflows
+need (Node, pnpm, language toolchains) through `extraPackages`.
+
+Authenticate each runner with a token file or a GitHub App, not both.
+`tokenFile` should hold a fine-grained PAT with read-and-write access to
+self-hosted runners (or a classic PAT with `repo`/`admin:org`); a runner
+registration token works for the first registration but expires after an hour
+and breaks later re-registrations. `githubApp` derives short-lived tokens from
+an App installation instead, which pairs well with `ephemeral` runners
+recreated for every job.
+
+Runner data is split across three systemd directories, all per registration
+name. Persistent state (credentials and the `.runner` registration) lives in
+`/var/lib/github-runner/<name>` — actually `/var/lib/private/…` while the
+dynamic user is in effect. Logs live in `/var/log/github-runner/<name>`. The
+checkout directory (`$GITHUB_WORKSPACE`) defaults to
+`/run/github-runner/<name>`, which is tmpfs and wiped on boot; set `workDir` to
+keep builds on disk. Either way the runner clears that directory on every
+service start, so it is scratch space, not a cache, and each runner needs its
+own `workDir`.
+
+```nix
+{ inputs, pkgs, ... }:
+{
+  imports = [ inputs.cirius-dev.nixosModules.default ];
+
+  cnix-dev.github-runner = {
+    enable = true;
+    runners = {
+      nixos = {
+        url = "https://github.com/cirius-nix/cirius-nix-facade";
+        tokenFile = "/run/secrets/github-runner";
+        extraLabels = [ "nixos" "x86_64-linux" ];
+        extraPackages = with pkgs; [ nodejs_24 pnpm ];
+      };
+      nixos-arm = {
+        url = "https://github.com/cirius-nix";
+        githubApp = {
+          id = 123456;
+          login = "cirius-nix";
+          privateKeyFile = "/run/secrets/github-app.pem";
+        };
+        ephemeral = true;
+      };
+    };
+  };
+}
+```
+
+| Option | Type | Default | Description | Effect |
+| --- | --- | --- | --- | --- |
+| `cnix-dev.github-runner.enable` | `bool` | `false` | Enable self-hosted GitHub Actions runners. | Registers and starts one `github-runner-<name>` per entry. |
+| `cnix-dev.github-runner.runners` | `attrsOf submodule` | `{ }` | Runners keyed by registration name. | Each entry is registered and started as `github-runner-<name>`. |
+| `…runners.<name>.url` | `nullOr str` | `null` | Repository or organisation URL the runner registers with. | A repo URL scopes it to one repository; an org URL shares it across the org. |
+| `…runners.<name>.tokenFile` | `nullOr path` | `null` | File containing a PAT or registration token. | Authenticates registration; must be set unless `githubApp` is. |
+| `…runners.<name>.githubApp` | `nullOr submodule` | `null` | GitHub App credentials used instead of a token. | Derives short-lived credentials on every start. |
+| `…githubApp.id` | `int` | — | The GitHub App's numeric ID. | Identifies the App when requesting an installation token. |
+| `…githubApp.login` | `str` | — | Organisation or user the App is installed on. | Scopes the installation lookup and registration. |
+| `…githubApp.privateKeyFile` | `path` | — | PEM-encoded App private key. | Signs installation token requests. |
+| `…runners.<name>.extraLabels` | `listOf str` | `[ ]` | Additional labels advertised by the runner. | Lets workflows target it with `runs-on`. |
+| `…runners.<name>.extraPackages` | `listOf package` | `[ ]` | Packages added to the runner's PATH. | Provides workflow tooling the runner would otherwise lack. |
+| `…runners.<name>.ephemeral` | `bool` | `false` | Register a fresh runner per job. | Removes the runner after each job; needs PAT or App credentials. |
+| `…runners.<name>.workDir` | `nullOr str` | `null` | Directory used as `$GITHUB_WORKSPACE` and for checkouts. | Moves the cleaned-on-start build directory off tmpfs; must exist and be writable. |
+
 ## Toolchains
 
 Nine modules under `toolchain/`, each a single boolean. They share one shape:
@@ -262,5 +336,9 @@ All nine register their enable option identically:
   for a `listOf str`). Pass an explicit list.
 - **Toolchain behaviour is documented in-tree** as well: the subtree README
   carries a per-toolchain support matrix.
+- **Self-hosted runners are meant for private repositories.** GitHub recommends
+  them only there, because a public repository lets fork pull requests run
+  untrusted code on the host. Keep the repository private or gate the workflow
+  before routing jobs to the runner.
 - The `cirius-dev` flake is under active development — the state above matches the
   current working tree.
