@@ -9,7 +9,10 @@
   options.${namespace}.term = {
     useTerms = lib.mkOption {
       type = with lib.types; listOf str;
-      default = true;
+      default = [
+        "ghostty"
+        "herdr"
+      ];
       description = "Whether to use recommended terminal packages.";
     };
   };

@@ -46,14 +46,19 @@ buildNpmPackage {
     mkdir -p $out/bin $out/lib/openpencil-cli
     cp -r node_modules package.json $out/lib/openpencil-cli/
 
+    # The desktop AppImage exports bundled libraries to child processes. Its
+    # older nghttp2 is incompatible with the Nix Node runtime.
     makeWrapper ${lib.getExe nodejs_22} $out/bin/openpencil \
+      --unset LD_LIBRARY_PATH \
       --add-flags $out/lib/openpencil-cli/node_modules/@open-pencil/cli/dist/index.mjs
 
     # @open-pencil/cli depends on the MCP server, so ship both of its entry
     # points alongside the CLI. They must run the version the app expects.
     makeWrapper ${lib.getExe nodejs_22} $out/bin/openpencil-mcp \
+      --unset LD_LIBRARY_PATH \
       --add-flags $out/lib/openpencil-cli/node_modules/@open-pencil/mcp/dist/stdio.mjs
     makeWrapper ${lib.getExe nodejs_22} $out/bin/openpencil-mcp-http \
+      --unset LD_LIBRARY_PATH \
       --add-flags $out/lib/openpencil-cli/node_modules/@open-pencil/mcp/dist/index.mjs
 
     runHook postInstall
