@@ -107,6 +107,10 @@
         };
       })
 
+      (lib.mkIf (ifClient "kimi") {
+        home.packages = with pkgs.llm-agents; [ kimi-code ];
+      })
+
       # https://moraxyc.github.io/deepseek-harness.nix
       (lib.mkIf (ifClient "deepseek") {
         programs.dsh =
