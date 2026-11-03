@@ -197,5 +197,14 @@
 
         ${namespace}.desktop-environment.shortcuts.settings.bindings = import ./_default.bindings.nix;
       }))
+
+      (lib.mkIf (enable && useRecommendedShortcuts && managedDesktopEnvironment == "kde") {
+        ${namespace}.desktop-environment.shortcuts.settings.bindings = {
+          "win.to-side-w" = [ [ "Meta" "Ctrl" "Left" ] ];
+          "win.to-side-e" = [ [ "Meta" "Ctrl" "Right" ] ];
+          "win.to-side-n" = [ [ "Meta" "Ctrl" "Up" ] ];
+          "win.to-side-s" = [ [ "Meta" "Ctrl" "Down" ] ];
+        };
+      })
     ];
 }
