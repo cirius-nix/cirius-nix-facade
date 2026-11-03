@@ -17,7 +17,7 @@ directory.
 | Namespace | `cnix-virt` |
 | Module classes | `home`, `nixos` |
 | External inputs | `cirius-lib` |
-| Options | 25 |
+| Options | 35 |
 
 ## Usage
 
@@ -129,3 +129,7 @@ or GPU passthrough setups.
 - `image` and `dataDir` are declared nullable without a default, so NixOS reports
   them as unset until you provide a value; the module's fallbacks only apply to
   the derived data directory.
+- Penpot containers find each other by name on the default Podman network
+  (DNS is enabled by the container module), so no extra networks are declared.
+  Administrative tasks use the documented names, e.g.
+  `podman exec -ti penpot-backend python3 manage.py create-profile`.

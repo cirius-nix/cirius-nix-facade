@@ -22,7 +22,7 @@ do, and which knobs exist.
 | [cirius-visual](./cirius-visual.md) | `cnix-visual` | home, nixos | 9 | 27 | Stylix theming, fonts, KDE Plasma, GNOME, panels, theme switcher |
 | [cirius-networking](./cirius-networking.md) | `cnix-net` | nixos | 2 | 10 | AdGuard Home DNS filtering, SSH, Caddy, host table, Tailscale |
 | [cirius-gaming](./cirius-gaming.md) | `cnix-gaming` | nixos | 3 | 10 | Steam/Lutris, emulators, GameMode, Gamescope, Sunshine streaming |
-| [cirius-virt](./cirius-virt.md) | `cnix-virt` | home, nixos | 4 | 25 | Podman/OCI containers, libvirt base, EDID virtual displays |
+| [cirius-virt](./cirius-virt.md) | `cnix-virt` | home, nixos | 4 | 35 | Podman/OCI containers, libvirt base, EDID virtual displays |
 | [cirius-art](./cirius-art.md) | `cnix-art` | home | 2 | 2 | Drawing, 3D, generative art, sprite tooling |
 | [cirius-office](./cirius-office.md) | `cnix-office` | home | 1 | 2 | Tiered office/document tooling and Obsidian |
 | [cirius-vn](./cirius-vn.md) | `cnix-vn` | nixos | 1 | 2 | Vietnamese input method and locale |
