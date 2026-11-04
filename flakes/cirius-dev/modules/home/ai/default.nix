@@ -67,7 +67,9 @@
         programs.codexDesktopLinux = {
           enable = true;
           linuxFeatures = [
-            # "shallow-repository-watches"
+            "computer-use-linux"
+            "remote-mobile-control"
+            "remote-control-ui"
           ];
         };
       })
