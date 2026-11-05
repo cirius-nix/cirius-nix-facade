@@ -95,6 +95,13 @@ The flakes also share code through `cirius-lib`:
 }
 ```
 
+## Apple Silicon macOS
+
+Use the Darwin-specific Home Manager aggregates for dev/utils/visual, native
+Caddy through nix-darwin, and the existing Docker Desktop for local
+Doop/Penpot/Dockhand containers. See [the macOS guide](apps/website/docs/darwin.md)
+and [example consumer](examples/darwin/flake.nix). Linux modules remain separate.
+
 ## Development
 
 The repository root is a [devenv](https://devenv.sh/) shell providing Nix tooling

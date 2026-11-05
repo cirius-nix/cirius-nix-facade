@@ -26,7 +26,7 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
-        home.packages = with pkgs; [ github-desktop ];
+        home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.github-desktop ];
         programs = {
           git = {
             enable = true;

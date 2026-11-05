@@ -21,15 +21,17 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
-        home.packages = with pkgs; [
-          android-studio
-          jdk21
-          gradle
-          jdt-language-server
-          kotlin-language-server
-          ktlint
-          google-java-format
-        ];
+        home.packages =
+          with pkgs;
+          [
+            jdk21
+            gradle
+            jdt-language-server
+            kotlin-language-server
+            ktlint
+            google-java-format
+          ]
+          ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.android-studio ];
       })
 
       (lib.mkIf (enable && nvim.enable) {

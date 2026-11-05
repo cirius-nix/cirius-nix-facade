@@ -63,7 +63,7 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
-        home.packages = with pkgs.kdePackages; [ kdeconnect-kde ];
+        home.packages = lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.kdePackages.kdeconnect-kde ];
       })
 
       (lib.mkIf (enable && settings.fileSync.enable) (
@@ -74,7 +74,7 @@
           services.syncthing = {
             enable = true;
             guiAddress = "http://127.0.0.1:${toString fileSyncSettings.port}";
-            guiCredentials = {
+            guiCredentials = lib.mkIf (fileSyncSettings.credentials.passwordFile != null) {
               inherit (fileSyncSettings.credentials) username passwordFile;
             };
             settings = {

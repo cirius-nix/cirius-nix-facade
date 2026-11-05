@@ -19,7 +19,7 @@
       inherit (config.${namespace}.sprite) enable;
     in
     lib.mkMerge [
-      (lib.mkIf enable {
+      (lib.mkIf (enable && pkgs.stdenv.hostPlatform.isLinux) {
         home.packages = with pkgs; [
           aseprite
           ldtk

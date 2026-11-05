@@ -22,15 +22,17 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
-        home.packages = with pkgs; [
-          zathura
-          tex
-          texlab
-        ];
+        home.packages =
+          with pkgs;
+          [
+            tex
+            texlab
+          ]
+          ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.zathura ];
       })
 
       (lib.mkIf (enable && nvim.enable) {
-        programs.nixvim.plugins.vimtex = {
+        programs.nixvim.plugins.vimtex = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
           enable = true;
           # Use the development environment before the packaged fallback tools.
           texlivePackage = null;
@@ -52,10 +54,12 @@
         };
         programs.nixvim.extraPackagesAfter = [
           tex
+        ]
+        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
           pkgs.zathura
           pkgs.pstree
-        ]
-        ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.xdotool ];
+          pkgs.xdotool
+        ];
 
         ${namespace}.editor.nvim.settings = {
           formatter = {
@@ -73,7 +77,7 @@
               settings.texlab = {
                 build.onSave = false;
 
-                forwardSearch = {
+                forwardSearch = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
                   executable = "zathura";
                   args = [
                     "--synctex-forward"

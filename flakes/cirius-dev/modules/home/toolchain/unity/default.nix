@@ -21,19 +21,25 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
-        home.packages = with pkgs; [
-          (unityhub.overrideAttrs (old: {
-            postInstall = (old.postInstall or "") + ''
-              wrapProgram $out/opt/unityhub/unityhub \
-                --prefix LD_LIBRARY_PATH : "${pkgs.ncurses}/lib"
-            '';
-          }))
-          git-lfs
-          vulkan-tools
-          dotnet-sdk
-          omnisharp-roslyn
-          csharpier
-        ];
+        home.packages =
+          (with pkgs; [
+            git-lfs
+            dotnet-sdk
+            omnisharp-roslyn
+            csharpier
+          ])
+          ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux (
+            with pkgs;
+            [
+              (unityhub.overrideAttrs (old: {
+                postInstall = (old.postInstall or "") + ''
+                  wrapProgram $out/opt/unityhub/unityhub \
+                    --prefix LD_LIBRARY_PATH : "${pkgs.ncurses}/lib"
+                '';
+              }))
+              vulkan-tools
+            ]
+          );
       })
 
       (lib.mkIf (enable && nvim.enable) {

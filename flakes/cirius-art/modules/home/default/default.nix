@@ -25,18 +25,21 @@
     in
     lib.mkIf useRecommendedPackages {
       home.packages =
-        with pkgs;
-        with pkgs.${namespace};
-        [
-          inkscape
-          blender
-          imagemagick
-          krita
-          freecad
-          # our own packages
-          comfy-desktop
-          openpencil-cli
-          openpencil-desktop
-        ];
+        if pkgs.stdenv.hostPlatform.isDarwin then
+          [ pkgs.imagemagick ]
+        else
+          with pkgs;
+          with pkgs.${namespace};
+          [
+            inkscape
+            blender
+            imagemagick
+            krita
+            freecad
+            # our own packages
+            comfy-desktop
+            openpencil-cli
+            openpencil-desktop
+          ];
     };
 }

@@ -36,7 +36,10 @@
 
     in
     lib.mkMerge [
-      (lib.mkIf enable {
+      (lib.mkIf (enable && pkgs.stdenv.hostPlatform.isDarwin) {
+        home.packages = [ pkgs.poppler-utils ];
+      })
+      (lib.mkIf (enable && pkgs.stdenv.hostPlatform.isLinux) {
         home.packages = with pkgs; [
           onlyoffice-desktopeditors
           pdfarranger
@@ -52,16 +55,20 @@
       })
 
       (lib.mkIf (enable && (hasLevel "technical")) {
-        home.packages = with pkgs; [
-          pandoc
-          mermaid-cli
-          typst
-          drawio
-          graphviz
-        ];
+        home.packages =
+          with pkgs;
+          [
+            pandoc
+            typst
+            graphviz
+          ]
+          ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+            pkgs.drawio
+            pkgs.mermaid-cli
+          ];
       })
 
-      (lib.mkIf (enable && (hasLevel "research")) {
+      (lib.mkIf (enable && (hasLevel "research") && pkgs.stdenv.hostPlatform.isLinux) {
         home.packages = with pkgs; [
           # build fail
           # zotero
