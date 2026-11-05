@@ -80,6 +80,8 @@ stdenv.mkDerivation (finalAttrs: {
     gappsWrapperArgs+=(
       --unset APPIMAGE
       --unset LD_LIBRARY_PATH
+      # Avoid WebKitGTK's Wayland protocol error with NVIDIA explicit sync.
+      --set-default __NV_DISABLE_EXPLICIT_SYNC 1
       --prefix PATH : ${
         lib.makeBinPath [
           xdgMime

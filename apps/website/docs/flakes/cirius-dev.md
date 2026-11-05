@@ -297,6 +297,10 @@ service; enabling this module does not start a local server.
 The packaged desktop release is `0.12.0` for `x86_64-linux`. Update the Nix
 package to upgrade it; its files in the Nix store are read-only.
 
+The launcher defaults `__NV_DISABLE_EXPLICIT_SYNC` to `1` to avoid the
+WebKitGTK `Error 71` crash on NVIDIA with Wayland. An existing value is
+preserved; this setting applies only to Doop and its child processes.
+
 ## Toolchains
 
 Nine modules under `toolchain/`, each a single boolean. They share one shape:
