@@ -17,7 +17,7 @@ enabled too. Editors and language tooling are kept independent rather than fused
 | Namespace | `cnix-dev` |
 | Module classes | `home`, `nixos` |
 | External inputs | `nixvim`, `nix-index-database`, `llm-agents`, `codex-desktop-linux`, `deepseek-harness`, `devenv` |
-| Options | 40 |
+| Options | 42 |
 
 ## Usage
 
@@ -33,6 +33,7 @@ enabled too. Editors and language tooling are kept independent rather than fused
   cnix-dev.editor.code.enable = true;
 
   cnix-dev.git.enable = true;
+  cnix-dev.doop.enable = true;
   cnix-dev.toolchain.nodejs.enable = true;
   cnix-dev.toolchain.go.enable = true;
 }
@@ -47,6 +48,7 @@ enabled too. Editors and language tooling are kept independent rather than fused
 | `term` | home | `cnix-dev.term.useTerms` | Ghostty, herdr |
 | `git` | home | `cnix-dev.git.enable` | git, github-desktop, gh, lazygit, fish aliases |
 | `ai` | home | `cnix-dev.ai.useClients` | AI client packages and programs |
+| `doop` | home | `cnix-dev.doop.enable` | Doop Desktop and `doop://` links |
 | `editor/code` | home | `cnix-dev.editor.code.enable` | VS Code |
 | `editor/nvim` | home | `cnix-dev.editor.nvim.enable` | nixvim, leader key, options, keymaps |
 | `editor/nvim/plugins` | home | *(requires `editor.nvim.enable`)* | Plugin set, formatter/completion/LSP wiring |
@@ -276,6 +278,25 @@ own `workDir`.
 | `…runners.<name>.ephemeral` | `bool` | `false` | Register a fresh runner per job. | Removes the runner after each job; needs PAT or App credentials. |
 | `…runners.<name>.workDir` | `nullOr str` | `null` | Directory used as `$GITHUB_WORKSPACE` and for checkouts. | Moves the cleaned-on-start build directory off tmpfs; must exist and be writable. |
 
+### `home/doop` — Doop Desktop
+
+```nix
+cnix-dev.doop.enable = true;
+```
+
+Installs the pinned Linux desktop client and registers `doop://` links for
+browser sign-in and agent connection handoffs. Launch it from the application
+menu or with `doop-desktop`. The client connects to the hosted `doop.design`
+service; enabling this module does not start a local server.
+
+| Option | Type | Default | Effect |
+| --- | --- | --- | --- |
+| `cnix-dev.doop.enable` | `bool` | `false` | Installs Doop Desktop and registers its URL handler. |
+| `cnix-dev.doop.package` | `package` | `pkgs.cnix-dev.doop` | Overrides the desktop package. |
+
+The packaged desktop release is `0.12.0` for `x86_64-linux`. Update the Nix
+package to upgrade it; its files in the Nix store are read-only.
+
 ## Toolchains
 
 Nine modules under `toolchain/`, each a single boolean. They share one shape:
@@ -319,6 +340,7 @@ All nine register their enable option identically:
 
 | Output | What it is |
 | --- | --- |
+| `packages.x86_64-linux.doop` / `pkgs.cnix-dev.doop` | Pinned Doop Desktop binary, packaged with Nix GTK/WebKit dependencies. |
 | `devenv` overlay | Pins `pkgs.devenv` to the flake's `devenv` input. |
 | `llm-agents` overlay | Re-exports the shared nixpkgs overlay from `llm-agents`. |
 | `lib.cnix-dev.nvim.mkRaw` | Wraps a Lua snippet as `{ __raw = …; }` for nixvim settings. |
