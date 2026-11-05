@@ -21,9 +21,5 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = [ cfg.package ];
-    xdg.mimeApps = {
-      enable = true;
-      defaultApplications."x-scheme-handler/doop" = [ "doop.desktop" ];
-    };
   };
 }

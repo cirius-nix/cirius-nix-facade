@@ -24,6 +24,10 @@ let
   # desktop entry instead so browser handoffs retain the GTK environment.
   xdgMime = writeShellScriptBin "xdg-mime" ''
     if [ "$#" -eq 3 ] && [ "$1" = default ] && [ "$3" = x-scheme-handler/doop ]; then
+      # Keep an existing correct association, including a declarative one.
+      if [ "$(${xdg-utils}/bin/xdg-mime query default "$3")" = doop.desktop ]; then
+        exit 0
+      fi
       exec ${xdg-utils}/bin/xdg-mime default doop.desktop "$3"
     fi
     exec ${xdg-utils}/bin/xdg-mime "$@"

@@ -284,14 +284,14 @@ own `workDir`.
 cnix-dev.doop.enable = true;
 ```
 
-Installs the pinned Linux desktop client and registers `doop://` links for
-browser sign-in and agent connection handoffs. Launch it from the application
-menu or with `doop-desktop`. The client connects to the hosted `doop.design`
+Installs the pinned Linux desktop client. Doop registers `doop://` links at
+startup for browser sign-in and agent connection handoffs. Launch it from the
+application menu or with `doop-desktop`. The client connects to the hosted `doop.design`
 service; enabling this module does not start a local server.
 
 | Option | Type | Default | Effect |
 | --- | --- | --- | --- |
-| `cnix-dev.doop.enable` | `bool` | `false` | Installs Doop Desktop and registers its URL handler. |
+| `cnix-dev.doop.enable` | `bool` | `false` | Installs Doop Desktop, which registers its URL handler at startup. |
 | `cnix-dev.doop.package` | `package` | `pkgs.cnix-dev.doop` | Overrides the desktop package. |
 
 The packaged desktop release is `0.12.0` for `x86_64-linux`. Update the Nix
@@ -300,6 +300,10 @@ package to upgrade it; its files in the Nix store are read-only.
 The launcher defaults `__NV_DISABLE_EXPLICIT_SYNC` to `1` to avoid the
 WebKitGTK `Error 71` crash on NVIDIA with Wayland. An existing value is
 preserved; this setting applies only to Doop and its child processes.
+
+Doop registers MIME associations at runtime and keeps an existing correct
+association unchanged. This module does not enable `xdg.mimeApps` or declare
+`mimeapps.list`, so enabling Doop does not take ownership of other MIME defaults.
 
 ## Toolchains
 
