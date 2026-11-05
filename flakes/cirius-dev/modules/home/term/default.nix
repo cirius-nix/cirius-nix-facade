@@ -9,10 +9,7 @@
   options.${namespace}.term = {
     useTerms = lib.mkOption {
       type = with lib.types; listOf str;
-      default = [
-        "ghostty"
-        "herdr"
-      ];
+      default = [ "ghostty" ] ++ lib.optional pkgs.stdenv.hostPlatform.isLinux "herdr";
       description = "Whether to use recommended terminal packages.";
     };
   };
@@ -26,8 +23,9 @@
       (lib.mkIf (ifTerm "ghostty") {
         programs.ghostty = {
           enable = true;
+          package = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin null;
           systemd = {
-            enable = true;
+            enable = pkgs.stdenv.hostPlatform.isLinux;
           };
           enableFishIntegration = config.programs.fish.enable;
           settings = {
@@ -80,7 +78,7 @@
         };
       })
 
-      (lib.mkIf (ifTerm "herdr") {
+      (lib.mkIf (ifTerm "herdr" && pkgs.stdenv.hostPlatform.isLinux) {
         home.packages = [ pkgs.llm-agents.herdr ];
 
         xdg.configFile."herdr/config.toml".source = (pkgs.formats.toml { }).generate "herdr-config" {

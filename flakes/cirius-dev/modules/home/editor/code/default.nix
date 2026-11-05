@@ -22,7 +22,7 @@
       (lib.mkIf enable {
         programs.vscode = {
           enable = true;
-          package = pkgs.vscode.fhs;
+          package = if pkgs.stdenv.hostPlatform.isDarwin then pkgs.vscode else pkgs.vscode.fhs;
         };
       })
     ];

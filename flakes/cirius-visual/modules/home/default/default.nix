@@ -17,7 +17,15 @@
         (mkAliasOptionModule [ namespace "infra" "fonts" ] [ "stylix" "fonts" ])
       ]
     )
-    ++ (with builtins; attrValues (removeAttrs inputs.self.homeModules [ "default" ]));
+    ++ (
+      with builtins;
+      attrValues (
+        removeAttrs inputs.self.homeModules [
+          "default"
+          "darwin"
+        ]
+      )
+    );
 
   options.${namespace} =
     let

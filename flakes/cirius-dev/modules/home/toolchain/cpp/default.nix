@@ -21,17 +21,19 @@
     in
     lib.mkMerge [
       (lib.mkIf enable {
-        home.packages = with pkgs; [
-          clang
-          clang-tools
-          cmake
-          ninja
-          gnumake
-          pkg-config
-          gdb
-          lldb
-          ccache
-        ];
+        home.packages =
+          with pkgs;
+          [
+            clang
+            clang-tools
+            cmake
+            ninja
+            gnumake
+            pkg-config
+            lldb
+            ccache
+          ]
+          ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.gdb ];
       })
 
       (lib.mkIf (enable && nvim.enable) {

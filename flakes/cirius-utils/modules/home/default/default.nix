@@ -13,7 +13,12 @@
       nix-flatpak.homeManagerModules.nix-flatpak
       plasma-manager.homeModules.plasma-manager
     ])
-    ++ (builtins.attrValues (removeAttrs inputs.self.homeModules [ "default" ]));
+    ++ (builtins.attrValues (
+      removeAttrs inputs.self.homeModules [
+        "default"
+        "darwin"
+      ]
+    ));
 
   options.${namespace} = {
     enable = lib.mkOption {
