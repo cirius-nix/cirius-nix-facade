@@ -88,6 +88,32 @@ outlive socket restarts.
 below are identical in both places. Data directories fall back to
 `/var/lib/dockhand` and `/var/lib/postgres-<name>`.
 
+Penpot deploys the full upstream stack from the
+[official Docker compose file](https://help.penpot.app/technical-guide/getting-started/docker/)
+as OCI containers: `penpot-frontend` (bound to `address`), `penpot-backend`,
+`penpot-admin-console`, `penpot-mcp`, `penpot-exporter`, `penpot-postgres`,
+`penpot-valkey`, and — unless `mailpit.enable = false` — a `penpot-mailpit`
+SMTP catch-all bound to `mailpit.address`. The services reach each other by
+name over the default Podman network. A `PENPOT_SECRET_KEY` is generated once
+into `<dataDir>/penpot.env` (mode 600) on first activation; add more variables
+to that file, or pass extra files via `environmentFiles`, to override it or to
+configure an external SMTP provider. Data directories fall back to
+`/var/lib/penpot` (`assets/` and `postgres/` inside it).
+
+| Option | Type | Default | Description | Effect |
+| --- | --- | --- | --- | --- |
+| `cnix-virt.container.containers.penpot` | — | — | Penpot container stack | See the fields below. |
+| `…penpot.enable` | `bool` | `false` | Whether to enable the Penpot containers | Deploys the full Penpot stack. |
+| `…penpot.version` | `str` | `"2.18"` | Penpot image tag to use for all Penpot services | Appended to every `penpotapp/*` image. |
+| `…penpot.address` | `str` | `"127.0.0.1:9001"` | Address to bind the Penpot frontend to | Frontend port binding (`<address>:8080`). |
+| `…penpot.publicUri` | `str` | `"http://localhost:9001"` | Public URI used to access Penpot | Passed as `PENPOT_PUBLIC_URI`. |
+| `…penpot.dataDir` | `nullOr str` | — | Data directory for the Penpot containers | Persistent data; falls back to `/var/lib/penpot`. |
+| `…penpot.environmentFiles` | `listOf str` | `[ ]` | Environment files for the secret-key services | Passed to backend, admin-console, and exporter, after the generated secret file. |
+| `…penpot.flags` | `listOf str` | *upstream defaults* | Penpot feature flags passed via `PENPOT_FLAGS` | Joined with spaces; defaults match the official compose file. |
+| `…penpot.telemetryEnabled` | `bool` | `true` | Whether to enable Penpot telemetry | Passed as `PENPOT_TELEMETRY_ENABLED`. |
+| `…penpot.mailpit.enable` | `bool` | `true` | Whether to enable the Mailpit SMTP catch-all container | Deploys `penpot-mailpit` and points the backend SMTP at it. |
+| `…penpot.mailpit.address` | `str` | `"127.0.0.1:8025"` | Address to bind the Mailpit web UI to | Mailpit web UI binding. |
+
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
 | `cnix-virt.container.enable` | `bool` | `false` | Whether to enable the container module | Enables Podman/OCI support and the container tooling. |
