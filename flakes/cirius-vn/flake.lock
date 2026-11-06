@@ -9,11 +9,11 @@
       },
       "locked": {
         "dir": "flakes/cirius-lib",
-        "lastModified": 1792037769,
-        "narHash": "sha256-xXWgCOPBJpaEEqtxmMWk/fHtNrJ1pi3aea2ioDJKqHY=",
+        "lastModified": 1793962806,
+        "narHash": "sha256-FywybzYt9fhITfVdd01yDVg+jJhi3ID6fUk6SrBnCog=",
         "owner": "cirius-nix",
         "repo": "cirius-nix-facade",
-        "rev": "733d74c20affaa0726e4a9dd4d804be04d734227",
+        "rev": "5aff21bf6d3a31c0f115191de224ccf4e89818f2",
         "type": "github"
       },
       "original": {
@@ -30,11 +30,11 @@
         "snowfall-lib": "snowfall-lib_2"
       },
       "locked": {
-        "lastModified": 1792038017,
-        "narHash": "sha256-JRqYK0xyN8SnhJs8dljYm0Tb+uj3YFfJcOERGKJsGSs=",
+        "lastModified": 1793725139,
+        "narHash": "sha256-/Rt1FkaS1RJCNRnP3q2DQiqGxySD/AMv9e7nxZ8FGvQ=",
         "owner": "LotusInputMethod",
         "repo": "fcitx5-lotus",
-        "rev": "5a3e0fbb40429b81fe16671ee5dd903c085e8ec3",
+        "rev": "c255fd6d91693e74dcc6fed6437f24aca9f1fea4",
         "type": "github"
       },
       "original": {
@@ -220,11 +220,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1791956154,
-        "narHash": "sha256-jBYGPi4udQ9uo4KQp9m2J0546nJVQitG15gvZSaVVAs=",
+        "lastModified": 1793726008,
+        "narHash": "sha256-jQp1wKvbwWdLBASTXkSi/VYmDJ5AbBi1WvcMt9HWJC8=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "55bfb4d7437bd4e09ab7cba58a43bd68eb310044",
+        "rev": "1d060086d60cb76a40cf37109f979d88a5bd6396",
         "type": "github"
       },
       "original": {
