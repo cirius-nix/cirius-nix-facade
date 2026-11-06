@@ -38,6 +38,7 @@
             freecad
             # our own packages
             comfy-desktop
+            pencil-desktop
             openpencil-cli
             openpencil-desktop
           ];
