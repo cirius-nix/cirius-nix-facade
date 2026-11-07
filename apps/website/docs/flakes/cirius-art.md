@@ -105,6 +105,27 @@ public binary cache. The package prefers local builds and disables substitution;
 this does not prevent an explicit upload, so do not upload it. Keep updates under
 Nix rather than the application's updater, since the Nix store is read-only.
 
+If Pencil reports **Hardware acceleration unavailable**, first check the host
+graphics driver. On NVIDIA systems, run:
+
+```sh
+nvidia-smi
+cat /proc/driver/nvidia/version
+readlink -f /run/opengl-driver/lib/libEGL_nvidia.so.0
+```
+
+`Driver/library version mismatch` means the loaded NVIDIA kernel module and the
+active userspace libraries differ. This can happen after a NixOS switch that
+updates the driver before a reboot. Save your work, then boot a system generation
+whose kernel module and userspace driver match, and relaunch Pencil. Do not work
+around this by disabling GPU acceleration or the GPU sandbox: the editor needs
+hardware WebGL. The package uses the host's graphics driver rather than pinning
+an NVIDIA version.
+
+An Xvfb smoke check with `--disable-gpu` verifies startup only. To verify graphics,
+run on a real desktop and confirm that WebGL2 uses the physical GPU; software
+renderers such as `llvmpipe` do not establish hardware acceleration.
+
 To update, choose a versioned upstream release, update `version` and both hashes
 in `packages/pencil-desktop/default.nix`, and verify the tarballs' embedded version
 and ELF architecture. Build and smoke-check on x86_64 Linux. ARM64 source checks
