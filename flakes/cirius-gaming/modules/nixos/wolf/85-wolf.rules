@@ -1,0 +1,9 @@
+# Based on games-on-whales/wolf's 85-wolf.rules (stable, 2026-11-07):
+# https://github.com/games-on-whales/wolf/blob/stable/85-wolf.rules
+# Match the device and its ancestors, including DualSense touchpad/motion/hidraw.
+# Rootful Wolf needs no host-user uinput/uhid permission grants.
+# Unlike upstream's input group, root-only nodes also exclude Sunshine users
+# already in `input`. Seat and libinput rules keep them off the local desktop.
+SUBSYSTEM=="input", ATTR{name}=="Wolf *virtual*", MODE:="0600", GROUP:="root", ENV{ID_SEAT}="seat9", ENV{LIBINPUT_IGNORE_DEVICE}="1", TAG-="uaccess"
+SUBSYSTEMS=="input", ATTRS{name}=="Wolf *virtual*", MODE:="0600", GROUP:="root", ENV{ID_SEAT}="seat9", ENV{LIBINPUT_IGNORE_DEVICE}="1", TAG-="uaccess"
+KERNEL=="hidraw*", ATTRS{uevent}=="*HID_NAME=Wolf *virtual*", MODE:="0600", GROUP:="root", ENV{ID_SEAT}="seat9", TAG-="uaccess"

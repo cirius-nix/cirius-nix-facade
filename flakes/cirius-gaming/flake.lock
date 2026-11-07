@@ -200,7 +200,8 @@
       "inputs": {
         "eden": "eden",
         "nixpkgs": "nixpkgs",
-        "snowfall-lib": "snowfall-lib"
+        "snowfall-lib": "snowfall-lib",
+        "wolf-nvidia-vol": "wolf-nvidia-vol"
       }
     },
     "snowfall-lib": {
@@ -264,6 +265,28 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "wolf-nvidia-vol": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dir": "wolf-nvidia-vol",
+        "lastModified": 1793603608,
+        "narHash": "sha256-HGoHvE3IP2UKYtZT4rwwsVicnPDRmin3rKibhS7Uelg=",
+        "owner": "altano",
+        "repo": "flakes",
+        "rev": "2ffdb9306855253d4a4a83230eb4c770f87cca4b",
+        "type": "github"
+      },
+      "original": {
+        "dir": "wolf-nvidia-vol",
+        "owner": "altano",
+        "repo": "flakes",
         "type": "github"
       }
     }

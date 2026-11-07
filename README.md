@@ -59,7 +59,7 @@ flakes/<name>/
 | `cirius-dev` | `cnix-dev` | Dev tooling: nixvim, shell/term, git (gh, lazygit), AI agents (`llm-agents`, codex, deepseek), a self-hosted GitHub Actions runner, and toolchains (nix, go, nodejs, cpp, aws, android, unity, latex, markdown). |
 | `cirius-visual` | `cnix-visual` | Desktop look & feel: stylix, plasma-manager, KDE/GNOME modules, custom KDE themes/packages, and kwin/audio-vis overlays. |
 | `cirius-networking` | `cnix-net` | Local AdGuard Home DNS filtering, SSH/Caddy host routing, and optional Tailscale. |
-| `cirius-gaming` | `cnix-gaming` | Emulation/streaming via [eden](https://github.com/Daaboulex/eden-nix) and an eden overlay. |
+| `cirius-gaming` | `cnix-gaming` | Emulation via [eden](https://github.com/Daaboulex/eden-nix), Sunshine capture, and opt-in Wolf virtual streaming sessions. |
 | `cirius-art` | `cnix-art` | Creative tooling: proprietary Pencil (`pencil-desktop`), the separate `openpencil-cli`/`openpencil-desktop` packages, `comfy-desktop`, and sprite tooling. |
 | `cirius-office` | `cnix-office` | Office modules. |
 | `cirius-virt` | `cnix-virt` | Virtualisation: containers and virtual desktops. |
