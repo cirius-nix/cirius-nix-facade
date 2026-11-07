@@ -159,3 +159,88 @@ or GPU passthrough setups.
   (DNS is enabled by the container module), so no extra networks are declared.
   Administrative tasks use the documented names, e.g.
   `podman exec -ti penpot-backend python3 manage.py create-profile`.
+
+## Family media: Jellyfin and Immich
+
+`cnix-virt.family-media` uses the upstream NixOS services, not a new application
+or a second container stack. Jellyfin provides video/photo libraries and family
+accounts; Immich provides private photo/video uploads, albums and mobile backup.
+
+```nix
+cnix-virt.family-media = {
+  enable = true;
+  jellyfin.libraryPaths = [ "/srv/family-media/Pictures" "/srv/family-media/Videos" ];
+  immich.libraryPaths = [ "/srv/family-media/Pictures" "/srv/family-media/Videos" ];
+};
+```
+
+Each service can be disabled with its `enable = false` option. Other settings
+remain available through upstream `services.jellyfin` and `services.immich`.
+
+### Storage and privacy
+
+- Jellyfin state and configuration: `/var/lib/jellyfin`; cache:
+  `/var/cache/jellyfin`.
+- Immich uploads, generated media and built-in database backups:
+  `/var/lib/immich`; machine-learning cache: `/var/cache/immich`.
+- Native PostgreSQL uses its normal `/var/lib/postgresql` data directory, with
+  VectorChord configured by NixOS. PostgreSQL and Redis use local Unix sockets.
+- Keep these writable locations on a POSIX filesystem such as Btrfs/ext4 on an
+  SSD. Do not put PostgreSQL on NTFS.
+- Existing NTFS pictures/videos can be mounted read-only under `/srv`. Both
+  services use separate system users, read-only library binds and required-mount
+  dependencies. `/home` and the raw `/mnt` tree are hidden inside their sandboxes.
+- Library paths must be outside `/home` and `/mnt`. Configure explicit bind
+  mounts, rather than changing ownership or permissions on an entire disk.
+
+NTFS mounted with `uid=1000,gid=100,umask=022` does not grant a dedicated Immich
+user write access. Group membership or a simple bind mount cannot fix this.
+Writable uploads intentionally stay on the SSD; the original NTFS content is
+indexed in place and is not moved, renamed or deleted. Do not point Immich's
+managed upload directory at an existing photo collection.
+
+### First use and private networking
+
+No firewall ports, Caddy routes, Tailscale sharing or public listeners are added.
+Immich binds to `127.0.0.1:2283`. Jellyfin's network XML is patched before startup
+to bind only `127.0.0.1`, disable IPv6 and disable UDP auto-discovery. Other XML
+settings, including a previously customized HTTP port, are preserved. Its
+normal initial URL is `http://127.0.0.1:8096`.
+
+The first visit to each application's web UI creates its administrator. Do this
+locally before adding family access; no default password or API key is created
+in Nix. Then:
+
+1. Add the configured `/srv/...` directories as Jellyfin libraries. Do not enable
+   writing metadata beside the original files.
+2. In Immich Administration, create an **External Library**, choose its owner,
+   add the configured `/srv/...` import paths and scan. Directory mounts alone
+   do not create an Immich library or grant every account access to it.
+3. Create separate family accounts and share only intended libraries/albums.
+4. Use Immich web/mobile uploads for new photos; these go to SSD storage. Jellyfin
+   is the playback catalog, not a general-purpose upload service.
+
+Remote family access requires a separately reviewed private route, such as a
+Tailscale-only HTTPS reverse proxy with appropriate DNS/certificate trust. The
+localhost URLs are not reachable from another phone/computer. Never expose a
+first-run setup wizard publicly or assume `openFirewall = false` changes a
+service's listening address.
+
+Back up **both** Immich's database and its entire media directory, plus Jellyfin
+state and original NTFS files. A second directory on the same machine/disk is
+not disaster recovery. Test restoration before relying on phone backup alone.
+
+### Validation
+
+```sh
+python3 flakes/cirius-virt/tests/private-network-test.py
+nix-instantiate --eval --strict --json \
+  --arg nixpkgs /path/to/pinned/nixpkgs \
+  flakes/cirius-virt/tests/family-media-eval.nix
+```
+
+The tests cover opt-in/opt-out behavior, service users, network defaults, library
+protection and XML creation/preservation/failure cases. They are evaluation/unit
+tests, not a live upload/playback or filesystem test. Before enabling family
+access, test an upload, external-library scan, video playback, read-only behavior,
+and listeners (including Jellyfin's first-run setup stage) on the deployed host.
