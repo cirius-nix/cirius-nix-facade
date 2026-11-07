@@ -11,6 +11,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Nix-built userspace driver bundle for Wolf's NVIDIA containers.
+    wolf-nvidia-vol = {
+      url = "github:altano/flakes?dir=wolf-nvidia-vol";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     eden = {
       url = "github:Daaboulex/eden-nix";
       inputs.nixpkgs.follows = "nixpkgs";
