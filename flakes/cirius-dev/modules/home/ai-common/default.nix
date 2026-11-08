@@ -37,13 +37,13 @@
       })
 
       (lib.mkIf (ifClient "orca") {
-        home.packages = with pkgs; [
+        home.packages = with pkgs.llm-agents; [
           orca
         ];
       })
 
       (lib.mkIf (ifClient "t3code") {
-        home.packages = with pkgs; [
+        home.packages = with pkgs.llm-agents; [
           t3code
           t3code-desktop
         ];
