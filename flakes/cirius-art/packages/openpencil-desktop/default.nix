@@ -26,6 +26,9 @@ in
 appimageTools.wrapType2 {
   inherit pname version src;
 
+  # Required by the AppImage's bundled libgcrypt.
+  extraPkgs = pkgs: [ pkgs.libgpg-error ];
+
   extraInstallCommands = ''
     install -Dm444 ${contents}/usr/share/applications/OpenPencil.desktop \
       $out/share/applications/openpencil-desktop.desktop
