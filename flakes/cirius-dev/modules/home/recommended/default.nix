@@ -30,6 +30,7 @@
             se-adopt
             artifact-plane
             ttyd
+            prek
           ]
           ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.bruno ];
         programs.fastfetch = {
