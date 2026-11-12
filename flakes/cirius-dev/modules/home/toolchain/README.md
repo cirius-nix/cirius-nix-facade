@@ -59,3 +59,37 @@ Use the installed AWS CLI for account and resource operations.
 
 Nix language support now follows `cnix-dev.toolchain.nix.enable`. Enable that
 option to retain Nix language support when you enable Neovim.
+
+## Platform and Framework tools
+
+For [Cirius Go Platform](https://github.com/hieutran21198/cirius-go-platform)
+and [Artifact Driven](https://github.com/hieutran21198/Artifact-Driven-Framework),
+enable `cnix-dev.useRecommendedPackages`, `cnix-dev.git.enable` and
+`cnix-dev.toolchain.{go,nodejs,aws}.enable` in the existing Home Manager config.
+Editors are optional.
+
+The Go module selects `go_1_27`, builds `go-tools` with `buildGo127Module`
+for Staticcheck compatibility, and provides `gofumpt` and `govulncheck`. Race
+tests also need a C compiler: the C++ toolchain supplies Clang and its `cc`
+command when enabled. AWS includes Atmos and jq without relying on host system
+packages. Recommended packages include Python,
+prek, Task, curl, tar and PostgreSQL binaries for Tenant CRM's disposable
+integration tests. Git and gh come from the Git module; Node.js includes npm.
+
+Versions follow the consumer's `nixpkgs`. Compare installed versions with
+Platform's `go.work`, `package.json` and `infra/terraform/versions.env`.
+Use `npm ci` for its locked web tools. Browser tests use each repository's
+pinned `requirements-browser.txt` and Playwright's matching Chromium in a
+project virtual environment; they also need local sockets and browser launch
+permission.
+
+Optional local service tasks still need working `docker compose`, a container
+runtime, PostgreSQL containers and the Identity Cognito emulator. Installing
+PostgreSQL binaries does not start or configure these services. Follow project
+instructions for environment variables, runtime secret loading, `.env`
+precedence and hook installation; these packages do not replace that setup.
+
+The existing recommended bundle still enables `programs.devenv`. To omit it
+from the local profile, override `programs.devenv.enable = lib.mkForce false;`
+in the consuming Home Manager module. Removing project shell instructions and
+validating their environment behavior remain separate work.

@@ -22,13 +22,15 @@
     lib.mkMerge [
       (lib.mkIf enable {
         home.packages = with pkgs; [
-          go
+          go_1_27
           gopls
           delve
           golangci-lint
           goreleaser
-          go-tools
+          (go-tools.override { buildGoModule = pkgs.buildGo127Module; })
           gotools
+          gofumpt
+          govulncheck
         ];
       })
 
@@ -71,7 +73,7 @@
           userSettings = {
             "go.toolsManagement.autoUpdate" = false;
             "go.alternateTools" = {
-              go = lib.getExe pkgs.go;
+              go = lib.getExe pkgs.go_1_27;
               gopls = lib.getExe pkgs.gopls;
               dlv = lib.getExe pkgs.delve;
               goimports = lib.getExe' pkgs.gotools "goimports";
