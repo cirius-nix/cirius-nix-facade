@@ -23,6 +23,8 @@
       (lib.mkIf enable {
         home.packages = with pkgs; [
           awscli2
+          atmos
+          jq
           terraform
           terraform-ls
           terragrunt

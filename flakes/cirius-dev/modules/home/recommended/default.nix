@@ -27,6 +27,10 @@
             btop
             comma
             python3
+            go-task
+            curl
+            gnutar
+            postgresql
             se-adopt
             artifact-plane
             ttyd
