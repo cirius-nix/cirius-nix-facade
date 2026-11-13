@@ -35,6 +35,7 @@
             artifact-plane
             ttyd
             prek
+            lychee
           ]
           ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.bruno ];
         programs.fastfetch = {
