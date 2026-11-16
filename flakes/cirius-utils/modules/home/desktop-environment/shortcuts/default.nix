@@ -20,6 +20,7 @@
         Whether to use recommended shortcuts for the system for KDE or GNOME.
         This will apply a consistent set of shortcuts across applications and the desktop
         environment itself.
+        This option has no effect on COSMIC, which uses its native shortcuts.
       '';
     };
 
@@ -187,7 +188,7 @@
         }
       ))
 
-      (lib.mkIf (enable && useRecommendedShortcuts) ({
+      (lib.mkIf (enable && useRecommendedShortcuts && managedDesktopEnvironment != "cosmic") ({
         assertions = [
           {
             assertion = managedDesktopEnvironment == "kde" || managedDesktopEnvironment == "gnome";
@@ -200,10 +201,34 @@
 
       (lib.mkIf (enable && useRecommendedShortcuts && managedDesktopEnvironment == "kde") {
         ${namespace}.desktop-environment.shortcuts.settings.bindings = {
-          "win.to-side-w" = [ [ "Meta" "Ctrl" "Left" ] ];
-          "win.to-side-e" = [ [ "Meta" "Ctrl" "Right" ] ];
-          "win.to-side-n" = [ [ "Meta" "Ctrl" "Up" ] ];
-          "win.to-side-s" = [ [ "Meta" "Ctrl" "Down" ] ];
+          "win.to-side-w" = [
+            [
+              "Meta"
+              "Ctrl"
+              "Left"
+            ]
+          ];
+          "win.to-side-e" = [
+            [
+              "Meta"
+              "Ctrl"
+              "Right"
+            ]
+          ];
+          "win.to-side-n" = [
+            [
+              "Meta"
+              "Ctrl"
+              "Up"
+            ]
+          ];
+          "win.to-side-s" = [
+            [
+              "Meta"
+              "Ctrl"
+              "Down"
+            ]
+          ];
         };
       })
     ];

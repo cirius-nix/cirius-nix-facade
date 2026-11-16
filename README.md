@@ -57,7 +57,7 @@ flakes/<name>/
 | `cirius-utils` | `cnix-utils` | Base home/nixos modules: package manager (flatpak), desktop shortcuts, power controls, chrome webapps, connectivity. |
 | `cirius-security` | `cnix-sec` | Simple defaults for SOPS secrets, SSH clients/servers and tunnels, LUKS storage, firewall, and Fail2ban. Advanced settings use upstream options. |
 | `cirius-dev` | `cnix-dev` | Dev tooling: nixvim, shell/term, git (gh, lazygit), AI agents (`llm-agents`, codex, deepseek), a self-hosted GitHub Actions runner, and toolchains (nix, go, nodejs, cpp, aws, android, unity, latex, markdown). |
-| `cirius-visual` | `cnix-visual` | Desktop look & feel: stylix, plasma-manager, KDE/GNOME modules, custom KDE themes/packages, and kwin/audio-vis overlays. |
+| `cirius-visual` | `cnix-visual` | Desktop selection for KDE, GNOME, or COSMIC; Stylix, plasma-manager, custom KDE themes/packages, and kwin/audio-vis overlays. |
 | `cirius-networking` | `cnix-net` | Local AdGuard Home DNS filtering, SSH/Caddy host routing, and optional Tailscale. |
 | `cirius-gaming` | `cnix-gaming` | Emulation via [eden](https://github.com/Daaboulex/eden-nix), Sunshine capture, and opt-in Wolf virtual streaming sessions. |
 | `cirius-art` | `cnix-art` | Creative tooling: proprietary Pencil (`pencil-desktop`), the separate `openpencil-cli`/`openpencil-desktop` packages, `comfy-desktop`, and sprite tooling. |

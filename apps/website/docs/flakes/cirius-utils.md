@@ -64,7 +64,7 @@ session restore; for GNOME it fixes keyboard repeat timing through dconf.
 | `cnix-utils.enable` | `bool` | `false` | Enable Cirius Utils. | Master switch for the base home module. |
 | `cnix-utils.settings.dotFileDir` | `nullOr str` | `null` | The directory where dotfiles are stored. If null, defaults to ~/.dotfiles. | Defines the `nix-*` fish abbrs that operate on this directory. |
 | `cnix-utils.settings.enableBootLogCapture` | `bool` | `false` | Enable boot log capture. | Adds the boot-log directory activation and `make-boot-log` abbr. |
-| `cnix-utils.settings.managedDesktopEnvironment` | `enum [ "unset" "kde" "gnome" ]` | `"unset"` | The desktop environment to manage. If unset, will not manage any desktop environment. | Selects which DE-specific block applies, here and in the shortcuts and power-controls modules. |
+| `cnix-utils.settings.managedDesktopEnvironment` | `enum [ "unset" "kde" "gnome" "cosmic" ]` | `"unset"` | The desktop environment to manage. If unset, will not manage any desktop environment. | Selects which DE-specific block applies. COSMIC keeps its native shortcuts, power controls, screen edges, and workspace settings. |
 
 ### `home/package-manager` — flatpak
 
@@ -111,13 +111,14 @@ tables live in private `_*.nix` files next to the module (`_kde.action.nix`,
 `_gnome.modifier.nix`), and the recommended set lives in
 `_default.bindings.nix`.
 
-`useRecommendedShortcuts` swaps in that recommended set; it asserts that a
-desktop environment is actually managed, so it cannot silently do nothing.
+`useRecommendedShortcuts` swaps in that recommended set for KDE or GNOME and
+rejects `"unset"` when shortcuts are enabled. On COSMIC it has no effect;
+COSMIC keeps its native shortcuts.
 
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
 | `…shortcuts.enable` | `bool` | `false` | Whether to enable recommended shortcuts for the system for KDE or GNOME. | Applies the translated shortcuts. |
-| `…shortcuts.useRecommendedShortcuts` | `bool` | `false` | Whether to use recommended shortcuts for the system for KDE or GNOME. This will apply a consistent set of shortcuts across applications and the desktop environment itself. | Replaces `settings.bindings` with the built-in default table. |
+| `…shortcuts.useRecommendedShortcuts` | `bool` | `false` | Whether to use recommended shortcuts for the system for KDE or GNOME. This will apply a consistent set of shortcuts across applications and the desktop environment itself. | Uses the built-in default table on KDE/GNOME. Has no effect on COSMIC. |
 | `…shortcuts.settings.bindings` | `attrsOf (listOf (listOf str))` | `{ }` | Keybindings for the recommended shortcuts. Each keybinding is a list of keys. | Canonical action → key sequence table, e.g. `{ "desktop.overview" = [ "SUPER" ]; }`. |
 | `…shortcuts.settings.extendedActions.kde` | `attrsOf str` | `{ }` | Additional KDE actions to be added to the default set of actions. | Deep-merged over the built-in KDE action table. |
 | `…shortcuts.settings.extendedActions.gnome` | `attrsOf str` | `{ }` | Additional GNOME actions to be added to the default set of actions. | Deep-merged over the built-in GNOME action table. |

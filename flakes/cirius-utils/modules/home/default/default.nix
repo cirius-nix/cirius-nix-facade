@@ -42,6 +42,7 @@
           "unset"
           "kde"
           "gnome"
+          "cosmic"
         ];
         default = "unset";
         description = "The desktop environment to manage. If unset, will not manage any desktop environment.";

@@ -1,15 +1,15 @@
 ---
 title: cirius-visual
 sidebar_position: 4
-description: Desktop-environment styling — Stylix theming, fonts, KDE Plasma and GNOME configuration, panels, and a light/dark theme switcher.
+description: Desktop selection for KDE Plasma, GNOME, and COSMIC, with shared application styling and desktop-specific settings.
 ---
 
 # cirius-visual
 
-The desktop layer. Stylix provides the colour scheme and fonts, and the
-desktop-environment modules turn that into an actual KDE Plasma or GNOME
-configuration — including panels, window decorations, and a scheduled light/dark
-theme switcher that follows sunrise and sunset rather than a fixed hour.
+The desktop layer selects KDE Plasma, GNOME, or COSMIC. Stylix provides shared
+application styling and fonts. KDE and GNOME have additional desktop settings;
+KDE also has panels, window decorations, and a scheduled light/dark theme switcher.
+COSMIC uses its native desktop settings and theme.
 
 | | |
 | --- | --- |
@@ -32,8 +32,93 @@ theme switcher that follows sunrise and sunset rather than a fixed hour.
 }
 ```
 
-`desktop-environment.use` is also declared by the NixOS module of the same name,
-so setting it once covers both the user and system sides.
+`desktop-environment.use` is declared separately in NixOS and Home Manager.
+Set both values to the same desktop. If you use `cirius-utils`, also set
+`cnix-utils.settings.managedDesktopEnvironment` in Home Manager.
+
+### Select COSMIC
+
+Import `inputs.cirius-visual.nixosModules.default` on the system side and the
+existing visual/utils Home Manager modules on the user side. Select COSMIC with:
+
+```nix
+# In your NixOS configuration, using your existing Home Manager user:
+cnix-visual.desktop-environment.use = "cosmic";
+home-manager.users.cirius = {
+  cnix-visual.desktop-environment.use = "cosmic";
+  cnix-utils.settings.managedDesktopEnvironment = "cosmic";
+};
+```
+
+If your Home Manager configuration lives in a separate file, set its two options
+there instead. Do not add a second user. No COSMIC-specific Home Manager input
+is needed. Recommended KDE/GNOME shortcuts, power controls, screen edges, and
+workspace settings do not configure COSMIC; use COSMIC Settings for these.
+The existing shared application and font settings remain available.
+
+The current `cirius-nix-v4` consumer selects `mht-home-pc` in these files:
+
+- `systems/x86_64-linux/mht-home-pc/default.nix`: the NixOS visual selector.
+- `homes/x86_64-linux/cirius@mht-home-pc/default.nix`: the Home Manager visual
+  selector and utils selector.
+
+After the facade change is merged, update both consumer inputs, then set the
+three selectors above. The input update changes the consumer lock file; review
+that diff before switching.
+
+This host also enables `cnix-utils.unlockKDEWalletByLUKS` whenever the secure
+store is enabled. Make that existing assignment conditional on Plasma before
+selecting COSMIC or GNOME:
+
+```nix
+cnix-utils.unlockKDEWalletByLUKS =
+  config.cnix-sec.secure-store.enable
+  && config.services.desktopManager.plasma6.enable;
+```
+
+This keeps the LUKS wallet integration on KDE and avoids its Plasma-only assertion
+on other desktops.
+
+```sh
+cd /home/cirius/Workspaces/personal/dotfiles/cirius-nix-v4
+nix flake update cirius-visual cirius-utils
+
+# Build the selected configuration without activating it.
+nix build .#nixosConfigurations.mht-home-pc.config.system.build.toplevel --out-link result-cosmic
+
+# Activate only when you are ready to test the new desktop.
+sudo nixos-rebuild switch --flake .#mht-home-pc
+```
+
+The display-manager change can end your graphical session. Save your work before
+switching. To return to KDE, set all three selectors to `"kde"`, then run:
+
+```sh
+nix build .#nixosConfigurations.mht-home-pc.config.system.build.toplevel --out-link result-kde
+sudo nixos-rebuild switch --flake .#mht-home-pc
+```
+
+Use `"gnome"` in all three places to select GNOME instead. If the new session
+cannot start, use a text console to restore the selectors and rebuild, or boot
+the previous NixOS generation.
+
+KDE is the original desktop for `mht-home-pc`, and its full host derivation
+evaluates successfully. During COSMIC validation, the full GNOME host evaluation failed on the existing
+`gnome.profile-default.dockPosition` reference in the GNOME Home Manager module.
+The unchanged consumer inputs fail at the same reference. The standalone GNOME
+system module evaluates successfully, but this host needs that Home Manager
+issue resolved before switching to GNOME.
+
+COSMIC and its greeter are included in NixOS since 25.05. The checked
+nixos-unstable pin already contains them; no input upgrade or external COSMIC
+flake is required. The facade enables the two services documented by the
+[official NixOS wiki](https://wiki.nixos.org/wiki/COSMIC) and
+[COSMIC upstream](https://github.com/pop-os/cosmic-epoch#installing-on-nixos).
+Upstream supplies the session, portals, Xwayland, greeter service account, graphics,
+and shared audio defaults. Existing host NVIDIA and PipeWire settings are reused.
+NVIDIA/Wayland behaviour, suspend, screen sharing, and application theme behaviour
+still require testing on the target machine. This module does not apply the KDE
+theme, wallpaper, or theme switcher to COSMIC.
 
 ## Modules
 
@@ -47,6 +132,7 @@ so setting it once covers both the user and system sides.
 | `desktop-environment` | nixos | `…use` *(same option path)* | DE services |
 | `desktop-environment.kde` | nixos | `…use == "kde"` | Plasma 6 services |
 | `desktop-environment.gnome` | nixos | `…use == "gnome"` | GNOME/GDM services |
+| `desktop-environment.cosmic` | nixos | `…use == "cosmic"` | COSMIC session and greeter |
 
 ### `home/default` — theming base
 
@@ -90,7 +176,7 @@ desktop rather than fighting it.
 
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
-| `cnix-visual.desktop-environment.use` | `enum [ "unset" "kde" "gnome" ]` | `"unset"` | The desktop environment to be managed. | Selects the DE branch; `unset` leaves the visual modules idle. |
+| `cnix-visual.desktop-environment.use` | `enum [ "unset" "kde" "gnome" "cosmic" ]` | `"unset"` | The desktop environment to be managed. | Selects the DE branch; `unset` leaves desktop services unmanaged. |
 | `…desktop-environment.wallpaper.light` | `nullOr path` | `null` | The wallpaper to be used in light mode. | Light-mode wallpaper for Plasma/GNOME. |
 | `…desktop-environment.wallpaper.dark` | `nullOr path` | `null` | The wallpaper to be used in dark mode. | Dark-mode wallpaper, also fed to the KDE theme switcher. |
 
@@ -170,6 +256,7 @@ session is a system concern rather than a styling preference.
 | `nixos/desktop-environment` | Declares `cnix-visual.desktop-environment.use` for the system class. |
 | `nixos/desktop-environment/kde` | `services.desktopManager.plasma6.enable`, `services.displayManager.plasma-login-manager.enable`, `wl-clipboard`. |
 | `nixos/desktop-environment/gnome` | `services.desktopManager.gnome.enable`, `services.displayManager.gdm.enable`, GNOME apps and developer tools with games disabled, `services.xserver` with a US layout. |
+| `nixos/desktop-environment/cosmic` | `services.desktopManager.cosmic.enable`, `services.displayManager.cosmic-greeter.enable`. |
 
 ## Packages, overlays, and helpers
 
@@ -186,9 +273,9 @@ session is a system concern rather than a styling preference.
 ## Notes
 
 - `desktop-environment.use` is declared twice, once per class — the home module
-  drives user configuration, the NixOS module drives services. Set it once in
-  your configuration and both react.
-- The KDE and GNOME system modules are gated on `use` only; the Stylix theming
+  drives user configuration, the NixOS module drives services. Keep their values
+  aligned with the utils selector.
+- The KDE, GNOME, and COSMIC system modules are gated on `use` only; the Stylix theming
   side needs `cnix-visual.enable` as well.
 - `themeSwitcher.enable` declares no default, so it behaves as required once the
   option is referenced by the module's guards.
