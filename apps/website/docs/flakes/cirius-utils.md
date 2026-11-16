@@ -64,7 +64,7 @@ session restore; for GNOME it fixes keyboard repeat timing through dconf.
 | `cnix-utils.enable` | `bool` | `false` | Enable Cirius Utils. | Master switch for the base home module. |
 | `cnix-utils.settings.dotFileDir` | `nullOr str` | `null` | The directory where dotfiles are stored. If null, defaults to ~/.dotfiles. | Defines the `nix-*` fish abbrs that operate on this directory. |
 | `cnix-utils.settings.enableBootLogCapture` | `bool` | `false` | Enable boot log capture. | Adds the boot-log directory activation and `make-boot-log` abbr. |
-| `cnix-utils.settings.managedDesktopEnvironment` | `enum [ "unset" "kde" "gnome" ]` | `"unset"` | The desktop environment to manage. If unset, will not manage any desktop environment. | Selects which DE-specific block applies, here and in the shortcuts and power-controls modules. |
+| `cnix-utils.settings.managedDesktopEnvironment` | `enum [ "unset" "kde" "gnome" "cosmic" ]` | `"unset"` | The desktop environment to manage. If unset, will not manage any desktop environment. | Selects which DE-specific block applies. COSMIC supports declarative shortcuts; power controls, screen edges, and workspace layout keep native settings. |
 
 ### `home/package-manager` — flatpak
 
@@ -104,23 +104,94 @@ Applies recommended screen-off and suspend behaviour on AC power. Only acts when
 
 **Enable:** `cnix-utils.desktop-environment.shortcuts.enable`
 
-One canonical table of keybindings, translated into KDE Plasma shortcuts or GNOME
-dconf keys depending on `settings.managedDesktopEnvironment`. The translation
+One canonical table of keybindings, translated into KDE Plasma shortcuts, GNOME
+dconf keys, or COSMIC RON depending on `settings.managedDesktopEnvironment`. The translation
 tables live in private `_*.nix` files next to the module (`_kde.action.nix`,
 `_kde.modifier.nix`, `_kde.key.nix`, `_gnome.action.nix`,
 `_gnome.modifier.nix`), and the recommended set lives in
 `_default.bindings.nix`.
 
-`useRecommendedShortcuts` swaps in that recommended set; it asserts that a
-desktop environment is actually managed, so it cannot silently do nothing.
+`useRecommendedShortcuts` swaps in that recommended set for KDE, GNOME, or COSMIC
+and rejects `"unset"` when shortcuts are enabled. COSMIC maps only actions with
+supported equivalents and warns about configured actions without a mapping.
 
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
-| `…shortcuts.enable` | `bool` | `false` | Whether to enable recommended shortcuts for the system for KDE or GNOME. | Applies the translated shortcuts. |
-| `…shortcuts.useRecommendedShortcuts` | `bool` | `false` | Whether to use recommended shortcuts for the system for KDE or GNOME. This will apply a consistent set of shortcuts across applications and the desktop environment itself. | Replaces `settings.bindings` with the built-in default table. |
+| `…shortcuts.enable` | `bool` | `false` | Whether to manage desktop shortcuts for KDE, GNOME, or COSMIC. | Applies the translated shortcuts. |
+| `…shortcuts.useRecommendedShortcuts` | `bool` | `false` | Whether to use recommended shortcuts for KDE, GNOME, or COSMIC. | Uses the built-in default table for supported actions. |
 | `…shortcuts.settings.bindings` | `attrsOf (listOf (listOf str))` | `{ }` | Keybindings for the recommended shortcuts. Each keybinding is a list of keys. | Canonical action → key sequence table, e.g. `{ "desktop.overview" = [ "SUPER" ]; }`. |
 | `…shortcuts.settings.extendedActions.kde` | `attrsOf str` | `{ }` | Additional KDE actions to be added to the default set of actions. | Deep-merged over the built-in KDE action table. |
 | `…shortcuts.settings.extendedActions.gnome` | `attrsOf str` | `{ }` | Additional GNOME actions to be added to the default set of actions. | Deep-merged over the built-in GNOME action table. |
+| `…shortcuts.settings.extendedActions.cosmic` | `attrsOf str` | `{ }` | Additional COSMIC actions as native RON expressions. | Extends or overrides the COSMIC action table. |
+
+#### COSMIC shortcuts
+
+Enable the existing shortcut module in your Home Manager configuration:
+
+```nix
+cnix-utils.settings.managedDesktopEnvironment = "cosmic";
+cnix-utils.desktop-environment.shortcuts = {
+  enable = true;
+  useRecommendedShortcuts = true;
+};
+```
+
+The module writes
+`~/.config/cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom` through Home
+Manager. It uses COSMIC's native `Binding` and `Action` format. For every mapped
+action present in `settings.bindings`, the generated file disables its packaged
+native bindings and assigns your configured keys. An empty list disables those
+native bindings. Other native controls remain available, including volume,
+screen locking, and tiling, unless a configured binding uses the same keys.
+Invalid key combinations and conflicting assignments fail the build.
+
+Examples from the shared recommended table are `Meta+d` for workspace overview,
+`Meta+m` for minimize, `Alt+Tab` for the window switcher, `Meta+Tab` for next
+workspace, and `Meta+Shift+s` for the screenshot interface. Numbered workspace
+bindings use `Meta+1` through `Meta+9`; moving windows uses `Meta+Shift+1` through
+`Meta+Shift+9` without following the moved window.
+
+To own a smaller set of bindings, turn off the recommended table and provide
+your own. Additional native COSMIC actions use the same canonical action map:
+
+```nix
+cnix-utils.desktop-environment.shortcuts = {
+  enable = true;
+  useRecommendedShortcuts = false;
+  settings = {
+    bindings = {
+      "win.close" = [ [ "Meta" "q" ] ];
+      "win.toggle-maximize" = [ [ "Meta" "Up" ] ];
+      "desktop.toggle-tiling" = [ [ "Meta" "y" ] ];
+      "desktop.launch-terminal" = [ [ "Meta" "Return" ] ];
+    };
+    extendedActions.cosmic = {
+      "desktop.toggle-tiling" = "ToggleTiling";
+      "desktop.launch-terminal" = ''Spawn("ghostty")'';
+    };
+  };
+};
+```
+
+Use XKB keysym names for non-modifier keys, such as `Page_Up`, `Return`, and
+`XF86MonBrightnessUp`. `Meta`, `Super`, and `SUPER` all select COSMIC's Super
+modifier; `Ctrl`, `Alt`, and `Shift` are also supported. Super alone is valid.
+Native action expressions must match the pinned
+[COSMIC action schema](https://github.com/pop-os/cosmic-settings-daemon/blob/epoch-1.11.0/config/src/shortcuts/action.rs).
+
+COSMIC has one workspace axis. Previous/next workspace actions follow the layout
+selected in COSMIC Settings; arrow-key bindings must match that axis. COSMIC's
+`Maximize` action toggles state, so it maps to `win.toggle-maximize`, not the
+separate `win.maximize` and `win.unmaximize` actions. KDE quick tiling
+(`win.to-side-*`) is not mapped to COSMIC's directional move operation.
+Unsupported configured actions produce an evaluation warning and remain
+unmanaged. This includes the recommended maximize/restore keys and several
+KDE/GNOME shell actions; the warning lists the exact gaps.
+
+The generated custom file is owned by Nix. Edit these options and rebuild to
+change it. If you already have a hand-written COSMIC custom file, back it up and
+move it aside before activation; this module does not force its replacement.
+Returning to KDE or GNOME stops managing this COSMIC file.
 
 ### `home/chrome-webapps` — browser apps as desktop entries
 
