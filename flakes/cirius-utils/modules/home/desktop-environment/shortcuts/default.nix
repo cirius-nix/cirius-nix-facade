@@ -2,6 +2,7 @@
   config,
   namespace,
   lib,
+  pkgs,
   ...
 }:
 {
@@ -10,17 +11,16 @@
       type = lib.types.bool;
       default = false;
       description = ''
-        Whether to enable recommended shortcuts for the system for KDE or GNOME.
+        Whether to manage desktop shortcuts for KDE, GNOME, or COSMIC.
       '';
     };
     useRecommendedShortcuts = lib.mkOption {
       type = lib.types.bool;
       default = false;
       description = ''
-        Whether to use recommended shortcuts for the system for KDE or GNOME.
+        Whether to use recommended shortcuts for KDE, GNOME, or COSMIC.
         This will apply a consistent set of shortcuts across applications and the desktop
         environment itself.
-        This option has no effect on COSMIC, which uses its native shortcuts.
       '';
     };
 
@@ -45,6 +45,14 @@
           default = { };
           description = "Additional GNOME actions to be added to the default set of actions.";
         };
+        cosmic = lib.mkOption {
+          type = with lib.types; attrsOf str;
+          default = { };
+          description = "Additional COSMIC actions as native RON expressions, keyed by canonical action name.";
+          example = {
+            "desktop.toggle-tiling" = "ToggleTiling";
+          };
+        };
       };
     };
   };
@@ -62,6 +70,7 @@
       actions = {
         gnome = lib.recursiveUpdate (import ./_gnome.action.nix) settings.extendedActions.gnome;
         kde = lib.recursiveUpdate (import ./_kde.action.nix) settings.extendedActions.kde;
+        cosmic = (import ./_cosmic.action.nix) // settings.extendedActions.cosmic;
       };
 
       modifiers = {
@@ -188,11 +197,45 @@
         }
       ))
 
-      (lib.mkIf (enable && useRecommendedShortcuts && managedDesktopEnvironment != "cosmic") ({
+      (lib.mkIf (enable && managedDesktopEnvironment == "cosmic") (
+        let
+          unsupported = lib.attrNames (
+            lib.filterAttrs (
+              name: keys: keys != [ ] && !(builtins.hasAttr name actions.cosmic)
+            ) settings.bindings
+          );
+        in
+        {
+          warnings =
+            lib.optional (unsupported != [ ])
+              "COSMIC has no shortcut mapping for: ${lib.concatStringsSep ", " unsupported}. These actions are left unmanaged.";
+          xdg.configFile."cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom".source =
+            pkgs.runCommand "cosmic-shortcuts"
+              {
+                configuration = builtins.toJSON {
+                  actions = actions.cosmic;
+                  bindings = settings.bindings;
+                };
+                passAsFile = [ "configuration" ];
+              }
+              ''
+                ${pkgs.python3}/bin/python ${./_cosmic.shortcuts.py} \
+                  ${pkgs.cosmic-comp}/share/cosmic/com.system76.CosmicSettings.Shortcuts/v1/defaults \
+                "$configurationPath" "$out" \
+                ${lib.getLib pkgs.libxkbcommon}/lib/libxkbcommon.so.0
+              '';
+        }
+      ))
+
+      (lib.mkIf (enable && useRecommendedShortcuts) ({
         assertions = [
           {
-            assertion = managedDesktopEnvironment == "kde" || managedDesktopEnvironment == "gnome";
-            message = "The 'managedDesktopEnvironment' option must be set to either 'kde' or 'gnome' when 'useRecommendedShortcuts' is enabled.";
+            assertion = lib.elem managedDesktopEnvironment [
+              "kde"
+              "gnome"
+              "cosmic"
+            ];
+            message = "The 'managedDesktopEnvironment' option must be set to 'kde', 'gnome', or 'cosmic' when 'useRecommendedShortcuts' is enabled.";
           }
         ];
 

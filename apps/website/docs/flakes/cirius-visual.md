@@ -52,8 +52,9 @@ home-manager.users.cirius = {
 
 If your Home Manager configuration lives in a separate file, set its two options
 there instead. Do not add a second user. No COSMIC-specific Home Manager input
-is needed. Recommended KDE/GNOME shortcuts, power controls, screen edges, and
-workspace settings do not configure COSMIC; use COSMIC Settings for these.
+is needed. The shared shortcut module can configure COSMIC declaratively; see
+[the COSMIC shortcut instructions](./cirius-utils.md#cosmic-shortcuts).
+Power controls, screen edges, and workspace layout still use COSMIC Settings.
 The existing shared application and font settings remain available.
 
 The current `cirius-nix-v4` consumer selects `mht-home-pc` in these files:
