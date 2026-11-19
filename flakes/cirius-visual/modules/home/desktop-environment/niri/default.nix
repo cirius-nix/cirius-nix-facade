@@ -213,6 +213,15 @@ in
           Alt+F11 repeat=false { fullscreen-window; }
           Super+V { toggle-window-floating; }
 
+          Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+          Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+          Mod+WheelScrollLeft { focus-column-left; }
+          Mod+WheelScrollRight { focus-column-right; }
+          Mod+TouchpadScrollUp cooldown-ms=150 { focus-workspace-up; }
+          Mod+TouchpadScrollDown cooldown-ms=150 { focus-workspace-down; }
+          Mod+TouchpadScrollLeft cooldown-ms=150 { focus-column-left; }
+          Mod+TouchpadScrollRight cooldown-ms=150 { focus-column-right; }
+
           Super+Left { focus-column-left; }
           Super+Right { focus-column-right; }
           Super+Ctrl+Left { move-column-left; }
