@@ -36,6 +36,33 @@ COSMIC uses its native desktop settings and theme.
 Set both values to the same desktop. If you use `cirius-utils`, also set
 `cnix-utils.settings.managedDesktopEnvironment` in Home Manager.
 
+### Add a Niri session
+
+Set the following options with the visual modules imported. After rebuilding,
+choose **Niri** in the session menu of your current greeter.
+
+```nix
+cnix-visual.desktop-environment.niri.enable = true;
+home-manager.users.cirius.cnix-visual.desktop-environment.niri.enable = true;
+```
+
+Niri uses Waybar for status, Fuzzel for app search, Ghostty for the terminal,
+Mako for notifications, and Swaylock with Swayidle for locking. The screen locks
+after five minutes of inactivity and before sleep. The NixOS module registers
+the session and provides portals and XWayland support.
+
+| Keys | Action |
+| --- | --- |
+| `Super+A` / `Super+T` / `Super+E` | Open the launcher, Ghostty, or the primary desktop's file manager |
+| `Super+D` / `Alt+Tab` | Open the overview or switch windows |
+| `Super+Q` / `Alt+F4` | Close the focused window |
+| `Super+←/→` / `Super+Ctrl+←/→` | Focus or move the column |
+| `Super+R` / `Super+↑` / `Alt+F11` | Cycle column width, toggle maximize, or toggle fullscreen |
+| `Super+Tab` / `Super+Shift+Tab` | Switch to the next or previous workspace |
+| `Super+1–9` / `Super+Shift+1–9` | Focus a numbered workspace or send a window there |
+| `Super+Shift+S` / `Super+Shift+W` | Capture an area or the focused window |
+| `Super+Escape` / `Super+Shift+/` | Lock the screen or show shortcut help |
+
 ### Select COSMIC
 
 Import `inputs.cirius-visual.nixosModules.default` on the system side and the

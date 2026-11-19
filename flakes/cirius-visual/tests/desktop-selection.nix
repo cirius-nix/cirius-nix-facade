@@ -13,13 +13,14 @@ let
     "cosmic"
   ];
   systemFor =
-    desktop:
+    desktop: niri:
     (lib.nixosSystem {
       inherit system;
       modules = [
         visual.nixosModules.default
         {
           cnix-visual.desktop-environment.use = desktop;
+          cnix-visual.desktop-environment.niri.enable = niri;
           system.stateVersion = "25.11";
           fileSystems."/" = {
             device = "none";
@@ -30,10 +31,11 @@ let
       ];
     }).config;
   valid = c: lib.all (a: a.assertion) c.assertions;
-  checks = lib.genAttrs desktops (
-    desktop:
+  check =
+    desktop: niri:
     let
-      os = systemFor desktop;
+      os = systemFor desktop niri;
+      baseline = systemFor desktop false;
     in
     assert valid os;
     assert os.services.desktopManager.plasma6.enable == (desktop == "kde");
@@ -42,6 +44,21 @@ let
     assert os.services.displayManager.plasma-login-manager.enable == (desktop == "kde");
     assert os.services.displayManager.gdm.enable == (desktop == "gnome");
     assert os.services.displayManager.cosmic-greeter.enable == (desktop == "cosmic");
+    assert os.programs.niri.enable == niri;
+    assert
+      lib.elem "niri" (
+        lib.concatMap (pkg: pkg.providedSessions) os.services.displayManager.sessionPackages
+      ) == niri;
+    assert !niri || desktop != "unset" || os.services.displayManager.defaultSession == "niri";
+    assert
+      !niri
+      || desktop == "unset"
+      || (
+        os.services.displayManager.defaultSession == baseline.services.displayManager.defaultSession
+        &&
+          os.services.displayManager.sessionData.autologinSession
+          == baseline.services.displayManager.sessionData.autologinSession
+      );
     assert
       desktop != "cosmic"
       || (
@@ -50,7 +67,6 @@ let
         && os.services.pipewire.pulse.enable
         && os.xdg.portal.enable
       );
-    true
-  );
+    true;
 in
-checks
+lib.genAttrs desktops (desktop: check desktop false && check desktop true)
