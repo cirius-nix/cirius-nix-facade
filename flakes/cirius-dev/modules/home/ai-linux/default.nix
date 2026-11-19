@@ -18,6 +18,10 @@ in
           "computer-use-linux"
           "remote-mobile-control"
           "remote-control-ui"
+          "linux-performance-workarounds"
+          "directory-only-working-tree-watch"
+          "mcp-helper-reaper"
+          "node-repl-reaper"
         ];
       };
     })
