@@ -1,0 +1,82 @@
+* {
+  font-family: Inter, sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+window#waybar {
+  background-color: transparent;
+  color: @text;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+  background-color: alpha(@ink, 0.94);
+  border: 1px solid alpha(@outline, 0.85);
+  border-radius: 12px;
+  padding: 3px 4px;
+}
+
+#workspaces button {
+  background: none;
+  border: none;
+  border-radius: 8px;
+  box-shadow: none;
+  color: @text;
+  font-size: 12px;
+  min-width: 18px;
+  padding: 0 5px;
+}
+
+#workspaces button.empty {
+  color: @muted;
+}
+
+#workspaces button:hover {
+  background-color: @selection;
+  color: @text;
+}
+
+#workspaces button.active {
+  background-color: @selection;
+  color: @accent;
+}
+
+#workspaces button.focused {
+  background-color: @accent;
+  color: @ink;
+  font-weight: 700;
+}
+
+#workspaces button.urgent {
+  background-color: @urgent;
+  color: @ink;
+}
+
+#clock {
+  font-weight: 600;
+  padding: 0 12px;
+}
+
+#tray,
+#network,
+#pulseaudio {
+  padding: 0 8px;
+}
+
+#pulseaudio {
+  border-left: 1px solid @outline;
+}
+
+#network.disconnected,
+#pulseaudio.muted {
+  color: @muted;
+}
+
+tooltip {
+  background-color: @surface;
+  border: 1px solid @outline;
+  border-radius: 10px;
+  color: @text;
+}

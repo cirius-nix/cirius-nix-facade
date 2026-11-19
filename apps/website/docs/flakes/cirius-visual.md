@@ -50,6 +50,8 @@ Niri uses Waybar for status, Fuzzel for app search, Ghostty for the terminal,
 Mako for notifications, and Swaylock with Swayidle for locking. The screen locks
 after five minutes of inactivity and before sleep. The NixOS module registers
 the session and provides portals and XWayland support.
+The session and lock screen use the bundled blue-hour wallpaper unless you set
+`cnix-visual.desktop-environment.wallpaper.dark`.
 
 | Keys | Action |
 | --- | --- |
