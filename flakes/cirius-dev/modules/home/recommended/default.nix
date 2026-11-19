@@ -11,7 +11,7 @@
     useRecommendedPackages = lib.mkOption {
       type = lib.types.bool;
       default = false;
-      description = "Whether to use recommended packages for nvim.";
+      description = "Whether to enable the recommended development packages and programs.";
     };
   };
 
@@ -31,6 +31,7 @@
             curl
             gnutar
             postgresql
+            tabularis
             se-adopt
             artifact-plane
             ttyd

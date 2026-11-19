@@ -61,11 +61,12 @@ enable flag. It imports the external home modules (`nixvim`,
 `nix-index-database`, `codex-desktop-linux`, `deepseek-harness`) and every sibling
 module, then enables fastfetch, eza, fzf, direnv, devenv, starship, and zoxide —
 with fish integrations switched on only when `cnix-dev.shell = "fish"`.
-`useRecommendedPackages` adds `bruno`, `btop`, `comma`, and `python3`.
+`useRecommendedPackages` adds tools such as Tabularis (`tabularis`),
+`btop`, `comma`, and `python3`. On Linux, it also adds `bruno`.
 
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
-| `cnix-dev.useRecommendedPackages` | `bool` | `false` | Whether to use recommended packages for nvim. | Installs the recommended home package set. |
+| `cnix-dev.useRecommendedPackages` | `bool` | `false` | Whether to enable the recommended development packages and programs. | Installs the recommended home package set, including Tabularis. |
 
 ### `home/shell` — shell selection
 
