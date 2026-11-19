@@ -36,6 +36,8 @@
             ttyd
             prek
             lychee
+            playwright
+            playwright-mcp
           ]
           ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [ pkgs.bruno ];
         programs.fastfetch = {
