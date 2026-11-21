@@ -43,6 +43,7 @@
           "kde"
           "gnome"
           "cosmic"
+          "pantheon"
         ];
         default = "unset";
         description = "The desktop environment to manage. If unset, will not manage any desktop environment.";

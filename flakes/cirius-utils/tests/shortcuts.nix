@@ -23,15 +23,21 @@ let
           cnix-utils = {
             settings.managedDesktopEnvironment = desktop;
             desktop-environment.shortcuts = {
-              enable = desktop != "unset";
-              useRecommendedShortcuts = true;
+              enable = desktop != "unset" && desktop != "pantheon";
+              useRecommendedShortcuts = desktop != "pantheon";
             };
           };
         }
         extra
       ];
     }).config;
-  homes = lib.genAttrs [ "unset" "kde" "gnome" "cosmic" ] (desktop: homeFor desktop { });
+  homes = lib.genAttrs [
+    "unset"
+    "kde"
+    "gnome"
+    "cosmic"
+    "pantheon"
+  ] (desktop: homeFor desktop { });
   custom = homeFor "cosmic" {
     cnix-utils.desktop-environment.shortcuts = {
       useRecommendedShortcuts = lib.mkForce false;
@@ -61,7 +67,12 @@ in
     desktop: home:
     assert lib.all (a: a.assertion) home.assertions;
     assert builtins.hasAttr path home.xdg.configFile == (desktop == "cosmic");
-    assert desktop != "cosmic" || (home.programs.plasma.shortcuts == { } && home.dconf.settings == { });
+    assert
+      !(lib.elem desktop [
+        "cosmic"
+        "pantheon"
+      ])
+      || (home.programs.plasma.shortcuts == { } && home.dconf.settings == { });
     true
   ) homes;
   cosmic = homes.cosmic.xdg.configFile.${path}.source;

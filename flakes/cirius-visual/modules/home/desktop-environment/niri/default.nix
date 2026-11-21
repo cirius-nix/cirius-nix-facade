@@ -15,6 +15,7 @@ let
       cosmic = pkgs.cosmic-files;
       gnome = pkgs.nautilus;
       kde = pkgs.kdePackages.dolphin;
+      pantheon = pkgs.pantheon.elementary-files;
     }
     .${use} or pkgs.xfce.thunar
   );

@@ -20,7 +20,13 @@ in
 
     # The upstream Niri module assumes Niri is the primary session.
     services.displayManager.defaultSession = lib.mkIf (use != "unset") (
-      lib.mkOverride 999 (if use == "kde" then "plasma" else null)
+      lib.mkOverride 999 (
+        {
+          kde = "plasma";
+          pantheon = "pantheon-wayland";
+        }
+        .${use} or null
+      )
     );
 
     environment.systemPackages = [ pkgs.xwayland-satellite ];

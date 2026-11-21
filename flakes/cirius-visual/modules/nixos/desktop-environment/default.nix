@@ -18,6 +18,7 @@
           "kde"
           "gnome"
           "cosmic"
+          "pantheon"
         ];
         default = "unset";
         description = "The desktop environment to be managed.";

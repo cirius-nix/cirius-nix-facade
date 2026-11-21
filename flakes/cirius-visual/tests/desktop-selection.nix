@@ -11,6 +11,7 @@ let
     "kde"
     "gnome"
     "cosmic"
+    "pantheon"
   ];
   systemFor =
     desktop: niri:
@@ -36,19 +37,29 @@ let
     let
       os = systemFor desktop niri;
       baseline = systemFor desktop false;
+      sessions = lib.concatMap (pkg: pkg.providedSessions) os.services.displayManager.sessionPackages;
     in
     assert valid os;
     assert os.services.desktopManager.plasma6.enable == (desktop == "kde");
     assert os.services.desktopManager.gnome.enable == (desktop == "gnome");
     assert os.services.desktopManager.cosmic.enable == (desktop == "cosmic");
+    assert os.services.desktopManager.pantheon.enable == (desktop == "pantheon");
     assert os.services.displayManager.plasma-login-manager.enable == (desktop == "kde");
     assert os.services.displayManager.gdm.enable == (desktop == "gnome");
     assert os.services.displayManager.cosmic-greeter.enable == (desktop == "cosmic");
-    assert os.programs.niri.enable == niri;
     assert
-      lib.elem "niri" (
-        lib.concatMap (pkg: pkg.providedSessions) os.services.displayManager.sessionPackages
-      ) == niri;
+      os.services.xserver.displayManager.lightdm.greeters.pantheon.enable == (desktop == "pantheon");
+    assert os.programs.niri.enable == niri;
+    assert lib.elem "niri" sessions == niri;
+    assert lib.elem "pantheon-wayland" sessions == (desktop == "pantheon");
+    assert
+      desktop != "pantheon"
+      || (
+        os.services.xserver.enable
+        && os.services.xserver.displayManager.lightdm.enable
+        && os.services.displayManager.defaultSession == "pantheon-wayland"
+        && os.xdg.portal.enable
+      );
     assert !niri || desktop != "unset" || os.services.displayManager.defaultSession == "niri";
     assert
       !niri

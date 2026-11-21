@@ -1,15 +1,15 @@
 ---
 title: cirius-visual
 sidebar_position: 4
-description: Desktop selection for KDE Plasma, GNOME, and COSMIC, with shared application styling and desktop-specific settings.
+description: Desktop selection for KDE Plasma, GNOME, COSMIC, and Pantheon, with shared application styling and desktop-specific settings.
 ---
 
 # cirius-visual
 
-The desktop layer selects KDE Plasma, GNOME, or COSMIC. Stylix provides shared
+The desktop layer selects KDE Plasma, GNOME, COSMIC, or Pantheon. Stylix provides shared
 application styling and fonts. KDE and GNOME have additional desktop settings;
 KDE also has panels, window decorations, and a scheduled light/dark theme switcher.
-COSMIC uses its native desktop settings and theme.
+COSMIC and Pantheon use their native desktop settings and themes.
 
 | | |
 | --- | --- |
@@ -150,6 +150,34 @@ NVIDIA/Wayland behaviour, suspend, screen sharing, and application theme behavio
 still require testing on the target machine. This module does not apply the KDE
 theme, wallpaper, or theme switcher to COSMIC.
 
+### Select Pantheon
+
+Set the NixOS and Home Manager selectors in your existing configuration.
+
+```nix
+cnix-visual.desktop-environment.use = "pantheon";
+home-manager.users.cirius = {
+  cnix-visual.desktop-environment.use = "pantheon";
+  cnix-utils.settings.managedDesktopEnvironment = "pantheon";
+  cnix-utils.desktop-environment.shortcuts.enable = false;
+};
+```
+
+The NixOS module uses LightDM with the elementary greeter and defaults to
+Pantheon on Wayland. LightDM also needs Xorg for the greeter. If Niri is enabled,
+it remains available in the session menu. Set shortcuts, wallpaper, and other
+desktop preferences in Pantheon's System Settings. Shared facade app styling and
+fonts are still available.
+
+Once both inputs point to a revision with Pantheon support, run this build
+from the `cirius-nix-v4` checkout for `mht-home-pc`.
+
+```sh
+nix build .#nixosConfigurations.mht-home-pc.config.system.build.toplevel --no-link
+```
+
+To activate it at the next reboot, run `sudo nixos-rebuild boot --flake .#mht-home-pc`.
+
 ## Modules
 
 | Module | Class | Enabled by | Gates |
@@ -163,6 +191,7 @@ theme, wallpaper, or theme switcher to COSMIC.
 | `desktop-environment.kde` | nixos | `…use == "kde"` | Plasma 6 services |
 | `desktop-environment.gnome` | nixos | `…use == "gnome"` | GNOME/GDM services |
 | `desktop-environment.cosmic` | nixos | `…use == "cosmic"` | COSMIC session and greeter |
+| `desktop-environment.pantheon` | nixos | `…use == "pantheon"` | Pantheon session and LightDM with the elementary greeter |
 
 ### `home/default` — theming base
 
@@ -206,7 +235,7 @@ desktop rather than fighting it.
 
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
-| `cnix-visual.desktop-environment.use` | `enum [ "unset" "kde" "gnome" "cosmic" ]` | `"unset"` | The desktop environment to be managed. | Selects the DE branch; `unset` leaves desktop services unmanaged. |
+| `cnix-visual.desktop-environment.use` | `enum [ "unset" "kde" "gnome" "cosmic" "pantheon" ]` | `"unset"` | The desktop environment to be managed. | Selects the DE branch; `unset` leaves desktop services unmanaged. |
 | `…desktop-environment.wallpaper.light` | `nullOr path` | `null` | The wallpaper to be used in light mode. | Light-mode wallpaper for Plasma/GNOME. |
 | `…desktop-environment.wallpaper.dark` | `nullOr path` | `null` | The wallpaper to be used in dark mode. | Dark-mode wallpaper, also fed to the KDE theme switcher. |
 
@@ -287,6 +316,7 @@ session is a system concern rather than a styling preference.
 | `nixos/desktop-environment/kde` | `services.desktopManager.plasma6.enable`, `services.displayManager.plasma-login-manager.enable`, `wl-clipboard`. |
 | `nixos/desktop-environment/gnome` | `services.desktopManager.gnome.enable`, `services.displayManager.gdm.enable`, GNOME apps and developer tools with games disabled, `services.xserver` with a US layout. |
 | `nixos/desktop-environment/cosmic` | `services.desktopManager.cosmic.enable`, `services.displayManager.cosmic-greeter.enable`. |
+| `nixos/desktop-environment/pantheon` | `services.desktopManager.pantheon.enable`, `services.xserver.enable`, `services.xserver.displayManager.lightdm.enable`. |
 
 ## Packages, overlays, and helpers
 

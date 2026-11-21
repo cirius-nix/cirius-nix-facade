@@ -64,7 +64,7 @@ session restore; for GNOME it fixes keyboard repeat timing through dconf.
 | `cnix-utils.enable` | `bool` | `false` | Enable Cirius Utils. | Master switch for the base home module. |
 | `cnix-utils.settings.dotFileDir` | `nullOr str` | `null` | The directory where dotfiles are stored. If null, defaults to ~/.dotfiles. | Defines the `nix-*` fish abbrs that operate on this directory. |
 | `cnix-utils.settings.enableBootLogCapture` | `bool` | `false` | Enable boot log capture. | Adds the boot-log directory activation and `make-boot-log` abbr. |
-| `cnix-utils.settings.managedDesktopEnvironment` | `enum [ "unset" "kde" "gnome" "cosmic" ]` | `"unset"` | The desktop environment to manage. If unset, will not manage any desktop environment. | Selects which DE-specific block applies. COSMIC supports declarative shortcuts; power controls, screen edges, and workspace layout keep native settings. |
+| `cnix-utils.settings.managedDesktopEnvironment` | `enum [ "unset" "kde" "gnome" "cosmic" "pantheon" ]` | `"unset"` | The desktop environment to manage. If unset, will not manage any desktop environment. | Selects the desktop integration. COSMIC supports declarative shortcuts. Pantheon uses its native settings. |
 
 ### `home/package-manager` — flatpak
 
