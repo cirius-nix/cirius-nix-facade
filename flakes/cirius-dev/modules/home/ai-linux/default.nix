@@ -15,12 +15,12 @@ in
       programs.codexDesktopLinux = {
         enable = true;
         linuxFeatures = [
-          "computer-use-linux"
-          "remote-mobile-control"
-          "remote-control-ui"
-          "linux-performance-workarounds"
-          "mcp-helper-reaper"
-          "node-repl-reaper"
+          # "computer-use-linux"
+          # "remote-mobile-control"
+          # "remote-control-ui"
+          # "linux-performance-workarounds"
+          # "mcp-helper-reaper"
+          # "node-repl-reaper"
         ];
       };
     })
