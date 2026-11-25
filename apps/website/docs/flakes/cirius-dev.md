@@ -132,6 +132,13 @@ and the `Google.google-antigravity` VS Code extension when `editor.code` is
 enabled), `opencode`, `deepseek` (the `dsh` harness with tui and desktop profiles),
 `copilot-lua` and `blink-cmp-copilot` into the nixvim completion sources).
 
+`codex` installs the official Codex CLI release archive pinned in the
+`llm-agents` overlay. Codex ACP and T3 Code use the same CLI package.
+If you already run a separate `codex app-server daemon`, use
+`codex app-server daemon update --from-cli` after switching to select and pin
+the new CLI for that daemon. The command copies the package into Codex home and
+restarts a running daemon after confirmation.
+
 | Option | Type | Default | Description | Effect |
 | --- | --- | --- | --- | --- |
 | `cnix-dev.ai.useRecommendedPackages` | `bool` | `true` | Whether to use recommended packages for AI. | TODO: |
