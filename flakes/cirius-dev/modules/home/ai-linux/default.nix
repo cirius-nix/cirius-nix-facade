@@ -12,17 +12,18 @@ in
 {
   config = lib.mkMerge [
     (lib.mkIf (ifClient "codex") {
-      programs.codexDesktopLinux = {
-        enable = true;
-        linuxFeatures = [
-          # "computer-use-linux"
-          # "remote-mobile-control"
-          # "remote-control-ui"
-          # "linux-performance-workarounds"
-          # "mcp-helper-reaper"
-          # "node-repl-reaper"
-        ];
-      };
+      home.packages = with pkgs.llm-agents; [ chatgpt ];
+      # programs.codexDesktopLinux = {
+      #   enable = true;
+      #   linuxFeatures = [
+      #     # "computer-use-linux"
+      #     # "remote-mobile-control"
+      #     # "remote-control-ui"
+      #     # "linux-performance-workarounds"
+      #     # "mcp-helper-reaper"
+      #     # "node-repl-reaper"
+      #   ];
+      # };
     })
 
     (lib.mkIf (ifClient "gemini") {
